@@ -548,7 +548,7 @@ namespace CVEYEV1
                 //pattern_field.Image = img_capture.Bitmap;
 
             }
-            catch (Exception ex)
+            catch
             {
                 //MessageBox.Show(ex.Message);
                 return;

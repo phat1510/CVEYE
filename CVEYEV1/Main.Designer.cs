@@ -127,7 +127,7 @@
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(9, 21);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(99, 30);
+            this.button2.Size = new System.Drawing.Size(104, 30);
             this.button2.TabIndex = 8;
             this.button2.Text = "Chụp ảnh";
             this.button2.UseVisualStyleBackColor = true;
@@ -136,9 +136,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(114, 21);
+            this.button1.Location = new System.Drawing.Point(119, 21);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(105, 30);
+            this.button1.Size = new System.Drawing.Size(100, 30);
             this.button1.TabIndex = 1;
             this.button1.Text = "Bật camera";
             this.button1.UseVisualStyleBackColor = true;
@@ -299,7 +299,7 @@
             this.Detect_items.Name = "Detect_items";
             this.Detect_items.Size = new System.Drawing.Size(210, 30);
             this.Detect_items.TabIndex = 58;
-            this.Detect_items.Text = "Detect";
+            this.Detect_items.Text = "Quét ảnh";
             this.Detect_items.UseVisualStyleBackColor = true;
             this.Detect_items.Click += new System.EventHandler(this.DetectClick);
             // 
@@ -606,7 +606,7 @@
             this.GotoHome.Name = "GotoHome";
             this.GotoHome.Size = new System.Drawing.Size(176, 30);
             this.GotoHome.TabIndex = 84;
-            this.GotoHome.Text = "Goto Machine Home";
+            this.GotoHome.Text = "Vị trí làm việc";
             this.GotoHome.UseVisualStyleBackColor = false;
             this.GotoHome.Click += new System.EventHandler(this.GotoHome_Click);
             // 
@@ -744,7 +744,7 @@
             this.TurnPiston.Name = "TurnPiston";
             this.TurnPiston.Size = new System.Drawing.Size(176, 30);
             this.TurnPiston.TabIndex = 72;
-            this.TurnPiston.Text = "Turn on Piston";
+            this.TurnPiston.Text = "Bật piston";
             this.TurnPiston.UseVisualStyleBackColor = false;
             this.TurnPiston.Click += new System.EventHandler(this.TurnPiston_Click);
             // 
@@ -887,7 +887,7 @@
             this.ReplacePosition.Name = "ReplacePosition";
             this.ReplacePosition.Size = new System.Drawing.Size(176, 30);
             this.ReplacePosition.TabIndex = 71;
-            this.ReplacePosition.Text = "Changing Position";
+            this.ReplacePosition.Text = "Vị trí bảo dưỡng";
             this.ReplacePosition.UseVisualStyleBackColor = false;
             this.ReplacePosition.Click += new System.EventHandler(this.ChangingPosition_Click);
             // 
@@ -899,7 +899,7 @@
             this.RefAllHome.Name = "RefAllHome";
             this.RefAllHome.Size = new System.Drawing.Size(176, 30);
             this.RefAllHome.TabIndex = 70;
-            this.RefAllHome.Text = "Set Machine Zero";
+            this.RefAllHome.Text = "Thiết lập gốc máy";
             this.RefAllHome.UseVisualStyleBackColor = false;
             this.RefAllHome.Click += new System.EventHandler(this.RefAllHome_Click);
             // 
@@ -913,7 +913,7 @@
             this.TestValve.Name = "TestValve";
             this.TestValve.Size = new System.Drawing.Size(176, 30);
             this.TestValve.TabIndex = 69;
-            this.TestValve.Text = "Test Valve";
+            this.TestValve.Text = "Phun thử";
             this.TestValve.UseVisualStyleBackColor = false;
             this.TestValve.Click += new System.EventHandler(this.TestValve_Click);
             // 

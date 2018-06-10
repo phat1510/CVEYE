@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Field>
+  <Item>
+    <Name>General 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="44.765" Y="22.255" Z="-" T="-" C="Red" />
+      <Point X="29.929" Y="40.928" Z="-" T="-" C="Red" />
+      <Point X="43.486" Y="45.532" Z="-" T="-" C="Red" />
+      <Point X="28" Y="64" Z="-" T="-" C="Red" />
+      <Point X="42.719" Y="61.648" Z="-" T="-" C="Red" />
+      <Point X="41.951" Y="87.484" Z="-" T="-" C="Red" />
+      <Point X="77" Y="88.763" Z="-" T="-" C="Red" />
+      <Point X="81" Y="59.601" Z="-" T="-" C="Red" />
+      <Point X="73.415" Y="43.998" Z="-" T="-" C="Red" />
+      <Point X="84.414" Y="31.208" Z="-" T="-" C="Red" />
+      <Point X="66.252" Y="24.813" Z="-" T="-" C="Red" />
+      <Point X="61.136" Y="33.51" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Advisor 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="59.346" Y="28.905" Z="-" T="-" C="Red" />
+      <Point X="58.834" Y="42.207" Z="-" T="-" C="Red" />
+      <Point X="21.743" Y="55.253" Z="-" T="-" C="Red" />
+      <Point X="38.882" Y="55.253" Z="-" T="-" C="Red" />
+      <Point X="58.834" Y="55.253" Z="-" T="-" C="Red" />
+      <Point X="78.786" Y="54.997" Z="-" T="-" C="Red" />
+      <Point X="92.344" Y="52.183" Z="-" T="-" C="Red" />
+      <Point X="80.321" Y="80.065" Z="-" T="-" C="Red" />
+      <Point X="59.601" Y="78.786" Z="-" T="-" C="Red" />
+      <Point X="37.091" Y="81.856" Z="-" T="-" C="Red" />
+      <Point X="59.09" Y="67.275" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Elephant 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="47.579" Y="16.883" Z="-" T="-" C="Red" />
+      <Point X="59.857" Y="21.231" Z="-" T="-" C="Red" />
+      <Point X="51.927" Y="36.579" Z="-" T="-" C="Red" />
+      <Point X="32.742" Y="38.114" Z="-" T="-" C="Red" />
+      <Point X="42.974" Y="58.578" Z="-" T="-" C="Red" />
+      <Point X="47.323" Y="49.881" Z="-" T="-" C="Red" />
+      <Point X="72.903" Y="37.091" Z="-" T="-" C="Red" />
+      <Point X="69.322" Y="58.834" Z="-" T="-" C="Red" />
+      <Point X="79.5" Y="81" Z="-" T="-" C="Red" />
+      <Point X="61" Y="69.578" Z="-" T="-" C="Red" />
+      <Point X="53.5" Y="71" Z="-" T="-" C="Red" />
+      <Point X="50.137" Y="92.6" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Chariot 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="52" Y="16.115" Z="-" T="-" C="Red" />
+      <Point X="37.347" Y="23.278" Z="-" T="-" C="Red" />
+      <Point X="69.578" Y="19.2" Z="-" T="-" C="Red" />
+      <Point X="53" Y="33" Z="-" T="-" C="Red" />
+      <Point X="35.045" Y="39.649" Z="-" T="-" C="Red" />
+      <Point X="37.603" Y="53.718" Z="-" T="-" C="Red" />
+      <Point X="54.5" Y="57" Z="-" T="-" C="Red" />
+      <Point X="79.298" Y="37.347" Z="-" T="-" C="Red" />
+      <Point X="75" Y="50.904" Z="-" T="-" C="Red" />
+      <Point X="86.716" Y="65.996" Z="-" T="-" C="Red" />
+      <Point X="58.578" Y="90.553" Z="-" T="-" C="Red" />
+      <Point X="22.766" Y="72.647" Z="-" T="-" C="Red" />
+      <Point X="56.276" Y="69.322" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Cannon 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="44.509" Y="21.231" Z="-" T="-" C="Red" />
+      <Point X="40.5" Y="35.5" Z="-" T="-" C="Red" />
+      <Point X="27.882" Y="45.532" Z="-" T="-" C="Red" />
+      <Point X="34.021" Y="69.578" Z="-" T="-" C="Red" />
+      <Point X="38.114" Y="85.949" Z="-" T="-" C="Red" />
+      <Point X="64.973" Y="88.507" Z="-" T="-" C="Red" />
+      <Point X="89.53" Y="81.856" Z="-" T="-" C="Red" />
+      <Point X="64.462" Y="70.857" Z="-" T="-" C="Red" />
+      <Point X="73.159" Y="52.695" Z="-" T="-" C="Red" />
+      <Point X="78.5" Y="35" Z="-" T="-" C="Red" />
+      <Point X="52.951" Y="59.857" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Horse 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="76.484" Y="90.042" Z="-" T="-" C="Red" />
+      <Point X="85.181" Y="76.74" Z="-" T="-" C="Red" />
+      <Point X="91.065" Y="58.067" Z="-" T="-" C="Red" />
+      <Point X="62.927" Y="60.625" Z="-" T="-" C="Red" />
+      <Point X="47.323" Y="62.927" Z="-" T="-" C="Red" />
+      <Point X="36.068" Y="62.927" Z="-" T="-" C="Red" />
+      <Point X="21.999" Y="76.74" Z="-" T="-" C="Red" />
+      <Point X="37.091" Y="49.114" Z="-" T="-" C="Red" />
+      <Point X="37.347" Y="35.3" Z="-" T="-" C="Red" />
+      <Point X="37.091" Y="24.813" Z="-" T="-" C="Red" />
+      <Point X="56.788" Y="23.534" Z="-" T="-" C="Red" />
+      <Point X="56.788" Y="34.021" Z="-" T="-" C="Red" />
+      <Point X="57.043" Y="46.044" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Soldier 01</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="55.253" Y="16.883" Z="-" T="-" C="Red" />
+      <Point X="55.253" Y="25.068" Z="-" T="-" C="Red" />
+      <Point X="27.882" Y="29.417" Z="-" T="-" C="Red" />
+      <Point X="42" Y="41" Z="-" T="-" C="Red" />
+      <Point X="58.834" Y="57" Z="-" T="-" C="Red" />
+      <Point X="24.813" Y="65" Z="-" T="-" C="Red" />
+      <Point X="59" Y="90.042" Z="-" T="-" C="Red" />
+      <Point X="59" Y="72.647" Z="-" T="-" C="Red" />
+      <Point X="90" Y="61" Z="-" T="-" C="Red" />
+      <Point X="66.764" Y="40.672" Z="-" T="-" C="Red" />
+      <Point X="74.949" Y="27.882" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>General 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="35.3" Y="20.208" Z="-" T="-" C="Red" />
+      <Point X="25.836" Y="37.347" Z="-" T="-" C="Red" />
+      <Point X="27.882" Y="49.625" Z="-" T="-" C="Red" />
+      <Point X="28.394" Y="71.88" Z="-" T="-" C="Red" />
+      <Point X="43.998" Y="72.391" Z="-" T="-" C="Red" />
+      <Point X="45.021" Y="60.88" Z="-" T="-" C="Red" />
+      <Point X="44.253" Y="45.532" Z="-" T="-" C="Red" />
+      <Point X="45.788" Y="34.789" Z="-" T="-" C="Red" />
+      <Point X="75.461" Y="24.301" Z="-" T="-" C="Red" />
+      <Point X="74.694" Y="44.509" Z="-" T="-" C="Red" />
+      <Point X="60.369" Y="47.323" Z="-" T="-" C="Red" />
+      <Point X="59.857" Y="63.438" Z="-" T="-" C="Red" />
+      <Point X="73.67" Y="90.553" Z="-" T="-" C="Red" />
+      <Point X="74.949" Y="62.159" Z="-" T="-" C="Red" />
+      <Point X="90.553" Y="65.741" Z="-" T="-" C="Red" />
+      <Point X="95.669" Y="43.998" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Advisor 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="34.789" Y="29.161" Z="-" T="-" C="Red" />
+      <Point X="25.324" Y="43.486" Z="-" T="-" C="Red" />
+      <Point X="27.882" Y="61.648" Z="-" T="-" C="Red" />
+      <Point X="29.161" Y="81.089" Z="-" T="-" C="Red" />
+      <Point X="66.252" Y="26.603" Z="-" T="-" C="Red" />
+      <Point X="65.996" Y="52.183" Z="-" T="-" C="Red" />
+      <Point X="89.018" Y="49.625" Z="-" T="-" C="Red" />
+      <Point X="84.158" Y="75.461" Z="-" T="-" C="Red" />
+      <Point X="67.275" Y="73.926" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Chariot 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="33.51" Y="25.836" Z="-" T="-" C="Red" />
+      <Point X="27.626" Y="41.184" Z="-" T="-" C="Red" />
+      <Point X="32.742" Y="60.88" Z="-" T="-" C="Red" />
+      <Point X="34.277" Y="77.763" Z="-" T="-" C="Red" />
+      <Point X="65" Y="89" Z="-" T="-" C="Red" />
+      <Point X="63.438" Y="71.88" Z="-" T="-" C="Red" />
+      <Point X="89.274" Y="66.764" Z="-" T="-" C="Red" />
+      <Point X="81.344" Y="54.741" Z="-" T="-" C="Red" />
+      <Point X="83.135" Y="36.324" Z="-" T="-" C="Red" />
+      <Point X="62.927" Y="47.067" Z="-" T="-" C="Red" />
+      <Point X="63.438" Y="59.857" Z="-" T="-" C="Red" />
+      <Point X="47.835" Y="59.857" Z="-" T="-" C="Red" />
+      <Point X="45.021" Y="42.719" Z="-" T="-" C="Red" />
+      <Point X="61.904" Y="36.579" Z="-" T="-" C="Red" />
+      <Point X="61.136" Y="25.068" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Cannon 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="36.324" Y="21.743" Z="-" T="-" C="Red" />
+      <Point X="36.579" Y="35.045" Z="-" T="-" C="Red" />
+      <Point X="21.743" Y="42.463" Z="-" T="-" C="Red" />
+      <Point X="33.51" Y="49.114" Z="-" T="-" C="Red" />
+      <Point X="30.184" Y="64.462" Z="-" T="-" C="Red" />
+      <Point X="42.463" Y="72.903" Z="-" T="-" C="Red" />
+      <Point X="56.532" Y="85.437" Z="-" T="-" C="Red" />
+      <Point X="76.228" Y="87.995" Z="-" T="-" C="Red" />
+      <Point X="88.507" Y="82.5" Z="-" T="-" C="Red" />
+      <Point X="70.857" Y="66.5" Z="-" T="-" C="Red" />
+      <Point X="83.647" Y="36.835" Z="-" T="-" C="Red" />
+      <Point X="61.392" Y="18.929" Z="-" T="-" C="Red" />
+      <Point X="54.741" Y="31.975" Z="-" T="-" C="Red" />
+      <Point X="47.835" Y="44.765" Z="-" T="-" C="Red" />
+      <Point X="49.369" Y="61.136" Z="-" T="-" C="Red" />
+      <Point X="63.183" Y="47.579" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Horse 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="45.021" Y="27.371" Z="-" T="-" C="Red" />
+      <Point X="35.045" Y="40.928" Z="-" T="-" C="Red" />
+      <Point X="31.719" Y="58.834" Z="-" T="-" C="Red" />
+      <Point X="28.905" Y="80.833" Z="-" T="-" C="Red" />
+      <Point X="74.438" Y="93.111" Z="-" T="-" C="Red" />
+      <Point X="86.972" Y="82.368" Z="-" T="-" C="Red" />
+      <Point X="94.134" Y="67.531" Z="-" T="-" C="Red" />
+      <Point X="72.391" Y="50.648" Z="-" T="-" C="Red" />
+      <Point X="73.926" Y="37.347" Z="-" T="-" C="Red" />
+      <Point X="74.182" Y="29.417" Z="-" T="-" C="Red" />
+      <Point X="57.043" Y="36.068" Z="-" T="-" C="Red" />
+      <Point X="56.02" Y="49.625" Z="-" T="-" C="Red" />
+      <Point X="54.997" Y="59.601" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Elephant 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="90.297" Y="42.207" Z="-" T="-" C="Red" />
+      <Point X="89.018" Y="61.648" Z="-" T="-" C="Red" />
+      <Point X="86.205" Y="84.158" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+  <Item>
+    <Name>Soldier 02</Name>
+    <Color>Red</Color>
+    <Points>
+      <Point X="60.113" Y="19.697" Z="-" T="-" C="Red" />
+      <Point X="41.184" Y="35.812" Z="-" T="-" C="Red" />
+      <Point X="43.23" Y="49.369" Z="-" T="-" C="Red" />
+      <Point X="18.673" Y="65.229" Z="-" T="-" C="Red" />
+      <Point X="45" Y="61.648" Z="-" T="-" C="Red" />
+      <Point X="44.509" Y="71.88" Z="-" T="-" C="Red" />
+      <Point X="79.042" Y="79.81" Z="-" T="-" C="Red" />
+      <Point X="93.879" Y="59.857" Z="-" T="-" C="Red" />
+      <Point X="68.299" Y="58.067" Z="-" T="-" C="Red" />
+      <Point X="65" Y="42" Z="-" T="-" C="Red" />
+      <Point X="72.903" Y="38.626" Z="-" T="-" C="Red" />
+    </Points>
+    <PixelsPosition />
+  </Item>
+</Field>
