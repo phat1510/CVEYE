@@ -48,9 +48,11 @@ namespace CVEYEV1
 
         #region User32.dll
         [DllImport("USER32.DLL")]
+
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("USER32.DLL", EntryPoint = "FindWindow", SetLastError = true)]
+
         public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
 
         [DllImport("USER32.DLL")]
@@ -1939,7 +1941,7 @@ namespace CVEYEV1
                 scriptObject.Code("G90 G55 G01 X550 Y0 F10000");
             }
         }
-
+                
         private void TurnPiston_Click(object sender, EventArgs e)
         {
             GetMach3Instance();
@@ -1947,19 +1949,19 @@ namespace CVEYEV1
             if (scriptObject != null)
             {
                 short channel = (short)(GetValveNum(item_color.Text) + 6);
-                if (TurnPiston.Text == "Turn on Piston")
+                if (TurnPiston.Text == "Hạ piston")
                 {
 
                     scriptObject.ActivateSignal(channel);
                     scriptObject.ActivateSignal(12);
-                    TurnPiston.Text = "Turn off Piston";
+                    TurnPiston.Text = "Nâng piston";
                 }
                 else
                 {
                     scriptObject.DeActivateSignal(12);
                     scriptObject.DeActivateSignal(channel);
                     Thread.Sleep(10);
-                    TurnPiston.Text = "Turn on Piston";
+                    TurnPiston.Text = "Hạ piston";
                 }
             }
         }
@@ -2082,11 +2084,11 @@ namespace CVEYEV1
 
         private void CVEye_Shown(object sender, EventArgs e)
         {
-            //    GetMach3Instance();
+            GetMach3Instance();
 
-            //    // Start Mach3
-            //    if (mach3 == null)
-            //        Init_Mach3();
+            // Start Mach3
+            if (mach3 == null)
+                Init_Mach3();
         }
 
         private void CVEye_Closing(object sender, FormClosingEventArgs e)
