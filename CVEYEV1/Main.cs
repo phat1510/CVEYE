@@ -1907,37 +1907,47 @@ namespace CVEYEV1
 
         private void RefAllHome_Click(object sender, EventArgs e)
         {
-            // Turn off reset flag
-            reset_speed = false;
-
-            xZero = false;
-            yZero = false;
-            zZero = false;
-
-            GetMach3Instance();
-
-            if (scriptObject != null)
+            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Thiết lập gốc máy", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialog == DialogResult.Yes)
             {
-                // Set machine zero (lowspeed)
-                scriptObject.Code("M90");
+                // Turn off reset flag
+                reset_speed = false;
+
+                xZero = false;
+                yZero = false;
+                zZero = false;
+
+                GetMach3Instance();
+
+                if (scriptObject != null)
+                {
+                    // Set machine zero (lowspeed)
+                    scriptObject.Code("M90");
+                }
             }
+            else return;
         }
 
         private void GotoHome_Click(object sender, EventArgs e)
         {
-            GetMach3Instance();
+            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Đến vị trí làm việc", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (scriptObject != null)
+            if (dialog == DialogResult.Yes)
             {
-                if(machinecoord)
-                {
-                    scriptObject.DoOEMButton(107);
-                    machinecoord = false;
-                }
-                scriptObject.Code("M93");
-                reset_speed = true;
-            }
+                GetMach3Instance();
 
+                if (scriptObject != null)
+                {
+                    if (machinecoord)
+                    {
+                        scriptObject.DoOEMButton(107);
+                        machinecoord = false;
+                    }
+                    scriptObject.Code("M93");
+                    reset_speed = true;
+                }
+            }
+            else return;
         }
                 
         private void TestValve_Click(object sender, EventArgs e)
@@ -1950,14 +1960,20 @@ namespace CVEYEV1
 
         private void ChangingPosition_Click(object sender, EventArgs e)
         {
-            GetMach3Instance();
+            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Đến vị trí bảo dưỡng", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (scriptObject != null)
+            if (dialog == DialogResult.Yes)
             {
-                if (!reset_speed)
-                    ResetSpeed();
-                scriptObject.Code("G90 G55 G01 X550 Y0 F10000");
+                GetMach3Instance();
+
+                if (scriptObject != null)
+                {
+                    if (!reset_speed)
+                        ResetSpeed();
+                    scriptObject.Code("G90 G55 G01 X550 Y0 F10000");
+                }
             }
+            else return;
         }
                 
         private void TurnPiston_Click(object sender, EventArgs e)
@@ -1986,24 +2002,30 @@ namespace CVEYEV1
 
         private void Run_Click(object sender, EventArgs e)
         {
-            if (detected)
+            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Bắt đầu quá trình sơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialog == DialogResult.Yes)
             {
-                GetMach3Instance();
-
-                if (scriptObject != null)
+                if (detected)
                 {
-                    // Update working status
-                    painting = true;
-                    detected = false;
-                    status_label.Text = "Painting";
-                    status_label.Refresh();
+                    GetMach3Instance();
 
-                    // Disable some button
-                    EnableButton(false);
+                    if (scriptObject != null)
+                    {
+                        // Update working status
+                        painting = true;
+                        detected = false;
+                        status_label.Text = "Painting";
+                        status_label.Refresh();
 
-                    // Run painting macro
-                    scriptObject.Code("M999");
+                        // Disable some button
+                        EnableButton(false);
+
+                        // Run painting macro
+                        scriptObject.Code("M999");
+                    }
                 }
+                else return;
             }
             else return;
         }
@@ -2111,17 +2133,24 @@ namespace CVEYEV1
 
         private void CVEye_Closing(object sender, FormClosingEventArgs e)
         {
-            GetMach3Instance();
+            DialogResult dialog = MessageBox.Show("Bạn muốn thoát phần mềm?", "CVEye", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (scriptObject != null)
-                scriptObject.Code("M94");
-            Thread.Sleep(100);                       
+            if (dialog == DialogResult.No)
+                e.Cancel = true;
+            else
+            {
+                GetMach3Instance();
 
-            // Close Mach3
-            if (mach3 != null)
-                mach3.ShutDown();
+                if (scriptObject != null)
+                    scriptObject.Code("M94");
+                Thread.Sleep(100);
 
-            WriteSystemData();
+                // Close Mach3
+                if (mach3 != null)
+                    mach3.ShutDown();
+
+                WriteSystemData();
+            }
         }
 
         private void ColorChanged(object sender, EventArgs e)

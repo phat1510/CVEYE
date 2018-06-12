@@ -545,10 +545,11 @@
             // data_mor
             // 
             this.data_mor.FormattingEnabled = true;
-            this.data_mor.Location = new System.Drawing.Point(396, 614);
+            this.data_mor.Location = new System.Drawing.Point(396, 627);
             this.data_mor.Name = "data_mor";
-            this.data_mor.Size = new System.Drawing.Size(496, 82);
+            this.data_mor.Size = new System.Drawing.Size(496, 69);
             this.data_mor.TabIndex = 73;
+            this.data_mor.Visible = false;
             // 
             // status_label
             // 
