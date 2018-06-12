@@ -119,10 +119,13 @@ namespace CVEYEV1
         #endregion
 
         #region IO
-        //FileStorage fs;
-        public static string para_path = "Parameters.xml";
-        public static XDocument SysData;
-        public static TextWriter gcode = new StreamWriter(@"D:\Program Files\Mach3\macros\Mach3Mill\M999.m1s");
+        private string mainDirectory;
+        private string mach3Directory;
+        private string macroDirectory;
+
+        public static XDocument SysData;        
+        public static TextWriter gcode;
+
         private bool first_item = true;
         #endregion
 
@@ -156,35 +159,50 @@ namespace CVEYEV1
         public CVEye()
         {
             InitializeComponent();
-
+            
             Init_XML();
+
+            Init_Directory();
 
             Init_Camera();
 
             Init_Subform();
         }
 
+        private void Init_Directory()
+        {
+            // Get program directory
+            mainDirectory = Directory.GetCurrentDirectory();           
+
+            // Link to directory node
+            XElement directory = SysData.Element("System").Element("Directory");
+            mach3Directory = directory.Element("Mach3").Attribute("directory").Value;
+            macroDirectory = Path.Combine(mach3Directory, @"macros\Mach3Mill");
+
+            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
+
+            data_mor.Items.Add(mainDirectory);
+            data_mor.Items.Add(mach3Directory);
+            data_mor.Items.Add(macroDirectory);
+        }
+
         private void Init_Mach3()
         {
             try
             {
-                // Link to directory node
-                XElement directory = SysData.Element("System").Element("Directory");
-
                 // Set Mach3 directory
-                //Directory.SetCurrentDirectory("@"+directory.Element("Mach3").Attribute("directory").Value);
-                Directory.SetCurrentDirectory(directory.Element("Mach3").Attribute("directory").Value);
+                Directory.SetCurrentDirectory(mach3Directory);
 
                 // Start Mach3
                 Process.Start("Mach3.lnk");
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
 
                 // Send CVEye window to front
                 IntPtr hwnd = FindWindowByCaption(IntPtr.Zero, "CVEye");
                 SetForegroundWindow(hwnd);
 
                 // Reset CVEye directory
-                Directory.SetCurrentDirectory(directory.Element("CVEye").Attribute("directory").Value);
+                Directory.SetCurrentDirectory(mainDirectory);
 
                 GetMach3Instance();
 
@@ -434,8 +452,8 @@ namespace CVEYEV1
 
         private void Init_Subform()
         {
-            //Con_Pattern_Matching = new ConfigImageProcessing();
-            //Con_Painting_Point = new ConfigPaintingPoints();
+            Con_Pattern_Matching = new ConfigImageProcessing();
+            Con_Painting_Point = new ConfigPaintingPoints();
 
             ledX.BackColor = Color.Gray;
             ledY.BackColor = Color.Gray;
@@ -690,7 +708,7 @@ namespace CVEYEV1
                 long rotation_time = watch.ElapsedMilliseconds;
 
                 // Load database
-                ConfigPaintingPoints.dispensing_data = XDocument.Load(ConfigPaintingPoints.data_path);
+                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");
                 SysData = XDocument.Load("_system.xml");
                 XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
                 XElement Parameters = SysData.Element("System").Element("PaintingConditionWindow").Element("Parameters");
@@ -1862,7 +1880,7 @@ namespace CVEYEV1
             status_label.Refresh();
 
             gcode.Close();
-            gcode = new StreamWriter(@"D:\Program Files\Mach3\macros\Mach3Mill\M999.m1s");
+            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
 
             Detect_Pattern();
 
@@ -2094,6 +2112,10 @@ namespace CVEYEV1
         private void CVEye_Closing(object sender, FormClosingEventArgs e)
         {
             GetMach3Instance();
+
+            if (scriptObject != null)
+                scriptObject.Code("M94");
+            Thread.Sleep(100);                       
 
             // Close Mach3
             if (mach3 != null)

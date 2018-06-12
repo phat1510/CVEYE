@@ -59,6 +59,9 @@
             this.item_color = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.painting_times = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
             this.run = new System.Windows.Forms.Button();
@@ -98,9 +101,6 @@
             this.ReplacePosition = new System.Windows.Forms.Button();
             this.RefAllHome = new System.Windows.Forms.Button();
             this.TestValve = new System.Windows.Forms.Button();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.painting_times = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
             this.machStatus = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
@@ -108,6 +108,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).BeginInit();
@@ -117,7 +118,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // button2
@@ -431,6 +431,50 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
             // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.03209F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.96791F));
+            this.tableLayoutPanel4.Controls.Add(this.painting_times, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.label17, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.elapsed_time, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label9, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.num_of_items, 1, 0);
+            this.tableLayoutPanel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(6, 367);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(212, 90);
+            this.tableLayoutPanel4.TabIndex = 78;
+            // 
+            // painting_times
+            // 
+            this.painting_times.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.painting_times.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.painting_times.Location = new System.Drawing.Point(138, 64);
+            this.painting_times.Name = "painting_times";
+            this.painting_times.ReadOnly = true;
+            this.painting_times.Size = new System.Drawing.Size(66, 22);
+            this.painting_times.TabIndex = 72;
+            // 
+            // label17
+            // 
+            this.label17.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(3, 67);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(92, 16);
+            this.label17.TabIndex = 71;
+            this.label17.Text = "Thời gian sơn:";
+            // 
             // Outside
             // 
             this.Outside.AutoSize = true;
@@ -501,11 +545,10 @@
             // data_mor
             // 
             this.data_mor.FormattingEnabled = true;
-            this.data_mor.Location = new System.Drawing.Point(680, 614);
+            this.data_mor.Location = new System.Drawing.Point(396, 614);
             this.data_mor.Name = "data_mor";
-            this.data_mor.Size = new System.Drawing.Size(212, 82);
+            this.data_mor.Size = new System.Drawing.Size(496, 82);
             this.data_mor.TabIndex = 73;
-            this.data_mor.Visible = false;
             // 
             // status_label
             // 
@@ -660,7 +703,7 @@
             // 
             this.houge_param1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.houge_param1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.houge_param1.Location = new System.Drawing.Point(78, 4);
+            this.houge_param1.Location = new System.Drawing.Point(77, 4);
             this.houge_param1.Maximum = new decimal(new int[] {
             500,
             0,
@@ -916,50 +959,6 @@
             this.TestValve.UseVisualStyleBackColor = false;
             this.TestValve.Click += new System.EventHandler(this.TestValve_Click);
             // 
-            // tableLayoutPanel4
-            // 
-            this.tableLayoutPanel4.ColumnCount = 2;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.03209F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.96791F));
-            this.tableLayoutPanel4.Controls.Add(this.painting_times, 1, 2);
-            this.tableLayoutPanel4.Controls.Add(this.label17, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.elapsed_time, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.label9, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.num_of_items, 1, 0);
-            this.tableLayoutPanel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(6, 367);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 3;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(212, 90);
-            this.tableLayoutPanel4.TabIndex = 78;
-            // 
-            // painting_times
-            // 
-            this.painting_times.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.painting_times.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.painting_times.Location = new System.Drawing.Point(138, 64);
-            this.painting_times.Name = "painting_times";
-            this.painting_times.ReadOnly = true;
-            this.painting_times.Size = new System.Drawing.Size(66, 22);
-            this.painting_times.TabIndex = 72;
-            // 
-            // label17
-            // 
-            this.label17.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(3, 67);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(92, 16);
-            this.label17.TabIndex = 71;
-            this.label17.Text = "Thời gian sơn:";
-            // 
             // timerDROupdate
             // 
             this.timerDROupdate.Tick += new System.EventHandler(this.TimerDROupdate_Tick);
@@ -1005,6 +1004,8 @@
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1018,8 +1019,6 @@
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel4.ResumeLayout(false);
-            this.tableLayoutPanel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
