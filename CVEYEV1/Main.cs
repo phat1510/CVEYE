@@ -1,8 +1,8 @@
 ﻿/*
-Project: Autonomous Xiangqi Panting Maching
-Program name:
+Project title: Autonomous Vision Dispensing Machine
 Author: Phat Do
-Date created: 
+Starting time:
+Ending time:
 Decription:
 */
 
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
+//using System.Windows.Forms.DataVisualization.Charting;
 using System.Runtime.InteropServices;
 
 // EmguCV library
@@ -28,6 +28,7 @@ using Emgu.CV.Util;
 using Emgu.CV.VideoSurveillance;
 using Emgu.CV.Features2D;
 
+// Mach library
 using Mach4;
 
 namespace CVEYEV1
@@ -131,9 +132,9 @@ namespace CVEYEV1
 
         #region Miscellaneous
 
-        const float in_circle_radius = (float)11.9;
+        const float in_circle_radius = (float)11.9; //mm
 
-        const double x_pixel_offset = -43;
+        const double x_pixel_offset = -43; // pixels
         const double y_pixel_offset = 9;
 
         List<double> angleListSort = new List<double>();
@@ -145,7 +146,7 @@ namespace CVEYEV1
         public static bool first_start03 = true;
         public static bool first_start04 = true;
 
-        private bool reset_speed = true;
+        private bool lowSpeed = true;
         
         private bool xZero = false;
         private bool yZero = false;
@@ -167,6 +168,8 @@ namespace CVEYEV1
             Init_Camera();
 
             Init_Subform();
+
+            Init_Graphic();
         }
 
         private void Init_Directory()
@@ -179,49 +182,9 @@ namespace CVEYEV1
             mach3Directory = directory.Element("Mach3").Attribute("directory").Value;
             macroDirectory = Path.Combine(mach3Directory, @"macros\Mach3Mill");
 
+            // 
             gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
-
-            data_mor.Items.Add(mainDirectory);
-            data_mor.Items.Add(mach3Directory);
-            data_mor.Items.Add(macroDirectory);
         }
-
-        private void Init_Mach3()
-        {
-            try
-            {
-                // Set Mach3 directory
-                Directory.SetCurrentDirectory(mach3Directory);
-
-                // Start Mach3
-                Process.Start("Mach3.lnk");
-                Thread.Sleep(1500);
-
-                // Send CVEye window to front
-                IntPtr hwnd = FindWindowByCaption(IntPtr.Zero, "CVEye");
-                SetForegroundWindow(hwnd);
-
-                // Reset CVEye directory
-                Directory.SetCurrentDirectory(mainDirectory);
-
-                GetMach3Instance();
-
-                if (scriptObject != null)
-                {
-                    scriptObject.DoOEMButton(1021); // Reset OEM
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
-            // Reset mach3 for the first start
-            GetMach3Instance();
-            if (scriptObject != null)
-                scriptObject.DoOEMButton(256);
-        }
-
         private void GetMach3Instance()
         {
             try
@@ -235,7 +198,41 @@ namespace CVEYEV1
                 scriptObject = null;
             }
         }
-   
+
+        private void Init_Mach3()
+        {
+            try
+            {
+                // Link to Mach3 directory
+                Directory.SetCurrentDirectory(mach3Directory);
+
+                // Start Mach3
+                Process.Start("Mach3.lnk");
+                Thread.Sleep(1500);
+
+                // Send CVEye window to front
+                IntPtr hwnd = FindWindowByCaption(IntPtr.Zero, "CVEye");
+                SetForegroundWindow(hwnd);
+
+                // Link to CVEye directory
+                Directory.SetCurrentDirectory(mainDirectory);
+
+                GetMach3Instance();
+                if (scriptObject != null)
+                {
+                    // Reset OEM
+                    scriptObject.DoOEMButton(1021);
+
+                    // Set to low speed mode
+                    LowSpeedMode();
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
         private void Mach3RunMacros(string macroName)
         {
             GetMach3Instance();
@@ -313,8 +310,7 @@ namespace CVEYEV1
                             zZero = true;
                         }
                     }
-
-                    // painting completed condition and enable some buttons
+                    // painting completed condition and enable some buttons !!!!!!!!!!!!!!
                 }
             }
             catch
@@ -323,21 +319,27 @@ namespace CVEYEV1
             }
         }
 
-        private void ResetSpeed()
+        private void HighSpeedMode()
         {
+            // x, y ~20000mm/min
+            // z ~15000mm/min
             scriptObject.Code("M91");
-            reset_speed = true;
+            lowSpeed = false;
+        }
+
+        private void LowSpeedMode()
+        {
+            scriptObject.Code("M94");
+            lowSpeed = true;
         }
 
         private void Init_Camera()
         {
-
             if (_capture == null)
             {
                 //Try to create the capture
                 try
                 {
-                    // 
                     _capture = new VideoCapture(1);
                     _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height); // pixels
                     _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width); // pixels
@@ -352,7 +354,6 @@ namespace CVEYEV1
             if (_capture != null)
             {
                 // Add handler for getting camera frame
-                //_capture.ImageGrabbed += Frame_Calibration;
                 Application.Idle += new EventHandler(Frame_Calibration);
                 _capture.Start();
             }
@@ -396,8 +397,6 @@ namespace CVEYEV1
             tmp_item_name.Text = SysData.Element("System").Element("MainWindow").Element("Template").Attribute("WorkingItem").Value;
             item_color.Text = SysData.Element("System").Element("MainWindow").Element("Template").Attribute("WorkingColor").Value;
             valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
-
-            //reset_speed = SysData.Element("System").Element("MainWindow").Element("ResetFlag").Value;
 
             // View the previous working template
             ViewTemplate(tmp_item_name.Text);
@@ -453,8 +452,11 @@ namespace CVEYEV1
         private void Init_Subform()
         {
             Con_Pattern_Matching = new ConfigImageProcessing();
-            Con_Painting_Point = new ConfigPaintingPoints();
+            //Con_Painting_Point = new ConfigPaintingPoints();
+        }
 
+        private void Init_Graphic()
+        {
             ledX.BackColor = Color.Gray;
             ledY.BackColor = Color.Gray;
             ledZ.BackColor = Color.Gray;
@@ -469,7 +471,6 @@ namespace CVEYEV1
                 Mat frame_gray = new Mat();
 
                 // Capture current frame and convert to grayscale
-                //_capture.Retrieve(frame_raw);
                 _capture.Retrieve(frame_raw);
                 CvInvoke.CvtColor(frame_raw, frame_gray, ColorConversion.Bgr2Gray);
                 img_capture = frame_raw.ToImage<Bgr, byte>();
@@ -1897,7 +1898,8 @@ namespace CVEYEV1
 
             if (scriptObject != null)
             {
-                scriptObject.DoOEMButton(1021); // Reset OEM
+                // Reset OEM
+                scriptObject.DoOEMButton(1021); 
             }
             else MessageBox.Show("Please start Mach3.");
 
@@ -1907,22 +1909,25 @@ namespace CVEYEV1
 
         private void RefAllHome_Click(object sender, EventArgs e)
         {
-            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Thiết lập gốc máy", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialog = MessageBox.Show("Bạn muốn thiết lập gốc máy?", "CVEye",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
             if (dialog == DialogResult.Yes)
             {
-                // Turn off reset flag
-                reset_speed = false;
-
+                // Reset zero flags
                 xZero = false;
                 yZero = false;
-                zZero = false;
-
+                zZero = false;                              
+                
                 GetMach3Instance();
 
                 if (scriptObject != null)
                 {
-                    // Set machine zero (lowspeed)
+                    // Set machine zero
                     scriptObject.Code("M90");
+
+                    // Low speed mode
+                    lowSpeed = true;
                 }
             }
             else return;
@@ -1930,7 +1935,8 @@ namespace CVEYEV1
 
         private void GotoHome_Click(object sender, EventArgs e)
         {
-            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Đến vị trí làm việc", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialog = MessageBox.Show("Bạn muốn đến vị trí làm việc?", "CVEye",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (dialog == DialogResult.Yes)
             {
@@ -1943,24 +1949,20 @@ namespace CVEYEV1
                         scriptObject.DoOEMButton(107);
                         machinecoord = false;
                     }
+
                     scriptObject.Code("M93");
-                    reset_speed = true;
+
+                    // High speed mode
+                    lowSpeed = false;
                 }
             }
             else return;
         }
-                
-        private void TestValve_Click(object sender, EventArgs e)
-        {
-            GetMach3Instance();
-
-            if (scriptObject != null)
-                scriptObject.Code("M92");
-        }
 
         private void ChangingPosition_Click(object sender, EventArgs e)
         {
-            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Đến vị trí bảo dưỡng", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialog = MessageBox.Show("Bạn muốn đến vị trí bảo dưỡng?", "CVEye",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (dialog == DialogResult.Yes)
             {
@@ -1968,14 +1970,60 @@ namespace CVEYEV1
 
                 if (scriptObject != null)
                 {
-                    if (!reset_speed)
-                        ResetSpeed();
-                    scriptObject.Code("G90 G55 G01 X550 Y0 F10000");
+                    if (lowSpeed)
+                        HighSpeedMode();
+
+                    scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
                 }
             }
             else return;
         }
-                
+
+        private void Run_Click(object sender, EventArgs e)
+        {
+            DialogResult dialog = MessageBox.Show("Bạn muốn bắt đầu quá trình sơn?", "CVEye",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialog == DialogResult.Yes)
+            {
+                if (detected)
+                {
+                    GetMach3Instance();
+
+                    if (scriptObject != null)
+                    {
+                        // Update working status
+                        painting = true;
+                        detected = false;
+                        status_label.Text = "Đang sơn...";
+                        status_label.Refresh();
+
+                        // Disable some button
+                        EnableButton(false);
+
+                        // Run painting macro
+                        scriptObject.Code("M999");
+                    }
+                }
+                else
+                    MessageBox.Show("Chưa quét ảnh.", "CVEye");
+            }
+            else return;
+        }
+
+        private void TestValve_Click(object sender, EventArgs e)
+        {
+            GetMach3Instance();
+
+            if (scriptObject != null)
+            {
+                short channel = (short)(GetValveNum(item_color.Text) + 6);
+                scriptObject.ActivateSignal(channel);
+                scriptObject.Code("M92");
+                scriptObject.DeActivateSignal(channel);
+            }
+        }
+
         private void TurnPiston_Click(object sender, EventArgs e)
         {
             GetMach3Instance();
@@ -1985,7 +2033,6 @@ namespace CVEYEV1
                 short channel = (short)(GetValveNum(item_color.Text) + 6);
                 if (TurnPiston.Text == "Hạ piston")
                 {
-
                     scriptObject.ActivateSignal(channel);
                     scriptObject.ActivateSignal(12);
                     TurnPiston.Text = "Nâng piston";
@@ -1999,117 +2046,10 @@ namespace CVEYEV1
                 }
             }
         }
-
-        private void Run_Click(object sender, EventArgs e)
-        {
-            DialogResult dialog = MessageBox.Show("Bạn có chắc chắn?", "Bắt đầu quá trình sơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (dialog == DialogResult.Yes)
-            {
-                if (detected)
-                {
-                    GetMach3Instance();
-
-                    if (scriptObject != null)
-                    {
-                        // Update working status
-                        painting = true;
-                        detected = false;
-                        status_label.Text = "Painting";
-                        status_label.Refresh();
-
-                        // Disable some button
-                        EnableButton(false);
-
-                        // Run painting macro
-                        scriptObject.Code("M999");
-                    }
-                }
-                else return;
-            }
-            else return;
-        }
-
         #endregion
 
         #region Other events
-        private void ViewTemplate(string value)
-        {
-            switch (value)
-            {
-                case "General 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/gen01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/gen01.jpg", ImreadModes.Unchanged);
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/gen01.jpg").Bitmap;
-                    break;
-                case "Advisor 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/ad01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ad01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/ad01.jpg").Bitmap;
-                    break;
-                case "Elephant 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/ele01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ele01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/ele01.jpg").Bitmap;
-                    break;
-                case "Chariot 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/cha01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cha01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/cha01.jpg").Bitmap;
-                    break;
-                case "Cannon 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/can01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/can01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/can01.jpg").Bitmap;
-                    break;
-                case "Horse 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/hor01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/hor01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/hor01.jpg").Bitmap;
-                    break;
-                case "Soldier 01":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/01/sol01.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/sol01.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/01/sol01.jpg").Bitmap;
-                    break;
-                case "General 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/gen02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/gen02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/gen02.jpg").Bitmap;
-                    break;
-                case "Advisor 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/ad02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ad02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/ad02.jpg").Bitmap;
-                    break;
-                case "Elephant 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/ele02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ele02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/ele02.jpg").Bitmap;
-                    break;
-                case "Chariot 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/cha02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cha02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/cha02.jpg").Bitmap;
-                    break;
-                case "Cannon 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/can02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/can02.jpg", ImreadModes.Unchanged);
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/can02.jpg").Bitmap;
-                    break;
-                case "Horse 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/hor02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/hor02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/hor02.jpg").Bitmap;
-                    break;
-                case "Soldier 02":
-                    //tmp_raw = new Image<Bgr, byte>("pt_data_8bit/02/sol02.jpg");
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/sol02.jpg");
-                    Template.Image = new Image<Bgr, byte>("pattern_data/02/sol02.jpg").Bitmap;
-                    break;
-            }
-        }
-
+        
         private void Name_Changed(object sender, EventArgs e)
         {
             // Preview current template
@@ -2117,9 +2057,67 @@ namespace CVEYEV1
 
         }
 
-        private void CVEye_Load(object sender, EventArgs e)
+        private void ViewTemplate(string value)
         {
-            timerDROupdate.Enabled = true;
+            switch (value)
+            {
+                case "General 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/gen01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/gen01.jpg").Bitmap;
+                    break;
+                case "Advisor 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ad01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/ad01.jpg").Bitmap;
+                    break;
+                case "Elephant 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ele01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/ele01.jpg").Bitmap;
+                    break;
+                case "Chariot 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cha01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/cha01.jpg").Bitmap;
+                    break;
+                case "Cannon 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/can01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/can01.jpg").Bitmap;
+                    break;
+                case "Horse 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/hor01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/hor01.jpg").Bitmap;
+                    break;
+                case "Soldier 01":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/sol01.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/01/sol01.jpg").Bitmap;
+                    break;
+                case "General 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/gen02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/gen02.jpg").Bitmap;
+                    break;
+                case "Advisor 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ad02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/ad02.jpg").Bitmap;
+                    break;
+                case "Elephant 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ele02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/ele02.jpg").Bitmap;
+                    break;
+                case "Chariot 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cha02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/cha02.jpg").Bitmap;
+                    break;
+                case "Cannon 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/can02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/can02.jpg").Bitmap;
+                    break;
+                case "Horse 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/hor02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/hor02.jpg").Bitmap;
+                    break;
+                case "Soldier 02":
+                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/sol02.jpg");
+                    Template.Image = new Image<Bgr, byte>("pattern_data/02/sol02.jpg").Bitmap;
+                    break;
+            }
         }
 
         private void CVEye_Shown(object sender, EventArgs e)
@@ -2131,9 +2129,15 @@ namespace CVEYEV1
                 Init_Mach3();
         }
 
+        private void CVEye_Load(object sender, EventArgs e)
+        {
+            timerDROupdate.Enabled = true;
+        }
+        
         private void CVEye_Closing(object sender, FormClosingEventArgs e)
         {
-            DialogResult dialog = MessageBox.Show("Bạn muốn thoát phần mềm?", "CVEye", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialog = MessageBox.Show("Bạn muốn thoát phần mềm?", "CVEye", 
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (dialog == DialogResult.No)
                 e.Cancel = true;

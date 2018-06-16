@@ -79,9 +79,6 @@
             this.GotoHome = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.label11 = new System.Windows.Forms.Label();
-            this.houge_param1 = new System.Windows.Forms.NumericUpDown();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -114,8 +111,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledX)).BeginInit();
-            this.tableLayoutPanel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -578,7 +573,6 @@
             this.groupBox2.Controls.Add(this.GotoHome);
             this.groupBox2.Controls.Add(this.groupBox7);
             this.groupBox2.Controls.Add(this.groupBox6);
-            this.groupBox2.Controls.Add(this.tableLayoutPanel5);
             this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
@@ -655,7 +649,7 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Location = new System.Drawing.Point(9, 503);
+            this.groupBox7.Location = new System.Drawing.Point(9, 471);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(180, 2);
@@ -671,58 +665,10 @@
             this.groupBox6.TabIndex = 82;
             this.groupBox6.TabStop = false;
             // 
-            // tableLayoutPanel5
-            // 
-            this.tableLayoutPanel5.ColumnCount = 2;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.60465F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 56.39535F));
-            this.tableLayoutPanel5.Controls.Add(this.label11, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.houge_param1, 1, 0);
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(9, 421);
-            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 1;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(172, 30);
-            this.tableLayoutPanel5.TabIndex = 78;
-            // 
-            // label11
-            // 
-            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(3, 7);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(65, 16);
-            this.label11.TabIndex = 41;
-            this.label11.Text = "Lần phun:";
-            // 
-            // houge_param1
-            // 
-            this.houge_param1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.houge_param1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.houge_param1.Location = new System.Drawing.Point(77, 4);
-            this.houge_param1.Maximum = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-            this.houge_param1.Name = "houge_param1";
-            this.houge_param1.Size = new System.Drawing.Size(68, 22);
-            this.houge_param1.TabIndex = 42;
-            this.houge_param1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 513);
+            this.label16.Location = new System.Drawing.Point(6, 481);
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(102, 16);
@@ -782,7 +728,7 @@
             this.TurnPiston.BackColor = System.Drawing.Color.Gold;
             this.TurnPiston.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TurnPiston.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TurnPiston.Location = new System.Drawing.Point(9, 582);
+            this.TurnPiston.Location = new System.Drawing.Point(9, 550);
             this.TurnPiston.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.TurnPiston.Name = "TurnPiston";
             this.TurnPiston.Size = new System.Drawing.Size(176, 30);
@@ -925,7 +871,7 @@
             this.ReplacePosition.BackColor = System.Drawing.Color.Gold;
             this.ReplacePosition.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ReplacePosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ReplacePosition.Location = new System.Drawing.Point(9, 539);
+            this.ReplacePosition.Location = new System.Drawing.Point(9, 507);
             this.ReplacePosition.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.ReplacePosition.Name = "ReplacePosition";
             this.ReplacePosition.Size = new System.Drawing.Size(176, 30);
@@ -951,7 +897,7 @@
             this.TestValve.BackColor = System.Drawing.Color.Gold;
             this.TestValve.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TestValve.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TestValve.Location = new System.Drawing.Point(9, 460);
+            this.TestValve.Location = new System.Drawing.Point(9, 428);
             this.TestValve.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.TestValve.Name = "TestValve";
             this.TestValve.Size = new System.Drawing.Size(176, 30);
@@ -1013,9 +959,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledX)).EndInit();
-            this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -1074,9 +1017,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TextBox painting_times;
         private System.Windows.Forms.Timer timerDROupdate;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.Label label11;
-        public System.Windows.Forms.NumericUpDown houge_param1;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button GotoHome;
