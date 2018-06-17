@@ -23,18 +23,25 @@ namespace CVEYEV1
 
         private void OK_Click(object sender, EventArgs e)
         {
+            // Load XML file
             CVEye.SysData = XDocument.Load("_system.xml");
+
+            // Update new data
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").RemoveAll();
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(
-                new XElement("CannyThresh", cannyThresh.Value),
-                new XElement("CorrectionRange", correctionRange.Value),
-                new XElement("ErrConstraint", ErrConstraint.Value),
-                new XElement("HougeParam1", houge_param1.Value),
-                new XElement("HougeParam2", houge_param2.Value),
-                new XElement("MaxRa", max_ra.Value),
-                new XElement("MinRa", min_ra.Value),
-                new XElement("GaussianSigma", gaussian_sig.Value),
-                new XElement("Gblur", ((G_blur.CheckState == CheckState.Checked) ? 1 : 0)));
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("MachingCorrection",
+                new XAttribute("cannyThresh", cannyThresh.Value),
+                new XAttribute("correctionRange", correctionRange.Value),
+                new XAttribute("ErrConstraint", ErrConstraint.Value)));
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("HoughCirclesDetector",
+                new XAttribute("houge_param1", houge_param1.Value),
+                new XAttribute("houge_param2", houge_param2.Value),
+                new XAttribute("min_ra", min_ra.Value),
+                new XAttribute("max_ra", max_ra.Value)));
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("ImageFiltering",
+                new XAttribute("gaussian_sig", gaussian_sig.Value),
+                new XAttribute("G_blur", ((G_blur.CheckState == CheckState.Checked) ? 1 : 0))));
+            
+            // Save document
             CVEye.SysData.Save("_system.xml");
 
             Close();
@@ -44,27 +51,20 @@ namespace CVEYEV1
         {
             CVEye.SysData = XDocument.Load("_system.xml");
             XElement ImageProcessingWindow = CVEye.SysData.Element("System").Element("ImageProcessingWindow");
-            cannyThresh.Value = decimal.Parse(ImageProcessingWindow.Element("CannyThresh").Value);
-            correctionRange.Value = decimal.Parse(ImageProcessingWindow.Element("CorrectionRange").Value);
-            ErrConstraint.Value = decimal.Parse(ImageProcessingWindow.Element("ErrConstraint").Value);
-            houge_param1.Value = decimal.Parse(ImageProcessingWindow.Element("HougeParam1").Value);
-            houge_param2.Value = decimal.Parse(ImageProcessingWindow.Element("HougeParam2").Value);
-            max_ra.Value = decimal.Parse(ImageProcessingWindow.Element("MaxRa").Value);
-            min_ra.Value = decimal.Parse(ImageProcessingWindow.Element("MinRa").Value);
-            gaussian_sig.Value = decimal.Parse(ImageProcessingWindow.Element("GaussianSigma").Value);
-            G_blur.CheckState = (decimal.Parse(ImageProcessingWindow.Element("Gblur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
-
+            cannyThresh.Value       = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value);
+            correctionRange.Value   = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("correctionRange").Value);
+            ErrConstraint.Value     = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("ErrConstraint").Value);
+            houge_param1.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value);
+            houge_param2.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value);
+            min_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value);
+            max_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value);
+            gaussian_sig.Value      = decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value);
+            G_blur.CheckState       = (decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
         {
             Close();
-            CVEye.first_start02 = true;
-        }
-
-        private void _FromClosing(object sender, FormClosingEventArgs e)
-        {
-            CVEye.first_start02 = true;
         }
     }
 }

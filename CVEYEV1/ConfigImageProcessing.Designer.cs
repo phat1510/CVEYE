@@ -209,14 +209,14 @@
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71.55963F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.44037F));
-            this.tableLayoutPanel1.Controls.Add(this.min_ra, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.max_ra, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.label7, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.max_ra, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.houge_param2, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.houge_param1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.min_ra, 1, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 25);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
@@ -231,7 +231,7 @@
             // min_ra
             // 
             this.min_ra.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.min_ra.Location = new System.Drawing.Point(158, 93);
+            this.min_ra.Location = new System.Drawing.Point(158, 63);
             this.min_ra.Maximum = new decimal(new int[] {
             200,
             0,
@@ -249,7 +249,7 @@
             // max_ra
             // 
             this.max_ra.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.max_ra.Location = new System.Drawing.Point(158, 63);
+            this.max_ra.Location = new System.Drawing.Point(158, 93);
             this.max_ra.Maximum = new decimal(new int[] {
             200,
             0,
@@ -269,7 +269,7 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 97);
+            this.label2.Location = new System.Drawing.Point(3, 67);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(115, 16);
             this.label2.TabIndex = 66;
@@ -280,7 +280,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 67);
+            this.label1.Location = new System.Drawing.Point(3, 97);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 16);
             this.label1.TabIndex = 65;
@@ -433,7 +433,6 @@
             this.Name = "ConfigImageProcessing";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Image Processing Parameters";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this._FromClosing);
             ((System.ComponentModel.ISupportInitialize)(this.gaussian_sig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param2)).EndInit();

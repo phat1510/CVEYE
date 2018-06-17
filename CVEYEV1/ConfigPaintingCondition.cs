@@ -18,10 +18,8 @@ namespace CVEYEV1
             // Reload XML file
             CVEye.SysData = XDocument.Load("_system.xml");
 
-            //
+            // Update new data
             CVEye.SysData.Element("System").Element("PaintingConditionWindow").RemoveAll();
-
-            //
             CVEye.SysData.Element("System").Element("PaintingConditionWindow").Add(new XElement("Parameters",
                 new XAttribute("xySpeed", xySpeed.Value),
                 new XAttribute("zSpeed", zSpeed.Value),

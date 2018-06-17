@@ -37,7 +37,6 @@ namespace CVEYEV1
     {
         #region Subform
         private ConfigPaintingPoints Con_Painting_Point;
-        private ConfigImageProcessing Con_Image_Processing;
         #endregion
 
         #region Mach3
@@ -124,7 +123,6 @@ namespace CVEYEV1
         const decimal circle_deep_offset = -(decimal)0.2; //mm
 
         public static bool first_start01 = true;
-        public static bool first_start02 = true;
 
         private bool lowSpeed = true;
         
@@ -434,7 +432,6 @@ namespace CVEYEV1
 
         private void Init_Subform()
         {
-            Con_Image_Processing = new ConfigImageProcessing();
             Con_Painting_Point = new ConfigPaintingPoints();
         }
 
@@ -617,18 +614,21 @@ namespace CVEYEV1
         {
             try
             {
+                XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
 
                 img_raw = img_capture_undist.Mat;
                 Mat img_blur = new Mat();
                 Mat img_hist = new Mat();
 
-                if (Con_Image_Processing.G_blur.CheckState == CheckState.Checked)
+                if (byte.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1)
                 {
                     // Blurs an image using a Gaussian filter
                     Size ksize = new Size(9, 9);
                     double sigmaY = 0;
                     BorderType bordertype = BorderType.Reflect;
-                    CvInvoke.GaussianBlur(img_raw, img_blur, ksize, (double)Con_Image_Processing.gaussian_sig.Value, sigmaY, bordertype);
+                    CvInvoke.GaussianBlur(img_raw, img_blur, ksize, 
+                        double.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value), 
+                        sigmaY, bordertype);
 
                     // Convert the image to grayscale
                     CvInvoke.CvtColor(img_blur, img_gray, ColorConversion.Bgr2Gray);
@@ -683,12 +683,10 @@ namespace CVEYEV1
                 long rotation_time = watch.ElapsedMilliseconds;
 
                 // Load database
-                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");
-                SysData = XDocument.Load("_system.xml");
+                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");                
                 XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
                 XElement Parameters = SysData.Element("System").Element("PaintingConditionWindow").Element("Parameters");
-
-
+                
                 // Call current item
                 ConfigPaintingPoints.get_item = ConfigPaintingPoints.dispensing_data.Element("Field")
                     .Elements("Item")
@@ -738,7 +736,10 @@ namespace CVEYEV1
 
                 Mat mat_edge = new Mat();
                 img_gray.CopyTo(mat_edge);
-                CvInvoke.Canny(img_gray, mat_edge, (double)Con_Image_Processing.cannyThresh.Value - 25, (double)Con_Image_Processing.cannyThresh.Value + 25, 5, true);
+                //CvInvoke.Canny(img_gray, mat_edge, (double)Con_Image_Processing.cannyThresh.Value - 25, (double)Con_Image_Processing.cannyThresh.Value + 25, 5, true);
+                CvInvoke.Canny(img_gray, mat_edge,
+                    double.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value) - 25,
+                    double.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value) + 25, 5, true);
                 CvInvoke.BitwiseNot(mat_edge, mat_edge);
 
                 Image<Gray, byte> img_edge = mat_edge.ToImage<Gray, byte>().Copy();
@@ -748,9 +749,9 @@ namespace CVEYEV1
                 // Get processing time
                 data_mor.Items.Add("Edge detection:   " + (watch.ElapsedMilliseconds - rotation_time));
                 rotation_time = watch.ElapsedMilliseconds;
+
                 // Update progress bar
                 Progress.Value = 15;
-
 
                 // Circle Hough Transform
                 CircleF[] img_circles = CvInvoke.HoughCircles(
@@ -758,10 +759,10 @@ namespace CVEYEV1
                     HoughType.Gradient,
                     2,
                     100,
-                    int.Parse(ImageProcessingWindow.Element("HougeParam1").Value),
-                    int.Parse(ImageProcessingWindow.Element("HougeParam2").Value),
-                    int.Parse(ImageProcessingWindow.Element("MinRa").Value),
-                    int.Parse(ImageProcessingWindow.Element("MaxRa").Value));
+                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value),
+                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value),
+                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value),
+                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value));
 
                 // Display number of items
                 num_of_items.Text = img_circles.Length.ToString();
@@ -876,7 +877,7 @@ namespace CVEYEV1
                             int preError = 0;
 
                             // Correction loop
-                            int correctionRage = int.Parse(ImageProcessingWindow.Element("CorrectionRange").Value);
+                            int correctionRage = int.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("correctionRange").Value);
                             for (int p = 0; p < correctionRage; p++)
                             {
                                 for (int q = 0; q < correctionRage; q++)
@@ -909,8 +910,8 @@ namespace CVEYEV1
 
                                         // Calculate error
                                         error = Math.Abs(reference - feedback);
-                                        if (error > int.Parse(ImageProcessingWindow.Element("ErrConstraint").Value))
-                                            error = int.Parse(ImageProcessingWindow.Element("ErrConstraint").Value);
+                                        if (error > int.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("ErrConstraint").Value))
+                                            error = int.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("ErrConstraint").Value);
                                         error_sum += error;
                                     }
 
@@ -1736,9 +1737,7 @@ namespace CVEYEV1
 
         private void imageProcessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (first_start02)
-                Con_Image_Processing = new ConfigImageProcessing();
-            first_start02 = false;
+            ConfigImageProcessing Con_Image_Processing = new ConfigImageProcessing();
             Con_Image_Processing.ShowDialog();
         }
 
@@ -1840,16 +1839,22 @@ namespace CVEYEV1
         {
             first_item = true;
 
+            // View captured image
             pattern_field.Image = img_capture_undist.Bitmap;
             pattern_field.Refresh();
+            
+            // Create new mach3 macro
+            gcode.Close();
+            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
+
+            // Reload XML
+            SysData = XDocument.Load("_system.xml");
 
             // Update working status
             status_label.Text = "Detecting...";
             status_label.Refresh();
 
-            gcode.Close();
-            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
-
+            // Start detecting
             Detect_Pattern();
 
             // Update working status
