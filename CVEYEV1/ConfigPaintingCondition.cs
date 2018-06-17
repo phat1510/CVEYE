@@ -49,7 +49,7 @@ namespace CVEYEV1
         private void Cancel_Click(object sender, EventArgs e)
         {
             Close();
-            CVEye.first_start04 = true;
+            //CVEye.first_start04 = true;
         }
     }
 }

@@ -35,16 +35,14 @@ namespace CVEYEV1
 {
     public partial class CVEye : Form
     {
+        #region Subform
+        private ConfigPaintingPoints Con_Painting_Point;
+        private ConfigImageProcessing Con_Image_Processing;
+        #endregion
+
         #region Mach3
         private IMach4 mach3;
         private IMyScriptObject scriptObject;
-        #endregion
-
-        #region Sub form
-        ConfigPaintingPoints Con_Painting_Point;
-        ConfigImageProcessing Con_Pattern_Matching;
-        ConfigCameraCalibration Con_Camera_Calib;
-        ConfigPaintingCondition Con_Painting_Condition = new ConfigPaintingCondition();
         #endregion
 
         #region User32.dll
@@ -56,34 +54,27 @@ namespace CVEYEV1
 
         public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
 
-        [DllImport("USER32.DLL")]
-        public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        //[DllImport("USER32.DLL")]
+        //public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
         public const int SW_MAXIMIZE = 3;
         public const int SW_MINIMIZE = 6;
         #endregion
 
         #region Camera Calibration
         public static bool cameraOn = false;
-
-        private VideoCapture _capture;
-        const int screen_height = 1944;
-        const int screen_width = 2592;
-
-        #region Chessboard corners detection
-        const int pt_width = 50;
-        const int pt_height = 38;
-        private float square_size = 10f;
-
-        private Size pt_size = new Size(pt_width, pt_height);
-
-        VectorOfPointF corners = new VectorOfPointF();
-        private Bgr[] line_color_array = new Bgr[pt_width * pt_height];
-        static Mat[] frame_array_buffer = new Mat[30];
-        int frame_buffer_savepoint = 0;
-        private bool find_chessboard;
         public static bool start_calib = false;
-        #endregion
-
+        private bool find_chessboard;
+        private VideoCapture _capture;
+        private const int screen_height = 1944;
+        private const int screen_width = 2592;
+        private const int pt_width = 50;
+        private const int pt_height = 38;
+        private float square_size = 10f;
+        private Size pt_size = new Size(pt_width, pt_height);
+        private VectorOfPointF corners = new VectorOfPointF();
+        private Bgr[] line_color_array = new Bgr[pt_width * pt_height];
+        private static Mat[] frame_array_buffer = new Mat[30];
+        private int frame_buffer_savepoint = 0;        
         public enum Mode
         {
             Caluculating_Intrinsics,
@@ -106,27 +97,18 @@ namespace CVEYEV1
         public static Image<Bgr, byte> img_capture;
         public static Image<Bgr, byte> img_capture_undist;
         public static Image<Bgr, byte> img_draw;
-        //public static Image<Bgr, byte> tmp_raw;
         public Mat tmp_raw = new Mat();
-
         private Mat img_raw = new Mat();
         private Mat img_gray = new Mat();
         private Mat img_threshold = new Mat();
-
-        //private int pixel_dif_sum;
-        //private int get_min;
-        //private CircleF get_circle;
-        //private double get_angle;
         #endregion
 
         #region IO
         private string mainDirectory;
         private string mach3Directory;
         private string macroDirectory;
-
         public static XDocument SysData;        
         public static TextWriter gcode;
-
         private bool first_item = true;
         #endregion
 
@@ -143,8 +125,6 @@ namespace CVEYEV1
 
         public static bool first_start01 = true;
         public static bool first_start02 = true;
-        public static bool first_start03 = true;
-        public static bool first_start04 = true;
 
         private bool lowSpeed = true;
         
@@ -220,9 +200,12 @@ namespace CVEYEV1
                 GetMach3Instance();
                 if (scriptObject != null)
                 {
+                    // Machine coordinate toggle
+                    scriptObject.DoOEMButton(256);
+
                     // Reset OEM
                     scriptObject.DoOEMButton(1021);
-
+                    
                     // Set to low speed mode
                     LowSpeedMode();
                 }
@@ -451,8 +434,8 @@ namespace CVEYEV1
 
         private void Init_Subform()
         {
-            Con_Pattern_Matching = new ConfigImageProcessing();
-            //Con_Painting_Point = new ConfigPaintingPoints();
+            Con_Image_Processing = new ConfigImageProcessing();
+            Con_Painting_Point = new ConfigPaintingPoints();
         }
 
         private void Init_Graphic()
@@ -588,15 +571,6 @@ namespace CVEYEV1
         // Apply affine transformation for painting points
         public void Real_PointsWarpAffine(List<XElement> point_list, PointF rot_center, double rot_angle, Image<Bgr, byte> draw_image_bgr)
         {
-            // Load painting points
-            //Config_Painting_Point.dispensing_data = XDocument.Load(Config_Painting_Point.data_path);
-
-            // Call current item
-            //Config_Painting_Point.get_item = Config_Painting_Point.dispensing_data.Element("Field")
-            //    .Elements("Item")
-            //    .Where(x => x.Element("Name").Value == tmp_item_name.Text)
-            //    .Single();
-
             ConfigPaintingPoints.affine_painting_points = new PointF[50];
 
             // Invert rotation direction
@@ -648,13 +622,13 @@ namespace CVEYEV1
                 Mat img_blur = new Mat();
                 Mat img_hist = new Mat();
 
-                if (Con_Pattern_Matching.G_blur.CheckState == CheckState.Checked)
+                if (Con_Image_Processing.G_blur.CheckState == CheckState.Checked)
                 {
                     // Blurs an image using a Gaussian filter
                     Size ksize = new Size(9, 9);
                     double sigmaY = 0;
                     BorderType bordertype = BorderType.Reflect;
-                    CvInvoke.GaussianBlur(img_raw, img_blur, ksize, (double)Con_Pattern_Matching.gaussian_sig.Value, sigmaY, bordertype);
+                    CvInvoke.GaussianBlur(img_raw, img_blur, ksize, (double)Con_Image_Processing.gaussian_sig.Value, sigmaY, bordertype);
 
                     // Convert the image to grayscale
                     CvInvoke.CvtColor(img_blur, img_gray, ColorConversion.Bgr2Gray);
@@ -764,7 +738,7 @@ namespace CVEYEV1
 
                 Mat mat_edge = new Mat();
                 img_gray.CopyTo(mat_edge);
-                CvInvoke.Canny(img_gray, mat_edge, (double)Con_Pattern_Matching.cannyThresh.Value - 25, (double)Con_Pattern_Matching.cannyThresh.Value + 25, 5, true);
+                CvInvoke.Canny(img_gray, mat_edge, (double)Con_Image_Processing.cannyThresh.Value - 25, (double)Con_Image_Processing.cannyThresh.Value + 25, 5, true);
                 CvInvoke.BitwiseNot(mat_edge, mat_edge);
 
                 Image<Gray, byte> img_edge = mat_edge.ToImage<Gray, byte>().Copy();
@@ -1332,17 +1306,14 @@ namespace CVEYEV1
             return value;
         }
 
-        public static void PixelsCompensation(Image<Bgr, byte> sample, string mode)
+        public static void PixelsCompensation(Image<Bgr, byte> sample)
         {
             SysData = XDocument.Load("_system.xml");
             XElement section;
 
-            //
             VectorOfPointF corner_set = new VectorOfPointF();
             Mat sample_frame = new Mat();
-            Size sample_size;
-            sample_size = new Size(50, 38);
-
+            Size sample_size = new Size(50, 38);
 
             // Convert BGR to GRAY image
             CvInvoke.CvtColor(sample, sample_frame, ColorConversion.Bgr2Gray);
@@ -1766,24 +1737,20 @@ namespace CVEYEV1
         private void imageProcessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (first_start02)
-                Con_Pattern_Matching = new ConfigImageProcessing();
+                Con_Image_Processing = new ConfigImageProcessing();
             first_start02 = false;
-            Con_Pattern_Matching.ShowDialog();
+            Con_Image_Processing.ShowDialog();
         }
 
         private void cameraCalibrationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (first_start03)
-                Con_Camera_Calib = new ConfigCameraCalibration();
-            first_start03 = false;
+            ConfigCameraCalibration Con_Camera_Calib = new ConfigCameraCalibration();
             Con_Camera_Calib.ShowDialog();
         }
 
         private void paintingConditionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (first_start04)
-                Con_Painting_Condition = new ConfigPaintingCondition();
-            first_start04 = false;
+            ConfigPaintingCondition Con_Painting_Condition = new ConfigPaintingCondition();
             Con_Painting_Condition.ShowDialog();
         }
 

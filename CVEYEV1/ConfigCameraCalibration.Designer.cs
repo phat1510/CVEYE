@@ -125,7 +125,6 @@
             this.Name = "ConfigCameraCalibration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Camera Calibration";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this._FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.calib_image)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
