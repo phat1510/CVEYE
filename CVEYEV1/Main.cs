@@ -1971,7 +1971,7 @@ namespace CVEYEV1
                         status_label.Refresh();
 
                         // Disable some button
-                        EnableButton(false);
+                        //EnableButton(false);
 
                         // Run painting macro
                         scriptObject.Code("M999");
@@ -1981,6 +1981,25 @@ namespace CVEYEV1
                     MessageBox.Show("Chưa quét ảnh.", "CVEye");
             }
             else return;
+        }
+
+        private void lockCylinderClick(object sender, EventArgs e)
+        {
+            GetMach3Instance();
+
+            if (scriptObject != null)
+            {
+                if (lockCylinder.Text == "Khóa khay")
+                {
+                    scriptObject.ActivateSignal(17);
+                    lockCylinder.Text = "Mở khóa khay";
+                }
+                else
+                {
+                    scriptObject.DeActivateSignal(17);
+                    lockCylinder.Text = "Khóa khay";
+                }
+            }
         }
 
         private void TestValve_Click(object sender, EventArgs e)
@@ -2013,7 +2032,6 @@ namespace CVEYEV1
                 {
                     scriptObject.DeActivateSignal(12);
                     scriptObject.DeActivateSignal(channel);
-                    Thread.Sleep(10);
                     TurnPiston.Text = "Hạ piston";
                 }
             }

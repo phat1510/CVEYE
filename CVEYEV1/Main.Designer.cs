@@ -100,6 +100,7 @@
             this.TestValve = new System.Windows.Forms.Button();
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
             this.machStatus = new System.Windows.Forms.Label();
+            this.lockCylinder = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
@@ -421,7 +422,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(907, 108);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(230, 554);
+            this.groupBox1.Size = new System.Drawing.Size(230, 506);
             this.groupBox1.TabIndex = 65;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
@@ -919,11 +920,24 @@
             this.machStatus.Size = new System.Drawing.Size(0, 16);
             this.machStatus.TabIndex = 78;
             // 
+            // lockCylinder
+            // 
+            this.lockCylinder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lockCylinder.Location = new System.Drawing.Point(907, 627);
+            this.lockCylinder.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.lockCylinder.Name = "lockCylinder";
+            this.lockCylinder.Size = new System.Drawing.Size(230, 30);
+            this.lockCylinder.TabIndex = 81;
+            this.lockCylinder.Text = "Khóa khay";
+            this.lockCylinder.UseVisualStyleBackColor = true;
+            this.lockCylinder.Click += new System.EventHandler(this.lockCylinderClick);
+            // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
             this.Controls.Add(this.data_mor);
             this.Controls.Add(this.groupBox2);
@@ -1040,6 +1054,7 @@
         private System.Windows.Forms.PictureBox ledZ;
         private System.Windows.Forms.PictureBox ledY;
         private System.Windows.Forms.PictureBox ledX;
+        private System.Windows.Forms.Button lockCylinder;
     }
 }
 
