@@ -120,7 +120,7 @@ namespace CVEYEV1
 
         List<double> angleListSort = new List<double>();
 
-        const decimal circle_deep_offset = -(decimal)0.2; //mm
+        const decimal circle_deep_offset = -(decimal)0.4; //mm
 
         public static bool first_start01 = true;
 
@@ -129,10 +129,12 @@ namespace CVEYEV1
         private bool xZero = false;
         private bool yZero = false;
         private bool zZero = false;
+        private bool machineZero = false;
 
         private bool painting = false;
         private bool detected = false;
         private bool machinecoord = true;
+
         #endregion
 
         public CVEye()
@@ -186,7 +188,7 @@ namespace CVEYEV1
 
                 // Start Mach3
                 Process.Start("Mach3.lnk");
-                Thread.Sleep(1500);
+                Thread.Sleep(3000);
 
                 // Send CVEye window to front
                 IntPtr hwnd = FindWindowByCaption(IntPtr.Zero, "CVEye");
@@ -222,6 +224,7 @@ namespace CVEYEV1
                 scriptObject.Code(macroName);
         }
 
+        // 10 Hz Update DRO
         private void UpdateDRO()
         {
             try
@@ -238,65 +241,87 @@ namespace CVEYEV1
                     // Update blended velocity DRO
                     feedrateDRO.Text = scriptObject.GetOEMDRO(813).ToString("0");
 
-                    //// Collect homing conditions
-                    //xZero = (xDRO.Text == "0.000") ? true : false;
-                    //yZero = (yDRO.Text == "0.000") ? true : false;
-                    //zZero = (zDRO.Text == "0.000") ? true : false;
-
-                    //// Reset Motor rapid speed
-                    //if (xZero && yZero && zZero && !reset_speed)
-                    //{
-                    //    //// Reset speed and return working position
-                    //    //scriptObject.Code("M93");
-
-                    //    //xZero = false;
-                    //    //yZero = false;
-                    //    //zZero = false;
-
-                    //    //reset_speed = true;
-                    //}
-
-                    machStatus.Text = (scriptObject.IsActive(25) != 0) ? "Emergency Mode" : "Ready";
-                    machStatus.Refresh();
-
-                    if (!xZero)
+                    // Check E-stop toggling
+                    if (scriptObject.IsActive(25) != 0)
                     {
-                        ledX.BackColor = Color.Gray;
+                        machStatus.Text = "CHẾ ĐỘ KHẨN CẤP";
+                        machStatus.Refresh();
 
-                        if (scriptObject.IsActive(2) != 0)
-                        {
-                            ledX.BackColor = Color.GreenYellow;
-                            xZero = true;
-                        }
+                        EnableButton(true);
                     }
-
-                    if (!yZero)
+                    else
                     {
-                        ledY.BackColor = Color.Gray;
+                        machStatus.Text = "SẴN SÀNG";
+                        machStatus.Refresh();
+                    }                                       
 
-                        if (scriptObject.IsActive(5) != 0)
-                        {
-                            ledY.BackColor = Color.GreenYellow;
-                            yZero = true;
-                        }
-                    }
+                    // Check machine zero completed
+                    if (!machineZero)
+                        CheckMachineZero();
 
-                    if (!zZero)
-                    {
-                        ledZ.BackColor = Color.Gray;
-
-                        if (scriptObject.IsActive(8) != 0)
-                        {
-                            ledZ.BackColor = Color.GreenYellow;
-                            zZero = true;
-                        }
-                    }
-                    // painting completed condition and enable some buttons !!!!!!!!!!!!!!
+                    // Check painting completed
+                    if (painting)
+                        CheckPaintingCompleted(zDRO.Text);
                 }
             }
             catch
             {
                 return;
+            }
+        }
+
+        private void CheckMachineZero()
+        {
+            if (!xZero)
+            {
+                ledX.BackColor = Color.Gray;
+
+                if (scriptObject.IsActive(2) != 0)
+                {
+                    ledX.BackColor = Color.GreenYellow;
+                    xZero = true;
+                }
+            }
+
+            if (!yZero)
+            {
+                ledY.BackColor = Color.Gray;
+
+                if (scriptObject.IsActive(5) != 0)
+                {
+                    ledY.BackColor = Color.GreenYellow;
+                    yZero = true;
+                }
+            }
+
+            if (!zZero)
+            {
+                ledZ.BackColor = Color.Gray;
+
+                if (scriptObject.IsActive(8) != 0)
+                {
+                    ledZ.BackColor = Color.GreenYellow;
+                    zZero = true;
+                }
+            }
+
+            machineZero = xZero & yZero & zZero;
+        }
+
+        private void CheckPaintingCompleted(string value)
+        {
+            double zSafe;
+            zSafe = Math.Round(double.Parse(value), 1);
+
+            if ((zSafe == 25.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
+            {
+                //status_label.Text = "Painting Completed";
+                status_label.Text = "Hoàn Tất Phun Sơn";
+
+                EnableButton(true);
+
+                // disable painting flag
+                painting = false;
             }
         }
 
@@ -342,12 +367,14 @@ namespace CVEYEV1
             if (_capture.IsOpened)
             {
                 cameraOn = true;
-                status_label.Text = "Camera On";
+                //status_label.Text = "Camera On";
+                status_label.Text = "Camera Bật";
                 status_label.Refresh();
             }
             else
             {
-                status_label.Text = "Camera Off";
+                //status_label.Text = "Camera Off";
+                status_label.Text = "Camera Tắt";
                 status_label.Refresh();
             }
         }
@@ -1185,8 +1212,6 @@ namespace CVEYEV1
             return ouput;
         }
         
-
-
         public List<PointF> SortByDistance(List<PointF> pointList, List<double> angleList)
         {
             List<PointF> output = new List<PointF>();
@@ -1780,13 +1805,15 @@ namespace CVEYEV1
                     Progress.Value = 0;
 
                     // Update working status
-                    status_label.Text = "Camera On";
+                    //status_label.Text = "Camera On";
+                    status_label.Text = "Camera Bật";
                     status_label.Refresh();
                 }
                 else
                 {
                     // Update working status
-                    status_label.Text = "Camera Off";
+                    //status_label.Text = "Camera Off";
+                    status_label.Text = "Camera Tắt";
                     status_label.Refresh();
                 }
 
@@ -1820,12 +1847,13 @@ namespace CVEYEV1
                     pattern_field.Image = img_draw.Bitmap;
 
                     // Update working status
-                    status_label.Text = "Image Captured";
+                    status_label.Text = "Đã Chụp Ảnh";
                     status_label.Refresh();
                 }
                 else
                 {
-                    status_label.Text = "No Camera Data";
+                    //status_label.Text = "No Camera Data";
+                    status_label.Text = "Không Có Ảnh";
                     status_label.Refresh();
                 }
             }
@@ -1851,14 +1879,16 @@ namespace CVEYEV1
             SysData = XDocument.Load("_system.xml");
 
             // Update working status
-            status_label.Text = "Detecting...";
+            //status_label.Text = "Detecting...";
+            status_label.Text = "Đang quét ảnh...";
             status_label.Refresh();
 
             // Start detecting
             Detect_Pattern();
 
             // Update working status
-            status_label.Text = "Detected";
+            //status_label.Text = "Detected";
+            status_label.Text = "Hoàn tất quét ảnh";
             status_label.Refresh();
 
             detected = true;
@@ -1875,6 +1905,7 @@ namespace CVEYEV1
             }
             else MessageBox.Show("Please start Mach3.");
 
+            // update painting status
             if (painting)
                 painting = false;
         }
@@ -1889,8 +1920,9 @@ namespace CVEYEV1
                 // Reset zero flags
                 xZero = false;
                 yZero = false;
-                zZero = false;                              
-                
+                zZero = false;
+                machineZero = false;
+
                 GetMach3Instance();
 
                 if (scriptObject != null)
@@ -1912,21 +1944,26 @@ namespace CVEYEV1
 
             if (dialog == DialogResult.Yes)
             {
-                GetMach3Instance();
-
-                if (scriptObject != null)
+                if (machineZero)
                 {
-                    if (machinecoord)
+                    GetMach3Instance();
+
+                    if (scriptObject != null)
                     {
-                        scriptObject.DoOEMButton(107);
-                        machinecoord = false;
+                        if (machinecoord)
+                        {
+                            scriptObject.DoOEMButton(107);
+                            machinecoord = false;
+                        }
+
+                        scriptObject.Code("M93");
+
+                        // High speed mode
+                        lowSpeed = false;
                     }
-
-                    scriptObject.Code("M93");
-
-                    // High speed mode
-                    lowSpeed = false;
                 }
+                else
+                    MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
             else return;
         }
@@ -1938,15 +1975,20 @@ namespace CVEYEV1
 
             if (dialog == DialogResult.Yes)
             {
-                GetMach3Instance();
-
-                if (scriptObject != null)
+                if (machineZero)
                 {
-                    if (lowSpeed)
-                        HighSpeedMode();
+                    GetMach3Instance();
 
-                    scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
+                    if (scriptObject != null)
+                    {
+                        if (lowSpeed)
+                            HighSpeedMode();
+
+                        scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
+                    }
                 }
+                else
+                    MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
             else return;
         }
@@ -1971,10 +2013,11 @@ namespace CVEYEV1
                         status_label.Refresh();
 
                         // Disable some button
-                        //EnableButton(false);
+                        EnableButton(false);
 
                         // Run painting macro
                         scriptObject.Code("M999");
+                        Thread.Sleep(500);
                     }
                 }
                 else
@@ -1991,12 +2034,12 @@ namespace CVEYEV1
             {
                 if (lockCylinder.Text == "Khóa khay")
                 {
-                    scriptObject.ActivateSignal(17);
+                    scriptObject.ActivateSignal(7);
                     lockCylinder.Text = "Mở khóa khay";
                 }
                 else
                 {
-                    scriptObject.DeActivateSignal(17);
+                    scriptObject.DeActivateSignal(7);
                     lockCylinder.Text = "Khóa khay";
                 }
             }
