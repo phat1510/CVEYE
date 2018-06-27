@@ -25,7 +25,8 @@ namespace CVEYEV1
                 new XAttribute("zSpeed", zSpeed.Value),
                 new XAttribute("zSafe", zSafe.Value),
                 new XAttribute("zReturn", zReturn.Value),
-                new XAttribute("zDrip", zDrip.Value)
+                new XAttribute("zDrip", zDrip.Value),
+                new XAttribute("offset", offset.Value)
                 ));
 
             CVEye.SysData.Save("_system.xml");
@@ -42,6 +43,7 @@ namespace CVEYEV1
             zSafe.Value = decimal.Parse(Parameters.Attribute("zSafe").Value);
             zReturn.Value = decimal.Parse(Parameters.Attribute("zReturn").Value);
             zDrip.Value = decimal.Parse(Parameters.Attribute("zDrip").Value);
+            offset.Value = decimal.Parse(Parameters.Attribute("offset").Value);
         }
         
         private void Cancel_Click(object sender, EventArgs e)

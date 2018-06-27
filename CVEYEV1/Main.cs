@@ -120,8 +120,6 @@ namespace CVEYEV1
 
         List<double> angleListSort = new List<double>();
 
-        const decimal circle_deep_offset = -(decimal)0.4; //mm
-
         public static bool first_start01 = true;
 
         private bool lowSpeed = true;
@@ -1527,7 +1525,7 @@ namespace CVEYEV1
 
                 }
 
-                //Drip paint
+                // Dispense paint
                 Paint_Drip(0);
 
                 // Rapid moving to Z return
@@ -1544,7 +1542,7 @@ namespace CVEYEV1
         {
             //
             float startpoint_X = cenX - in_circle_radius;
-            float startpoint_Y = cenY - (float)0.3;
+            float startpoint_Y = cenY;
 
             // with the first point of the first item
             if (first_item)
@@ -1562,11 +1560,12 @@ namespace CVEYEV1
                 // Turn on 15mm piston
                 gcode.WriteLine("ActivateSignal(OUTPUT6" + ")");
 
-                //
-                Paint_Drip(circle_deep_offset);
+                // Dispense paint
+                Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value));
 
                 // Circular interpolation
-                CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
+                //CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
+                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4);
                 Wait(50);
 
                 // Go to z return
@@ -1581,11 +1580,12 @@ namespace CVEYEV1
                 gcode.WriteLine("Code \"X" + startpoint_X + " Y" + startpoint_Y + "\"");
                 Wait(100);
 
-                //
-                Paint_Drip(circle_deep_offset);
+                // Dispense paint
+                Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value));
 
                 // Circular interpolation
-                CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
+                //CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
+                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4);
                 Wait(50);
 
                 // Go to z return
@@ -2034,12 +2034,12 @@ namespace CVEYEV1
             {
                 if (lockCylinder.Text == "Khóa khay")
                 {
-                    scriptObject.ActivateSignal(7);
+                    scriptObject.ActivateSignal(17);
                     lockCylinder.Text = "Mở khóa khay";
                 }
                 else
                 {
-                    scriptObject.DeActivateSignal(7);
+                    scriptObject.DeActivateSignal(17);
                     lockCylinder.Text = "Khóa khay";
                 }
             }
@@ -2051,10 +2051,12 @@ namespace CVEYEV1
 
             if (scriptObject != null)
             {
+                scriptObject.DeActivateSignal(10);
+                scriptObject.DeActivateSignal(11);
+
                 short channel = (short)(GetValveNum(item_color.Text) + 6);
                 scriptObject.ActivateSignal(channel);
                 scriptObject.Code("M92");
-                scriptObject.DeActivateSignal(channel);
             }
         }
 
