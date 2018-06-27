@@ -132,6 +132,7 @@ namespace CVEYEV1
         private bool painting = false;
         private bool detected = false;
         private bool machinecoord = true;
+        private bool toggleReset = false;
 
         #endregion
 
@@ -240,16 +241,16 @@ namespace CVEYEV1
                     feedrateDRO.Text = scriptObject.GetOEMDRO(813).ToString("0");
 
                     // Check E-stop toggling
-                    if (scriptObject.IsActive(25) != 0)
+                    if ((scriptObject.IsActive(25) != 0) || (toggleReset))
                     {
-                        machStatus.Text = "CHẾ ĐỘ KHẨN CẤP";
+                        machStatus.Text = "Chế Độ Khẩn Cấp";
                         machStatus.Refresh();
 
                         EnableButton(true);
                     }
                     else
                     {
-                        machStatus.Text = "SẴN SÀNG";
+                        machStatus.Text = "Sẵn Sàng";
                         machStatus.Refresh();
                     }                                       
 
@@ -260,6 +261,8 @@ namespace CVEYEV1
                     // Check painting completed
                     if (painting)
                         CheckPaintingCompleted(zDRO.Text);
+
+                    ResetToggling();
                 }
             }
             catch
@@ -335,6 +338,16 @@ namespace CVEYEV1
         {
             scriptObject.Code("M94");
             lowSpeed = true;
+        }
+
+        private void ResetToggling()
+        {
+            if (toggleReset)
+            {
+                Reset.BackColor = (Reset.BackColor == Color.Red) ? Color.Orange : Color.Red;
+            }
+            else
+                Reset.BackColor = Color.Red;
         }
 
         private void Init_Camera()
@@ -1641,7 +1654,6 @@ namespace CVEYEV1
         {
             // Wait for moving completed
             gcode.WriteLine("While (IsMoving())");
-            //gcode.WriteLine("Sleep(" + (first_item ? "500" : "50") + ")");
             gcode.WriteLine("Sleep(" + time.ToString() + ")");
             gcode.WriteLine("Wend");
         }
@@ -1901,7 +1913,9 @@ namespace CVEYEV1
             if (scriptObject != null)
             {
                 // Reset OEM
-                scriptObject.DoOEMButton(1021); 
+                scriptObject.DoOEMButton(1021);
+
+                toggleReset = (toggleReset) ? false : true;
             }
             else MessageBox.Show("Please start Mach3.");
 

@@ -82,44 +82,44 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(187, 120);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(160, 120);
             this.tableLayoutPanel1.TabIndex = 73;
             // 
             // zSafe
             // 
             this.zSafe.DecimalPlaces = 1;
-            this.zSafe.Location = new System.Drawing.Point(96, 3);
+            this.zSafe.Location = new System.Drawing.Point(83, 3);
             this.zSafe.Maximum = new decimal(new int[] {
             50,
             0,
             0,
             0});
             this.zSafe.Name = "zSafe";
-            this.zSafe.Size = new System.Drawing.Size(88, 22);
+            this.zSafe.Size = new System.Drawing.Size(74, 22);
             this.zSafe.TabIndex = 78;
             // 
             // zSpeed
             // 
-            this.zSpeed.Location = new System.Drawing.Point(96, 33);
+            this.zSpeed.Location = new System.Drawing.Point(83, 33);
             this.zSpeed.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
             this.zSpeed.Name = "zSpeed";
-            this.zSpeed.Size = new System.Drawing.Size(88, 22);
+            this.zSpeed.Size = new System.Drawing.Size(74, 22);
             this.zSpeed.TabIndex = 77;
             // 
             // xySpeed
             // 
-            this.xySpeed.Location = new System.Drawing.Point(96, 3);
+            this.xySpeed.Location = new System.Drawing.Point(83, 3);
             this.xySpeed.Maximum = new decimal(new int[] {
             20000,
             0,
             0,
             0});
             this.xySpeed.Name = "xySpeed";
-            this.xySpeed.Size = new System.Drawing.Size(88, 22);
+            this.xySpeed.Size = new System.Drawing.Size(74, 22);
             this.xySpeed.TabIndex = 73;
             // 
             // label12
@@ -170,14 +170,14 @@
             0,
             0,
             65536});
-            this.zReturn.Location = new System.Drawing.Point(96, 33);
+            this.zReturn.Location = new System.Drawing.Point(83, 33);
             this.zReturn.Maximum = new decimal(new int[] {
             20,
             0,
             0,
             0});
             this.zReturn.Name = "zReturn";
-            this.zReturn.Size = new System.Drawing.Size(88, 22);
+            this.zReturn.Size = new System.Drawing.Size(74, 22);
             this.zReturn.TabIndex = 79;
             // 
             // zDrip
@@ -188,14 +188,14 @@
             0,
             0,
             65536});
-            this.zDrip.Location = new System.Drawing.Point(96, 63);
+            this.zDrip.Location = new System.Drawing.Point(83, 63);
             this.zDrip.Maximum = new decimal(new int[] {
             15,
             0,
             0,
             0});
             this.zDrip.Name = "zDrip";
-            this.zDrip.Size = new System.Drawing.Size(88, 22);
+            this.zDrip.Size = new System.Drawing.Size(74, 22);
             this.zDrip.TabIndex = 82;
             // 
             // label14
@@ -213,7 +213,7 @@
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Cancel.Location = new System.Drawing.Point(137, 271);
+            this.Cancel.Location = new System.Drawing.Point(117, 271);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 76;
@@ -226,7 +226,7 @@
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.OK.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OK.Location = new System.Drawing.Point(52, 271);
+            this.OK.Location = new System.Drawing.Point(32, 271);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 75;
@@ -242,7 +242,7 @@
             0,
             0,
             65536});
-            this.offset.Location = new System.Drawing.Point(96, 93);
+            this.offset.Location = new System.Drawing.Point(83, 93);
             this.offset.Maximum = new decimal(new int[] {
             2,
             0,
@@ -254,7 +254,7 @@
             0,
             -2147483648});
             this.offset.Name = "offset";
-            this.offset.Size = new System.Drawing.Size(88, 22);
+            this.offset.Size = new System.Drawing.Size(74, 22);
             this.offset.TabIndex = 83;
             // 
             // label2
@@ -287,7 +287,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(187, 60);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(160, 60);
             this.tableLayoutPanel2.TabIndex = 85;
             // 
             // groupBox1
@@ -296,7 +296,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 93);
+            this.groupBox1.Size = new System.Drawing.Size(180, 93);
             this.groupBox1.TabIndex = 86;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Speed (mm/min)";
@@ -307,7 +307,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(12, 111);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 150);
+            this.groupBox2.Size = new System.Drawing.Size(180, 150);
             this.groupBox2.TabIndex = 87;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Position (mm)";
@@ -316,7 +316,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(224, 306);
+            this.ClientSize = new System.Drawing.Size(204, 306);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Cancel);
