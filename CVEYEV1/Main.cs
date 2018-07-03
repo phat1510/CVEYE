@@ -74,6 +74,7 @@ namespace CVEYEV1
         private Bgr[] line_color_array = new Bgr[pt_width * pt_height];
         private static Mat[] frame_array_buffer = new Mat[30];
         private int frame_buffer_savepoint = 0;        
+
         public enum Mode
         {
             Caluculating_Intrinsics,
@@ -208,6 +209,7 @@ namespace CVEYEV1
                     // Set to low speed mode
                     LowSpeedMode();
                 }
+                else MessageBox.Show("Can not connect to Mach3.");
             }
             catch (Exception e)
             {
@@ -221,6 +223,7 @@ namespace CVEYEV1
 
             if (scriptObject != null)
                 scriptObject.Code(macroName);
+            else MessageBox.Show("Can not connect to Mach3.");
         }
 
         // 10 Hz Update DRO
@@ -254,7 +257,7 @@ namespace CVEYEV1
                         machStatus.Refresh();
                     }                                       
 
-                    // Check machine zero completed
+                    // Check setting machine zero completed
                     if (!machineZero)
                         CheckMachineZero();
 
@@ -262,8 +265,10 @@ namespace CVEYEV1
                     if (painting)
                         CheckPaintingCompleted(zDRO.Text);
 
+                    // Toggle RESET button
                     ResetToggling();
                 }
+                else MessageBox.Show("Can not connect to Mach3.");
             }
             catch
             {
@@ -1664,10 +1669,10 @@ namespace CVEYEV1
 
             switch (colorName)
             {
-                case "Red":
+                case "Đỏ":
                     valve_num = 4;
                     break;
-                case "Black":
+                case "Đen":
                     valve_num = 5;
                     break;
             }
@@ -1680,10 +1685,10 @@ namespace CVEYEV1
 
             switch (colorName)
             {
-                case "Red":
+                case "Đỏ":
                     valve_num = "G55";
                     break;
-                case "Black":
+                case "Đen":
                     valve_num = "G54";
                     break;
             }
@@ -1917,7 +1922,7 @@ namespace CVEYEV1
 
                 toggleReset = (toggleReset) ? false : true;
             }
-            else MessageBox.Show("Please start Mach3.");
+            else MessageBox.Show("Can not connect to Mach3.");
 
             // update painting status
             if (painting)
@@ -1947,6 +1952,7 @@ namespace CVEYEV1
                     // Low speed mode
                     lowSpeed = true;
                 }
+                else MessageBox.Show("Can not connect to Mach3.");
             }
             else return;
         }
@@ -1975,6 +1981,7 @@ namespace CVEYEV1
                         // High speed mode
                         lowSpeed = false;
                     }
+                    else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else
                     MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
@@ -2000,6 +2007,7 @@ namespace CVEYEV1
 
                         scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
                     }
+                    else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else
                     MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
@@ -2033,6 +2041,7 @@ namespace CVEYEV1
                         scriptObject.Code("M999");
                         Thread.Sleep(500);
                     }
+                    else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else
                     MessageBox.Show("Chưa quét ảnh.", "CVEye");
@@ -2057,6 +2066,7 @@ namespace CVEYEV1
                     lockCylinder.Text = "Khóa khay";
                 }
             }
+            else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TestValve_Click(object sender, EventArgs e)
@@ -2072,6 +2082,7 @@ namespace CVEYEV1
                 scriptObject.ActivateSignal(channel);
                 scriptObject.Code("M92");
             }
+            else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TurnPiston_Click(object sender, EventArgs e)
@@ -2094,6 +2105,7 @@ namespace CVEYEV1
                     TurnPiston.Text = "Hạ piston";
                 }
             }
+            else MessageBox.Show("Can not connect to Mach3.");
         }
         #endregion
 
@@ -2110,59 +2122,73 @@ namespace CVEYEV1
         {
             switch (value)
             {
-                case "General 01":
+                //case "General 01":
+                case "Tướng 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/gen01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/gen01.jpg").Bitmap;
                     break;
-                case "Advisor 01":
+                //case "Advisor 01":
+                case "Sĩ 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ad01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/ad01.jpg").Bitmap;
                     break;
-                case "Elephant 01":
+                //case "Elephant 01":
+                case "Tượng 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/ele01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/ele01.jpg").Bitmap;
                     break;
-                case "Chariot 01":
+                //case "Chariot 01":
+                case "Xe 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cha01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/cha01.jpg").Bitmap;
                     break;
-                case "Cannon 01":
+                //case "Cannon 01":
+                case "Pháo 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/can01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/can01.jpg").Bitmap;
                     break;
-                case "Horse 01":
+                //case "Horse 01":
+                case "Ngựa 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/hor01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/hor01.jpg").Bitmap;
                     break;
-                case "Soldier 01":
+                //case "Soldier 01":
+                case "Chốt 01":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/01/sol01.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/01/sol01.jpg").Bitmap;
                     break;
-                case "General 02":
+                //case "General 02":
+                case "Tướng 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/gen02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/gen02.jpg").Bitmap;
                     break;
-                case "Advisor 02":
+                //case "Advisor 02":
+                case "Sĩ 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ad02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/ad02.jpg").Bitmap;
                     break;
-                case "Elephant 02":
+                //case "Elephant 02":
+                case "Tượng 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/ele02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/ele02.jpg").Bitmap;
                     break;
-                case "Chariot 02":
+                //case "Chariot 02":
+                case "Xe 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cha02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/cha02.jpg").Bitmap;
                     break;
-                case "Cannon 02":
+                //case "Cannon 02":
+                case "Pháo 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/can02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/can02.jpg").Bitmap;
                     break;
-                case "Horse 02":
+                //case "Horse 02":
+                case "Ngựa 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/hor02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/hor02.jpg").Bitmap;
                     break;
-                case "Soldier 02":
+                //case "Soldier 02":
+                case "Chốt 02":
                     tmp_raw = CvInvoke.Imread("pt_data_8bit/02/sol02.jpg");
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/sol02.jpg").Bitmap;
                     break;
@@ -2196,6 +2222,7 @@ namespace CVEYEV1
 
                 if (scriptObject != null)
                     scriptObject.Code("M94");
+                else MessageBox.Show("Can not connect to Mach3.");
                 Thread.Sleep(100);
 
                 // Close Mach3

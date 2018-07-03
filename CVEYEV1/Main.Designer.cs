@@ -335,26 +335,26 @@
             this.tmp_item_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tmp_item_name.FormattingEnabled = true;
             this.tmp_item_name.Items.AddRange(new object[] {
-            "General 01",
-            "Advisor 01",
-            "Elephant 01",
-            "Chariot 01",
-            "Cannon 01",
-            "Horse 01",
-            "Soldier 01",
-            "General 02",
-            "Advisor 02",
-            "Elephant 02",
-            "Chariot 02",
-            "Cannon 02",
-            "Horse 02",
-            "Soldier 02"});
+            "Tướng 01",
+            "Sĩ 01",
+            "Tượng 01",
+            "Xe 01",
+            "Pháo 01",
+            "Ngựa 01",
+            "Chốt 01",
+            "Tướng 02",
+            "Sĩ 02",
+            "Tượng 02",
+            "Xe 02",
+            "Pháo 02",
+            "Ngựa 02",
+            "Chốt 02"});
             this.tmp_item_name.Location = new System.Drawing.Point(3, 31);
             this.tmp_item_name.Name = "tmp_item_name";
             this.tmp_item_name.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.tmp_item_name.Size = new System.Drawing.Size(132, 24);
             this.tmp_item_name.TabIndex = 65;
-            this.tmp_item_name.Text = "General 01";
+            this.tmp_item_name.Text = "Tướng 01";
             this.tmp_item_name.TextChanged += new System.EventHandler(this.Name_Changed);
             // 
             // label6
@@ -385,13 +385,13 @@
             this.item_color.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.item_color.FormattingEnabled = true;
             this.item_color.Items.AddRange(new object[] {
-            "Red",
-            "Black"});
+            "Đỏ",
+            "Đen"});
             this.item_color.Location = new System.Drawing.Point(141, 31);
             this.item_color.Name = "item_color";
             this.item_color.Size = new System.Drawing.Size(72, 24);
             this.item_color.TabIndex = 68;
-            this.item_color.Text = "Red";
+            this.item_color.Text = "Đỏ";
             this.item_color.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // tableLayoutPanel2
