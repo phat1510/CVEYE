@@ -388,46 +388,60 @@ namespace CVEYEV1
         {
             switch (value)
             {
-                case "General 01":
+                //case "General 01":
+                case "Tướng 01":
                     Reload_Template("pattern_data/01/gen01.jpg");
                     break;
-                case "Advisor 01":
+                //case "Advisor 01":
+                case "Sĩ 01":
                     Reload_Template("pattern_data/01/ad01.jpg");
                     break;
-                case "Elephant 01":
+                //case "Elephant 01":
+                case "Tượng 01":
                     Reload_Template("pattern_data/01/ele01.jpg");
                     break;
-                case "Chariot 01":
+                //case "Chariot 01":
+                case "Xe 01":
                     Reload_Template("pattern_data/01/cha01.jpg");
                     break;
-                case "Cannon 01":
+                //case "Cannon 01":
+                case "Pháo 01":
                     Reload_Template("pattern_data/01/can01.jpg");
                     break;
-                case "Horse 01":
+                //case "Horse 01":
+                case "Ngựa 01":
                     Reload_Template("pattern_data/01/hor01.jpg");
                     break;
-                case "Soldier 01":
+                //case "Soldier 01":
+                case "Chốt 01":
                     Reload_Template("pattern_data/01/sol01.jpg");
                     break;
-                case "General 02":
+                //case "General 02":
+                case "Tướng 02":
                     Reload_Template("pattern_data/02/gen02.jpg");
                     break;
-                case "Advisor 02":
+                //case "Advisor 02":
+                case "Sĩ 02":
                     Reload_Template("pattern_data/02/ad02.jpg");
                     break;
-                case "Elephant 02":
+                //case "Elephant 02":
+                case "Tượng 02":
                     Reload_Template("pattern_data/02/ele02.jpg");
                     break;
-                case "Chariot 02":
+                //case "Chariot 02":
+                case "Xe 02":
                     Reload_Template("pattern_data/02/cha02.jpg");
                     break;
-                case "Cannon 02":
+                //case "Cannon 02":
+                case "Pháo 02":
                     Reload_Template("pattern_data/02/can02.jpg");
                     break;
-                case "Horse 02":
+                //case "Horse 02":
+                case "Ngựa 02":
                     Reload_Template("pattern_data/02/hor02.jpg");
                     break;
-                case "Soldier 02":
+                //case "Soldier 02":
+                case "Chốt 02":
                     Reload_Template("pattern_data/02/sol02.jpg");
                     break;
             }

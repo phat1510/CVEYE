@@ -109,7 +109,6 @@ namespace CVEYEV1
         private string macroDirectory;
         public static XDocument SysData;        
         public static TextWriter gcode;
-        private bool first_item = true;
         #endregion
 
         #region Miscellaneous
@@ -134,6 +133,9 @@ namespace CVEYEV1
         private bool detected = false;
         private bool machinecoord = true;
         private bool toggleReset = false;
+
+        private bool first_item = true;
+        private bool setG01 = false;
 
         #endregion
 
@@ -209,7 +211,7 @@ namespace CVEYEV1
                     // Set to low speed mode
                     LowSpeedMode();
                 }
-                else MessageBox.Show("Can not connect to Mach3.");
+                //else MessageBox.Show("Can not connect to Mach3.");
             }
             catch (Exception e)
             {
@@ -223,7 +225,7 @@ namespace CVEYEV1
 
             if (scriptObject != null)
                 scriptObject.Code(macroName);
-            else MessageBox.Show("Can not connect to Mach3.");
+            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         // 10 Hz Update DRO
@@ -268,7 +270,7 @@ namespace CVEYEV1
                     // Toggle RESET button
                     ResetToggling();
                 }
-                else MessageBox.Show("Can not connect to Mach3.");
+                //else MessageBox.Show("Can not connect to Mach3.");
             }
             catch
             {
@@ -726,10 +728,10 @@ namespace CVEYEV1
                 long rotation_time = watch.ElapsedMilliseconds;
 
                 // Load database
-                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");                
+                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");
                 XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
                 XElement Parameters = SysData.Element("System").Element("PaintingConditionWindow").Element("Parameters");
-                
+
                 // Call current item
                 ConfigPaintingPoints.get_item = ConfigPaintingPoints.dispensing_data.Element("Field")
                     .Elements("Item")
@@ -1046,16 +1048,17 @@ namespace CVEYEV1
                     }
 
                     #region Complete Painting Process
-                    // Waiting for moving completed
-                    Wait(100);
+
+                    // Return to z safe
+                    gcode.WriteLine("Code \"G00 Z" + Parameters.Attribute("zSafe").Value + "\"");
+                    Wait(50);
 
                     // Turn off piston
                     gcode.WriteLine("DeactivateSignal(OUTPUT6)");
                     gcode.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
 
                     //Return home
-                    gcode.WriteLine("Code \"Z" + Parameters.Attribute("zSafe").Value + "\"");
-                    gcode.WriteLine("Code \"G00 X0" + " Y0" + "\"");
+                    gcode.WriteLine("Code \"G90 G54 G00 X-50 Y0\"");
                     gcode.Close();
                     #endregion
 
@@ -1513,10 +1516,10 @@ namespace CVEYEV1
 
                 //--------------------- Build Gcode-------------------
 
-                // with the first point of each item
+                // With the first point of each item
                 if (j == 0)
                 {
-                    // with the first point of the first item
+                    // With the first point of the first item
                     if (first_item)
                     {
                         //
@@ -1531,23 +1534,44 @@ namespace CVEYEV1
 
                         // Turn on 15mm piston
                         gcode.WriteLine("ActivateSignal(OUTPUT6" + ")");
-
-                        // Rapid moving to Z return
-                        gcode.WriteLine("Code \"Z" + Parameters.Attribute("zReturn").Value + "\"");
                     }
+                    else
+                    {
+                        // First point of non-first item
+                        gcode.WriteLine("Code \"X" + X + " Y" + Y + "\"");
+                        Wait(101);
+                    }
+
                 }
                 else
                 {
-                    // Go to painting point of template
-                    gcode.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                    if (!setG01)
+                    {
+                        // Go to painting point of template
+                        gcode.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                        setG01 = true;
+                    }
+                    else
+                        gcode.WriteLine("Code \"X" + X + " Y" + Y + "\"");
 
+                    Wait(50);
                 }
 
-                // Dispense paint
-                Paint_Drip(0);
+                // Fast moving Z to painting deep
+                if (first_item)
+                {
+                    gcode.WriteLine("Code \"Z" + (decimal.Parse(Parameters.Attribute("zDrip").Value)) + "\"");
+                    Wait(100);
+                }
 
-                // Rapid moving to Z return
-                gcode.WriteLine("Code \"Z" + Parameters.Attribute("zReturn").Value + "\"");
+                // Dispensing specific amount of paint
+                if (EnableEfd.CheckState == CheckState.Checked)
+                {
+                    // Toggling valve
+                    gcode.WriteLine("ActivateSignal(OUTPUT7" + ")");
+                    gcode.WriteLine("Sleep(100)");
+                    gcode.WriteLine("DeactivateSignal(OUTPUT7" + ")");
+                }
 
                 // Disable the first item flag
                 first_item = false;
@@ -1922,7 +1946,7 @@ namespace CVEYEV1
 
                 toggleReset = (toggleReset) ? false : true;
             }
-            else MessageBox.Show("Can not connect to Mach3.");
+            //else MessageBox.Show("Can not connect to Mach3.");
 
             // update painting status
             if (painting)
@@ -1952,7 +1976,7 @@ namespace CVEYEV1
                     // Low speed mode
                     lowSpeed = true;
                 }
-                else MessageBox.Show("Can not connect to Mach3.");
+                //else MessageBox.Show("Can not connect to Mach3.");
             }
             else return;
         }
@@ -1981,10 +2005,9 @@ namespace CVEYEV1
                         // High speed mode
                         lowSpeed = false;
                     }
-                    else MessageBox.Show("Can not connect to Mach3.");
+                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
-                else
-                    MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
+                else MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
             else return;
         }
@@ -2007,10 +2030,9 @@ namespace CVEYEV1
 
                         scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
                     }
-                    else MessageBox.Show("Can not connect to Mach3.");
+                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
-                else
-                    MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
+                else MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
             else return;
         }
@@ -2035,16 +2057,15 @@ namespace CVEYEV1
                         status_label.Refresh();
 
                         // Disable some button
-                        EnableButton(false);
+                        //EnableButton(false);
 
                         // Run painting macro
                         scriptObject.Code("M999");
                         Thread.Sleep(500);
                     }
-                    else MessageBox.Show("Can not connect to Mach3.");
+                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
-                else
-                    MessageBox.Show("Chưa quét ảnh.", "CVEye");
+                else MessageBox.Show("Chưa quét ảnh.", "CVEye");
             }
             else return;
         }
@@ -2066,7 +2087,7 @@ namespace CVEYEV1
                     lockCylinder.Text = "Khóa khay";
                 }
             }
-            else MessageBox.Show("Can not connect to Mach3.");
+            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TestValve_Click(object sender, EventArgs e)
@@ -2082,7 +2103,7 @@ namespace CVEYEV1
                 scriptObject.ActivateSignal(channel);
                 scriptObject.Code("M92");
             }
-            else MessageBox.Show("Can not connect to Mach3.");
+            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TurnPiston_Click(object sender, EventArgs e)
@@ -2105,7 +2126,7 @@ namespace CVEYEV1
                     TurnPiston.Text = "Hạ piston";
                 }
             }
-            else MessageBox.Show("Can not connect to Mach3.");
+            //else MessageBox.Show("Can not connect to Mach3.");
         }
         #endregion
 
@@ -2115,7 +2136,7 @@ namespace CVEYEV1
         {
             // Preview current template
             ViewTemplate(tmp_item_name.Text);
-
+            Template.Refresh();
         }
 
         private void ViewTemplate(string value)
@@ -2222,7 +2243,7 @@ namespace CVEYEV1
 
                 if (scriptObject != null)
                     scriptObject.Code("M94");
-                else MessageBox.Show("Can not connect to Mach3.");
+                //else MessageBox.Show("Can not connect to Mach3.");
                 Thread.Sleep(100);
 
                 // Close Mach3

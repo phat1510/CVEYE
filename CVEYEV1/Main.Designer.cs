@@ -459,6 +459,7 @@
             this.painting_times.ReadOnly = true;
             this.painting_times.Size = new System.Drawing.Size(66, 22);
             this.painting_times.TabIndex = 72;
+            this.painting_times.Visible = false;
             // 
             // label17
             // 
@@ -470,6 +471,7 @@
             this.label17.Size = new System.Drawing.Size(92, 16);
             this.label17.TabIndex = 71;
             this.label17.Text = "Thời gian sơn:";
+            this.label17.Visible = false;
             // 
             // Outside
             // 
