@@ -1606,8 +1606,7 @@ namespace CVEYEV1
                 Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value));
 
                 // Circular interpolation
-                //CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
-                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4);
+                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4, int.Parse(Parameters.Attribute("circleSpeed").Value));
                 Wait(50);
 
                 // Go to z return
@@ -1626,8 +1625,7 @@ namespace CVEYEV1
                 Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value));
 
                 // Circular interpolation
-                //CircleDivider(new PointF(cenX, cenY + (float)0.3), in_circle_radius, 4);
-                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4);
+                CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4, int.Parse(Parameters.Attribute("circleSpeed").Value));
                 Wait(50);
 
                 // Go to z return
@@ -1635,7 +1633,7 @@ namespace CVEYEV1
             }
         }
 
-        private void CircleDivider(PointF center, float radius, byte factor)
+        private void CircleDivider(PointF center, float radius, byte factor, int speed)
         {
             // Start point of the circle
             PointF startPoint = new PointF(center.X - radius, center.Y);
@@ -1648,7 +1646,7 @@ namespace CVEYEV1
                 endPoint.Y = (float)(center.Y - radius * Math.Sin((i + 1) * (360 / factor) * Math.PI / 180));
 
                 // Command Gcode                
-                gcode.WriteLine("Code \"G03 X" + endPoint.X + " Y" + endPoint.Y + " I" + (center.X - startPoint.X) + " J" + (center.Y - startPoint.Y) + ((i == 0) ? " F6000" : "") + "\"");
+                gcode.WriteLine("Code \"G03 X" + endPoint.X + " Y" + endPoint.Y + " I" + (center.X - startPoint.X) + " J" + (center.Y - startPoint.Y) + ((i == 0) ? " F" + speed.ToString() : "") + "\"");
 
                 // Update start point of the arc
                 startPoint.X = endPoint.X;

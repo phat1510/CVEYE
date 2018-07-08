@@ -28,7 +28,8 @@ namespace CVEYEV1
                 new XAttribute("zSafe", zSafe.Value),
                 new XAttribute("zReturn", zReturn.Value),
                 new XAttribute("zDrip", zDrip.Value),
-                new XAttribute("offset", deepOffset.Value)
+                new XAttribute("offset", deepOffset.Value),
+                new XAttribute("circleSpeed", circleSpeed.Value)
                 ));
 
             CVEye.SysData.Element("System").Element("PaintingConditionWindow").Add(new XElement("Offset"));
@@ -58,6 +59,7 @@ namespace CVEYEV1
             zReturn.Value = decimal.Parse(Parameters.Attribute("zReturn").Value);
             zDrip.Value = decimal.Parse(Parameters.Attribute("zDrip").Value);
             deepOffset.Value = decimal.Parse(Parameters.Attribute("offset").Value);
+            circleSpeed.Value = decimal.Parse(Parameters.Attribute("circleSpeed").Value);
 
             XElement Offset = CVEye.SysData.Element("System").Element("PaintingConditionWindow").Element("Offset");
             for (int i = 0; i < 5; i++)
