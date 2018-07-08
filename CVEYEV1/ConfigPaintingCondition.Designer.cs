@@ -52,6 +52,7 @@
             this.xOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.yOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.zOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.zSafe)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zReturn)).BeginInit();
@@ -254,7 +255,7 @@
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Cancel.Location = new System.Drawing.Point(482, 271);
+            this.Cancel.Location = new System.Drawing.Point(495, 334);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 76;
@@ -267,7 +268,7 @@
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.OK.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OK.Location = new System.Drawing.Point(397, 271);
+            this.OK.Location = new System.Drawing.Point(410, 334);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 75;
@@ -368,11 +369,22 @@
             this.zOffset.Name = "zOffset";
             this.zOffset.Width = 80;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox4.Location = new System.Drawing.Point(12, 277);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(180, 61);
+            this.groupBox4.TabIndex = 88;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Circle";
+            // 
             // ConfigPaintingCondition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 306);
+            this.ClientSize = new System.Drawing.Size(582, 369);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -426,5 +438,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn xOffset;
         private System.Windows.Forms.DataGridViewTextBoxColumn yOffset;
         private System.Windows.Forms.DataGridViewTextBoxColumn zOffset;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
