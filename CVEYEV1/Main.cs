@@ -106,7 +106,7 @@ namespace CVEYEV1
         #region IO
         private string mainDirectory;
         private string mach3Directory;
-        private string macroDirectory;
+        public static string macroDirectory;
         public static XDocument SysData;        
         public static TextWriter gcode;
         #endregion
@@ -122,6 +122,9 @@ namespace CVEYEV1
 
         public static bool first_start01 = true;
 
+        private bool switchCamera = false;
+        private bool initCamera = false;
+
         private bool lowSpeed = true;
         
         private bool xZero = false;
@@ -131,12 +134,20 @@ namespace CVEYEV1
 
         private bool painting = false;
         private bool detected = false;
+        private bool detecting = false;
         private bool machinecoord = true;
-        private bool toggleReset = false;
+        private bool resetBlinking = false;
 
         private bool first_item = true;
-        private bool setG01 = false;
+        private bool firstpointofitem = false;
+        //private bool setG01 = false;
 
+        // E-stop toggling
+        private bool hightolow = false;
+        private bool preactive = false;
+        private bool active = false;
+
+        
         #endregion
 
         public CVEye()
@@ -146,8 +157,6 @@ namespace CVEYEV1
             Init_XML();
 
             Init_Directory();
-
-            Init_Camera();
 
             Init_Subform();
 
@@ -163,9 +172,6 @@ namespace CVEYEV1
             XElement directory = SysData.Element("System").Element("Directory");
             mach3Directory = directory.Element("Mach3").Attribute("directory").Value;
             macroDirectory = Path.Combine(mach3Directory, @"macros\Mach3Mill");
-
-            // 
-            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
         }
         private void GetMach3Instance()
         {
@@ -206,8 +212,16 @@ namespace CVEYEV1
                     scriptObject.DoOEMButton(256);
 
                     // Reset OEM
-                    scriptObject.DoOEMButton(1021);
-                    
+                    //scriptObject.DoOEMButton(1021);
+
+                    // set active status
+                    if (scriptObject.IsActive(25) != 0)
+                        preactive = true;
+                    else
+                        preactive = false;
+                    active = preactive;
+                    resetBlinking = true;
+
                     // Set to low speed mode
                     LowSpeedMode();
                 }
@@ -228,7 +242,7 @@ namespace CVEYEV1
             //else MessageBox.Show("Can not connect to Mach3.");
         }
 
-        // 10 Hz Update DRO
+        // 10 Hz Update DRO and some other task
         private void UpdateDRO()
         {
             try
@@ -245,8 +259,36 @@ namespace CVEYEV1
                     // Update blended velocity DRO
                     feedrateDRO.Text = scriptObject.GetOEMDRO(813).ToString("0");
 
+                    //
+                    preactive = active; // false = low, true = high
+                    if (scriptObject.IsActive(25) != 0) // press E-stop
+                    {
+                        active = true;
+                        resetBlinking = true;
+                    }                        
+                    else // release E-stop
+                    {
+                        active = false;
+                    }                        
+
+                    if ((preactive) && (!active))
+                    {
+                        hightolow = true;
+                    }
+                    else
+                    {
+                        hightolow = false;
+                    }
+
+                    if (hightolow)
+                    {
+                        scriptObject.DoOEMButton(1021);
+                        resetBlinking = false;
+                    }                        
+
                     // Check E-stop toggling
-                    if ((scriptObject.IsActive(25) != 0) || (toggleReset))
+                    //if ((scriptObject.IsActive(25) != 0) || (resetBlinking))
+                    if (scriptObject.IsActive(25) != 0)
                     {
                         machStatus.Text = "Chế Độ Khẩn Cấp";
                         machStatus.Refresh();
@@ -257,7 +299,7 @@ namespace CVEYEV1
                     {
                         machStatus.Text = "Sẵn Sàng";
                         machStatus.Refresh();
-                    }                                       
+                    }                                      
 
                     // Check setting machine zero completed
                     if (!machineZero)
@@ -270,7 +312,6 @@ namespace CVEYEV1
                     // Toggle RESET button
                     ResetToggling();
                 }
-                //else MessageBox.Show("Can not connect to Mach3.");
             }
             catch
             {
@@ -349,7 +390,7 @@ namespace CVEYEV1
 
         private void ResetToggling()
         {
-            if (toggleReset)
+            if (resetBlinking)
             {
                 Reset.BackColor = (Reset.BackColor == Color.Red) ? Color.Orange : Color.Red;
             }
@@ -359,14 +400,18 @@ namespace CVEYEV1
 
         private void Init_Camera()
         {
+            status_label.Text = "Đang Dò Camera...";
+            status_label.Refresh();
+            
             if (_capture == null)
             {
                 //Try to create the capture
                 try
                 {
-                    _capture = new VideoCapture(1);
+                    _capture = new VideoCapture();
                     _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height); // pixels
                     _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width); // pixels
+                    initCamera = true;
                 }
                 catch (NullReferenceException excpt)
                 {
@@ -590,8 +635,8 @@ namespace CVEYEV1
                 }
 
                 // Show calibrated image
-                pattern_field.Image = img_draw.Bitmap;
-                //pattern_field.Image = img_capture.Bitmap;
+                pattern_field.Image = img_draw.Bitmap; // comment when calibrating
+                //pattern_field.Image = img_capture.Bitmap; // uncomment when calibrating
 
             }
             catch
@@ -759,15 +804,12 @@ namespace CVEYEV1
                 Progress.Value = 10;
 
                 // 
+                Image<Gray, byte> img_rec = img_threshold.ToImage<Gray, byte>().Copy();
                 Image<Bgr, byte> img_items = img_raw.ToImage<Bgr, byte>();
                 Image<Bgr, byte> img_items_bin = img_threshold.ToImage<Bgr, byte>();
-                Image<Gray, byte> img_rec = img_threshold.ToImage<Gray, byte>().Copy();
 
                 // Rotation center point
                 PointF rot_cen = new PointF(tmp_raw.Rows / 2, tmp_raw.Cols / 2);
-
-                Mat tmp_rot = new Mat();
-                Image<Gray, byte> tmp_rot_dir = tmp_rot.ToImage<Gray, byte>();
 
                 List<PointF> centerList = new List<PointF>();
                 List<double> angleList = new List<double>();
@@ -778,6 +820,8 @@ namespace CVEYEV1
                 Point roi_location = new Point();
                 //Rectangle roi_rec = new Rectangle();
                 Mat roi_rot = new Mat();
+                
+                Image<Gray, byte> tmp_rot_dir = new Image<Gray, byte>(roi_dim, roi_dim);
 
                 Mat mat_edge = new Mat();
                 img_gray.CopyTo(mat_edge);
@@ -825,14 +869,16 @@ namespace CVEYEV1
                     {
                         // 
                         CircleF circle = img_circles[circle_num];
+
                         if (Inside.Checked)
                         {
-                            Image<Gray, byte> tmp_rot_img = new Image<Gray, byte>(tmp_raw.Size);
+                            img_rec = img_threshold.ToImage<Gray, byte>().Copy();
 
                             // Update ROI
                             roi_location = new Point((int)Math.Round(circle.Center.X) - roi_dim / 2,
                                 (int)Math.Round(circle.Center.Y) - roi_dim / 2);
                             Image<Gray, byte> roi_getting_img = GetSourceROI(img_rec, roi_location, roi_dim);
+                            img_rec.Dispose();
 
                             // Data allocation
                             byte[] roiData = new byte[roi_getting_img.Width * roi_getting_img.Height];
@@ -859,6 +905,8 @@ namespace CVEYEV1
                             CircleF get_circle = new CircleF();
                             double get_angle = 0;
 
+                            Mat tmp_rot = new Mat();
+                            Image<Gray, byte> tmp_rot_img = new Image<Gray, byte>(tmp_raw.Size);
 
                             // Scan pixels
                             for (int cnt = 0; cnt < 360; cnt++)
@@ -909,6 +957,10 @@ namespace CVEYEV1
                                     }
                                 }
                             }
+
+                            tmp_rot_img.Dispose();
+                            tmp_rot.Dispose();
+
                             //data_mor.Items.Add("Template " + circle_num.ToString() + " :" + (watch.ElapsedMilliseconds - rotation_time));
                             //rotation_time = watch.ElapsedMilliseconds;
                             #endregion
@@ -1043,7 +1095,7 @@ namespace CVEYEV1
                         if (t > 0)
                             img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
                         else
-                            img_items.Draw(new CircleF(centerList[t], 10), new Bgr(Color.Red), 2);
+                            img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
                         t++;
                     }
 
@@ -1058,7 +1110,7 @@ namespace CVEYEV1
                     gcode.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
 
                     //Return home
-                    gcode.WriteLine("Code \"G90 G54 G00 X-50 Y0\"");
+                    gcode.WriteLine("Code \"G90 G54 G00 X-80 Y-430\"");
                     gcode.Close();
                     #endregion
 
@@ -1068,10 +1120,11 @@ namespace CVEYEV1
                     // Save detected items result
                     //CvInvoke.Imwrite("result/1.img_capture_undist.jpg", img_capture_undist);
                     //CvInvoke.Imwrite("result/2.img_gray.jpg", img_gray);
-                    CvInvoke.Imwrite("result/3.img_edge_clone.jpg", img_edge_clone);
+                    //CvInvoke.Imwrite("result/3.img_edge_clone.jpg", img_edge_clone);
                     CvInvoke.Imwrite("result/4.img_items.jpg", img_items);
                     //CvInvoke.Imwrite("result/5.img_edge.jpg", mat_edge);
                 }
+
                 // Tock timer
                 elapsed_time.Text = watch.ElapsedMilliseconds.ToString();
             }
@@ -1390,27 +1443,6 @@ namespace CVEYEV1
                 sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
                 sample.Draw(new LineSegment2DF(new PointF(corner_set[50 * getRow + getCol].X + (float)47.8 * (getCol - ref_num - 1), 0), new PointF(corner_set[50 * getRow + getCol].X + (float)47.8 * (getCol - ref_num - 1), 1944)), ((getCol - ref_num - 1) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
 
-                // For testing
-                //if (i == 50 * getRow)
-                //{
-                //    // Calculate center coordinate
-                //    double cen_X = xCompensate(corner_set[50 * getRow + getCol].X) + x_pixel_offset;
-                //    double cen_Y = yCompensate(corner_set[50 * getRow + getCol].Y) + y_pixel_offset;
-
-                //    PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-                //    // Global painting points rotation
-                //    cenPoint = RotateFOV(cenPoint, 0.15);
-
-                //    cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
-                //    cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
-
-                //    // Invert y axis direction
-                //    cen_Y = -cen_Y;
-
-                //    gcode.WriteLine("Code \"G00 X" + cen_X + " Y" + cen_Y + "\"");
-                //}
-                
                 // Calculate stretch error
                 com_point[point_index].X = corner_set[50 * getRow + getCol].X + (float)47.8 * (ref_num - 1 - getCol);
                 float err = corner_set[i].X - com_point[point_index].X;
@@ -1490,7 +1522,27 @@ namespace CVEYEV1
                 point_index++;
             }
 
-            //SysData.Save("_system.xml");
+            SysData.Save("_system.xml");
+
+            // For G54 calibration
+
+            // Calculate center coordinate
+            double cen_X = xCompensate(corner_set[50 * getRow + getCol].X) + x_pixel_offset;
+            double cen_Y = yCompensate(corner_set[50 * getRow + getCol].Y) + y_pixel_offset;
+
+            PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
+
+            // Global painting points rotation
+            cenPoint = RotateFOV(cenPoint, 0.15);
+
+            cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
+            cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
+
+            // Invert y axis direction
+            cen_Y = -cen_Y;
+
+            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
+            gcode.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
             gcode.Close();
         }
 
@@ -1516,10 +1568,10 @@ namespace CVEYEV1
 
                 //--------------------- Build Gcode-------------------
 
-                // With the first point of each item
+                // with the first point of each item
                 if (j == 0)
                 {
-                    // With the first point of the first item
+                    // with the first point of the first item
                     if (first_item)
                     {
                         //
@@ -1538,40 +1590,26 @@ namespace CVEYEV1
                     else
                     {
                         // First point of non-first item
-                        gcode.WriteLine("Code \"X" + X + " Y" + Y + "\"");
-                        Wait(101);
+                        gcode.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                        Wait(500);
                     }
 
+                    firstpointofitem = true;
                 }
                 else
                 {
-                    if (!setG01)
-                    {
-                        // Go to painting point of template
-                        gcode.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
-                        setG01 = true;
-                    }
-                    else
-                        gcode.WriteLine("Code \"X" + X + " Y" + Y + "\"");
+                    // Go to painting point of template
+                    gcode.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                    //Wait(50);
 
-                    Wait(50);
+                    firstpointofitem = false;
                 }
 
-                // Fast moving Z to painting deep
-                if (first_item)
-                {
-                    gcode.WriteLine("Code \"Z" + (decimal.Parse(Parameters.Attribute("zDrip").Value)) + "\"");
-                    Wait(100);
-                }
+                // Dispense paint
+                Paint_Drip(0);
 
-                // Dispensing specific amount of paint
-                if (EnableEfd.CheckState == CheckState.Checked)
-                {
-                    // Toggling valve
-                    gcode.WriteLine("ActivateSignal(OUTPUT7" + ")");
-                    gcode.WriteLine("Sleep(100)");
-                    gcode.WriteLine("DeactivateSignal(OUTPUT7" + ")");
-                }
+                // Rapid moving to Z return
+                gcode.WriteLine("Code \"Z" + Parameters.Attribute("zReturn").Value + "\"");
 
                 // Disable the first item flag
                 first_item = false;
@@ -1666,7 +1704,7 @@ namespace CVEYEV1
 
 
             // Waiting for moving completed
-            Wait(first_item ? 100 : 50);
+            Wait(firstpointofitem ? 100 : 50);
 
             if (EnableEfd.CheckState == CheckState.Checked)
             {
@@ -1830,39 +1868,47 @@ namespace CVEYEV1
 
         private void Video_Click(object sender, EventArgs e)
         {
-
-            try
+            if (initCamera)
             {
-                // Restart camera
-                if (_capture.IsOpened)
+                if (!switchCamera) // to prevent more than one click when camera is on
                 {
-                    // Add handler for getting camera frame
-                    Application.Idle += new EventHandler(Frame_Calibration);
-                    _capture.Start();
+                    try
+                    {
+                        // Restart camera
+                        if (_capture.IsOpened)
+                        {
+                            // Add handler for getting camera frame
+                            Application.Idle += new EventHandler(Frame_Calibration);
+                            _capture.Start();
 
-                    // Reset progress bar
-                    Progress.Value = 0;
+                            // Reset progress bar
+                            Progress.Value = 0;
 
-                    // Update working status
-                    //status_label.Text = "Camera On";
-                    status_label.Text = "Camera Bật";
-                    status_label.Refresh();
+                            // Update working status
+                            //status_label.Text = "Camera On";
+                            status_label.Text = "Camera Bật";
+                            status_label.Refresh();
+                        }
+                        else
+                        {
+                            // Update working status
+                            //status_label.Text = "Camera Off";
+                            status_label.Text = "Camera Tắt";
+                            status_label.Refresh();
+                        }
+
+                        data_mor.Items.Clear();
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                    switchCamera = true;
                 }
                 else
-                {
-                    // Update working status
-                    //status_label.Text = "Camera Off";
-                    status_label.Text = "Camera Tắt";
-                    status_label.Refresh();
-                }
-
-                data_mor.Items.Clear();
+                    MessageBox.Show("Camera Đang Mở.", "CVEye");
             }
-            catch
-            {
-                return;
-            }
-
+            else Init_Camera();
         }
 
         private void Capture_Click(object sender, EventArgs e)
@@ -1888,6 +1934,9 @@ namespace CVEYEV1
                     // Update working status
                     status_label.Text = "Đã Chụp Ảnh";
                     status_label.Refresh();
+
+                    // 
+                    switchCamera = false;
                 }
                 else
                 {
@@ -1904,14 +1953,15 @@ namespace CVEYEV1
 
         private void DetectClick(object sender, EventArgs e)
         {
-            first_item = true;
+            first_item = true; // reset first item flag
 
             // View captured image
             pattern_field.Image = img_capture_undist.Bitmap;
             pattern_field.Refresh();
-            
+
             // Create new mach3 macro
-            gcode.Close();
+            if (gcode != null)
+                gcode.Close();
             gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
 
             // Reload XML
@@ -1919,8 +1969,12 @@ namespace CVEYEV1
 
             // Update working status
             //status_label.Text = "Detecting...";
+
             status_label.Text = "Đang quét ảnh...";
+            pattern_field.Refresh(); // to remove the old text on camera window
             status_label.Refresh();
+
+            detecting = true;
 
             // Start detecting
             Detect_Pattern();
@@ -1940,9 +1994,9 @@ namespace CVEYEV1
             if (scriptObject != null)
             {
                 // Reset OEM
-                scriptObject.DoOEMButton(1021);
+                //scriptObject.DoOEMButton(1021);
 
-                toggleReset = (toggleReset) ? false : true;
+                //resetBlinking = (resetBlinking) ? false : true;
             }
             //else MessageBox.Show("Can not connect to Mach3.");
 
@@ -1974,7 +2028,6 @@ namespace CVEYEV1
                     // Low speed mode
                     lowSpeed = true;
                 }
-                //else MessageBox.Show("Can not connect to Mach3.");
             }
             else return;
         }
@@ -2003,7 +2056,6 @@ namespace CVEYEV1
                         // High speed mode
                         lowSpeed = false;
                     }
-                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
@@ -2026,9 +2078,8 @@ namespace CVEYEV1
                         if (lowSpeed)
                             HighSpeedMode();
 
-                        scriptObject.Code("G90 G55 G01 X550 Y0 F5000");
+                        scriptObject.Code("G90 G54 G01 X420 Y-430 F6000");
                     }
-                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
             }
@@ -2061,7 +2112,6 @@ namespace CVEYEV1
                         scriptObject.Code("M999");
                         Thread.Sleep(500);
                     }
-                    //else MessageBox.Show("Can not connect to Mach3.");
                 }
                 else MessageBox.Show("Chưa quét ảnh.", "CVEye");
             }
@@ -2085,7 +2135,6 @@ namespace CVEYEV1
                     lockCylinder.Text = "Khóa khay";
                 }
             }
-            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TestValve_Click(object sender, EventArgs e)
@@ -2101,7 +2150,6 @@ namespace CVEYEV1
                 scriptObject.ActivateSignal(channel);
                 scriptObject.Code("M92");
             }
-            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         private void TurnPiston_Click(object sender, EventArgs e)
@@ -2124,7 +2172,6 @@ namespace CVEYEV1
                     TurnPiston.Text = "Hạ piston";
                 }
             }
-            //else MessageBox.Show("Can not connect to Mach3.");
         }
         #endregion
 
@@ -2225,7 +2272,7 @@ namespace CVEYEV1
 
         private void CVEye_Load(object sender, EventArgs e)
         {
-            timerDROupdate.Enabled = true;
+            timerDROupdate.Enabled = true;            
         }
         
         private void CVEye_Closing(object sender, FormClosingEventArgs e)
@@ -2241,7 +2288,6 @@ namespace CVEYEV1
 
                 if (scriptObject != null)
                     scriptObject.Code("M94");
-                //else MessageBox.Show("Can not connect to Mach3.");
                 Thread.Sleep(100);
 
                 // Close Mach3

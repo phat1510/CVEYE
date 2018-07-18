@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CVEye));
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -543,21 +544,24 @@
             // data_mor
             // 
             this.data_mor.FormattingEnabled = true;
-            this.data_mor.Location = new System.Drawing.Point(396, 627);
+            this.data_mor.Location = new System.Drawing.Point(657, 601);
             this.data_mor.Name = "data_mor";
-            this.data_mor.Size = new System.Drawing.Size(496, 69);
+            this.data_mor.Size = new System.Drawing.Size(235, 95);
             this.data_mor.TabIndex = 73;
             this.data_mor.Visible = false;
             // 
             // status_label
             // 
             this.status_label.AutoSize = true;
-            this.status_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.status_label.Location = new System.Drawing.Point(9, 707);
+            this.status_label.BackColor = System.Drawing.Color.Black;
+            this.status_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.status_label.ForeColor = System.Drawing.Color.Chartreuse;
+            this.status_label.Location = new System.Drawing.Point(14, 38);
+            this.status_label.Margin = new System.Windows.Forms.Padding(3);
             this.status_label.Name = "status_label";
-            this.status_label.Size = new System.Drawing.Size(49, 16);
+            this.status_label.Size = new System.Drawing.Size(99, 20);
             this.status_label.TabIndex = 74;
-            this.status_label.Text = "Ready";
+            this.status_label.Text = "_________";
             // 
             // groupBox4
             // 
@@ -917,10 +921,11 @@
             // 
             this.machStatus.AutoSize = true;
             this.machStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.machStatus.Location = new System.Drawing.Point(186, 707);
+            this.machStatus.Location = new System.Drawing.Point(12, 710);
             this.machStatus.Name = "machStatus";
-            this.machStatus.Size = new System.Drawing.Size(0, 16);
+            this.machStatus.Size = new System.Drawing.Size(29, 16);
             this.machStatus.TabIndex = 78;
+            this.machStatus.Text = "___";
             // 
             // lockCylinder
             // 
@@ -952,6 +957,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pattern_field);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CVEye";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
