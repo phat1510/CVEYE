@@ -61,8 +61,6 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.painting_times = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
             this.run = new System.Windows.Forms.Button();
@@ -423,7 +421,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(907, 108);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(230, 465);
+            this.groupBox1.Size = new System.Drawing.Size(230, 511);
             this.groupBox1.TabIndex = 65;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
@@ -433,8 +431,6 @@
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.03209F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.96791F));
-            this.tableLayoutPanel4.Controls.Add(this.painting_times, 1, 2);
-            this.tableLayoutPanel4.Controls.Add(this.label17, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.elapsed_time, 1, 1);
             this.tableLayoutPanel4.Controls.Add(this.label9, 0, 1);
@@ -442,37 +438,14 @@
             this.tableLayoutPanel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tableLayoutPanel4.Location = new System.Drawing.Point(6, 367);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(212, 90);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(212, 60);
             this.tableLayoutPanel4.TabIndex = 78;
-            // 
-            // painting_times
-            // 
-            this.painting_times.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.painting_times.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.painting_times.Location = new System.Drawing.Point(138, 64);
-            this.painting_times.Name = "painting_times";
-            this.painting_times.ReadOnly = true;
-            this.painting_times.Size = new System.Drawing.Size(66, 22);
-            this.painting_times.TabIndex = 72;
-            this.painting_times.Visible = false;
-            // 
-            // label17
-            // 
-            this.label17.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(3, 67);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(92, 16);
-            this.label17.TabIndex = 71;
-            this.label17.Text = "Thời gian sơn:";
-            this.label17.Visible = false;
             // 
             // Outside
             // 
@@ -930,10 +903,10 @@
             // lockCylinder
             // 
             this.lockCylinder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lockCylinder.Location = new System.Drawing.Point(907, 612);
+            this.lockCylinder.Location = new System.Drawing.Point(907, 632);
             this.lockCylinder.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.lockCylinder.Name = "lockCylinder";
-            this.lockCylinder.Size = new System.Drawing.Size(230, 40);
+            this.lockCylinder.Size = new System.Drawing.Size(230, 30);
             this.lockCylinder.TabIndex = 81;
             this.lockCylinder.Text = "Khóa khay";
             this.lockCylinder.UseVisualStyleBackColor = true;
@@ -1035,9 +1008,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.TextBox painting_times;
         private System.Windows.Forms.Timer timerDROupdate;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox7;

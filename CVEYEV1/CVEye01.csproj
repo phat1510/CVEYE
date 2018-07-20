@@ -80,7 +80,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>CVEye.ico</ApplicationIcon>
+    <ApplicationIcon>Icon_design.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI, Version=3.2.0.2682, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
@@ -202,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CVEye.ico" />
+    <Content Include="Icon_design.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -134,7 +134,7 @@ namespace CVEYEV1
 
         private bool painting = false;
         private bool detected = false;
-        private bool detecting = false;
+        //private bool detecting = false;
         private bool machinecoord = true;
         private bool resetBlinking = false;
 
@@ -158,7 +158,7 @@ namespace CVEYEV1
 
             Init_Directory();
 
-            Init_Subform();
+            Init_Form();
 
             Init_Graphic();
         }
@@ -196,23 +196,28 @@ namespace CVEYEV1
 
                 // Start Mach3
                 Process.Start("Mach3.lnk");
-                Thread.Sleep(3000);
+                GetMach3Instance();
+
+                GetMach3Instance();
+                while (scriptObject == null)
+                {
+                    GetMach3Instance();
+                    Thread.Sleep(1);
+                }
 
                 // Send CVEye window to front
                 IntPtr hwnd = FindWindowByCaption(IntPtr.Zero, "CVEye");
                 SetForegroundWindow(hwnd);
 
+                Enabled = true;
+
                 // Link to CVEye directory
                 Directory.SetCurrentDirectory(mainDirectory);
 
-                GetMach3Instance();
                 if (scriptObject != null)
                 {
                     // Machine coordinate toggle
                     scriptObject.DoOEMButton(256);
-
-                    // Reset OEM
-                    //scriptObject.DoOEMButton(1021);
 
                     // set active status
                     if (scriptObject.IsActive(25) != 0)
@@ -364,7 +369,7 @@ namespace CVEYEV1
 
             if ((zSafe == 25.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
             {
-                //status_label.Text = "Painting Completed";
+                //status_label.Text = "Painting Completed"; 
                 status_label.Text = "Hoàn Tất Phun Sơn";
 
                 EnableButton(true);
@@ -409,8 +414,8 @@ namespace CVEYEV1
                 try
                 {
                     _capture = new VideoCapture();
-                    _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height); // pixels
-                    _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width); // pixels
+                    _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height);
+                    _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width); 
                     initCamera = true;
                 }
                 catch (NullReferenceException excpt)
@@ -520,9 +525,10 @@ namespace CVEYEV1
             SysData.Save("_system.xml");
         }
 
-        private void Init_Subform()
+        private void Init_Form()
         {
             Con_Painting_Point = new ConfigPaintingPoints();
+            Enabled = false;
         }
 
         private void Init_Graphic()
@@ -543,101 +549,110 @@ namespace CVEYEV1
                 // Capture current frame and convert to grayscale
                 _capture.Retrieve(frame_raw);
                 CvInvoke.CvtColor(frame_raw, frame_gray, ColorConversion.Bgr2Gray);
-                img_capture = frame_raw.ToImage<Bgr, byte>();
+                //img_capture = frame_raw.ToImage<Bgr, byte>();
 
-                // Calibration process
-                if (currentMode == Mode.SavingFrames)
+                using (img_draw)
+                using (img_capture_undist)
+                using (img_capture = frame_raw.ToImage<Bgr, byte>())
                 {
-                    find_chessboard = CvInvoke.FindChessboardCorners(frame_gray, pt_size, corners);
-
-                    if (find_chessboard)
+                    // Calibration process
+                    if (currentMode == Mode.SavingFrames)
                     {
-                        CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
+                        find_chessboard = CvInvoke.FindChessboardCorners(frame_gray, pt_size, corners);
 
-                        if (start_calib)
+                        if (find_chessboard)
                         {
-                            frame_array_buffer[frame_buffer_savepoint] = frame_gray;
-                            frame_buffer_savepoint++;
+                            CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
 
-                            //Check the state of buffer
-                            if (frame_buffer_savepoint == frame_array_buffer.Length)
+                            if (start_calib)
                             {
-                                start_calib = false;
-                                currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
+                                frame_array_buffer[frame_buffer_savepoint] = frame_gray;
+                                frame_buffer_savepoint++;
+
+                                //Check the state of buffer
+                                if (frame_buffer_savepoint == frame_array_buffer.Length)
+                                {
+                                    start_calib = false;
+                                    currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
+                                }
                             }
-                        }
-                        // Draw the found corners
-                        img_capture.Draw(new CircleF(corners[0], 10), new Bgr(Color.Yellow), 4);
-                        for (int i = 1; i < corners.Size; i++)
-                        {
-                            img_capture.Draw(new LineSegment2DF(corners[i - 1], corners[i]), new Bgr(Color.Blue), 3);
-                            img_capture.Draw(new CircleF(corners[i], 10), new Bgr(Color.Yellow), 4);
-                        }
-                        Thread.Sleep(1000);
-                    }
-                    corners = new VectorOfPointF();
-                    find_chessboard = false;
-                }
-
-                if (currentMode == Mode.Caluculating_Intrinsics)
-                {
-                    for (int k = 0; k < frame_array_buffer.Length; k++)
-                    {
-                        // Detect corners of each stored frame
-                        corners_point_vector[k] = new VectorOfPointF();
-                        CvInvoke.FindChessboardCorners(frame_array_buffer[k], pt_size, corners_point_vector[k]);
-
-                        // For accuracy 
-                        CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
-
-                        // Fill objects list with the real world mesurments for the intrinsic calculations
-                        List<MCvPoint3D32f> object_list = new List<MCvPoint3D32f>();
-                        for (int i = 0; i < pt_height; i++)
-                        {
-                            for (int j = 0; j < pt_width; j++)
+                            // Draw the found corners
+                            img_capture.Draw(new CircleF(corners[0], 10), new Bgr(Color.Yellow), 4);
+                            for (int i = 1; i < corners.Size; i++)
                             {
-                                object_list.Add(new MCvPoint3D32f(j * square_size, i * square_size, 0.0F));
+                                img_capture.Draw(new LineSegment2DF(corners[i - 1], corners[i]), new Bgr(Color.Blue), 3);
+                                img_capture.Draw(new CircleF(corners[i], 10), new Bgr(Color.Yellow), 4);
                             }
+                            Thread.Sleep(1000);
                         }
-
-                        corners_object_list[k] = object_list.ToArray();
-                        corners_point_list[k] = corners_point_vector[k].ToArray();
+                        corners = new VectorOfPointF();
+                        find_chessboard = false;
                     }
 
-                    double error = CvInvoke.CalibrateCamera(
-                        corners_object_list,
-                        corners_point_list,
-                        frame_gray.Size,
-                        cameraMat,
-                        distCoeffsMat,
-                        CalibType.RationalModel,
-                        new MCvTermCriteria(30, 0.05),
-                        out rvecs,
-                        out tvecs);
-                    currentMode = Mode.Calibrated;
+                    if (currentMode == Mode.Caluculating_Intrinsics)
+                    {
+                        for (int k = 0; k < frame_array_buffer.Length; k++)
+                        {
+                            // Detect corners of each stored frame
+                            corners_point_vector[k] = new VectorOfPointF();
+                            CvInvoke.FindChessboardCorners(frame_array_buffer[k], pt_size, corners_point_vector[k]);
 
-                    // Save Camera Calibration Matrices
-                    FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
-                    fs.Write(cameraMat, "Camera_Matrix");
-                    fs.Write(distCoeffsMat, "Distortion_Coefficients");
+                            // For accuracy 
+                            CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
+
+                            // Fill objects list with the real world mesurments for the intrinsic calculations
+                            List<MCvPoint3D32f> object_list = new List<MCvPoint3D32f>();
+                            for (int i = 0; i < pt_height; i++)
+                            {
+                                for (int j = 0; j < pt_width; j++)
+                                {
+                                    object_list.Add(new MCvPoint3D32f(j * square_size, i * square_size, 0.0F));
+                                }
+                            }
+
+                            corners_object_list[k] = object_list.ToArray();
+                            corners_point_list[k] = corners_point_vector[k].ToArray();
+                        }
+
+                        double error = CvInvoke.CalibrateCamera(
+                            corners_object_list,
+                            corners_point_list,
+                            frame_gray.Size,
+                            cameraMat,
+                            distCoeffsMat,
+                            CalibType.RationalModel,
+                            new MCvTermCriteria(30, 0.05),
+                            out rvecs,
+                            out tvecs);
+                        currentMode = Mode.Calibrated;
+
+                        // Save Camera Calibration Matrices
+                        FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
+                        fs.Write(cameraMat, "Camera_Matrix");
+                        fs.Write(distCoeffsMat, "Distortion_Coefficients");
+                    }
+
+                    if (currentMode == Mode.Calibrated)
+                    {
+                        // Apply Calibration
+                        Mat clone_frame = frame_raw.Clone();
+                        CvInvoke.Undistort(frame_raw, clone_frame, cameraMat, distCoeffsMat);
+
+                        frame_raw = clone_frame.Clone();
+                        img_capture_undist = frame_raw.ToImage<Bgr, byte>();
+                        //img_capture = img_capture_undist.Clone(); // uncomment when calibrating
+                        img_draw = img_capture_undist.Clone(); // comment when calibrating
+                        Draw_Grid(img_draw); // comment when calibrating
+
+                        clone_frame.Dispose();
+                    }
+
+                    // Show calibrated image
+                    pattern_field.Image = img_draw.Bitmap; // comment when calibrating
+                    //pattern_field.Image = img_capture.Bitmap; // uncomment when calibrating
                 }
-
-                if (currentMode == Mode.Calibrated)
-                {
-                    // Apply Calibration
-                    Mat clone_frame = frame_raw.Clone();
-                    CvInvoke.Undistort(frame_raw, clone_frame, cameraMat, distCoeffsMat);
-                    frame_raw = clone_frame.Clone();
-                    img_capture_undist = frame_raw.ToImage<Bgr, byte>();
-                    //img_capture = img_capture_undist.Clone(); // uncomment when calibrating
-                    img_draw = img_capture_undist.Clone(); // comment when calibrating
-                    Draw_Grid(img_draw); // comment when calibrating
-                }
-
-                // Show calibrated image
-                pattern_field.Image = img_draw.Bitmap; // comment when calibrating
-                //pattern_field.Image = img_capture.Bitmap; // uncomment when calibrating
-
+                frame_raw.Dispose();
+                frame_gray.Dispose();
             }
             catch
             {
@@ -1729,10 +1744,10 @@ namespace CVEYEV1
 
             switch (colorName)
             {
-                case "Đỏ":
+                case "Đen":
                     valve_num = 4;
                     break;
-                case "Đen":
+                case "Đỏ":
                     valve_num = 5;
                     break;
             }
@@ -1926,7 +1941,7 @@ namespace CVEYEV1
                     CvInvoke.Imwrite("pattern_field.jpg", img_capture_undist);
 
                     // Save image to image lib
-                    CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
+                    //CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
 
                     // Display
                     pattern_field.Image = img_draw.Bitmap;
@@ -1974,7 +1989,7 @@ namespace CVEYEV1
             pattern_field.Refresh(); // to remove the old text on camera window
             status_label.Refresh();
 
-            detecting = true;
+            //detecting = true;
 
             // Start detecting
             Detect_Pattern();
