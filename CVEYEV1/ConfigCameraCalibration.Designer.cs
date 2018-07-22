@@ -30,7 +30,6 @@
         {
             this.calib_image = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.calib_data = new System.Windows.Forms.ListBox();
             this.progressCalib = new System.Windows.Forms.ProgressBar();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -58,16 +57,6 @@
             this.label1.Size = new System.Drawing.Size(75, 16);
             this.label1.TabIndex = 79;
             this.label1.Text = "Calibration:";
-            // 
-            // calib_data
-            // 
-            this.calib_data.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.calib_data.FormattingEnabled = true;
-            this.calib_data.ItemHeight = 16;
-            this.calib_data.Location = new System.Drawing.Point(643, 514);
-            this.calib_data.Name = "calib_data";
-            this.calib_data.Size = new System.Drawing.Size(171, 100);
-            this.calib_data.TabIndex = 78;
             // 
             // progressCalib
             // 
@@ -119,7 +108,6 @@
             this.Controls.Add(this.button5);
             this.Controls.Add(this.progressCalib);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.calib_data);
             this.Controls.Add(this.calib_image);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ConfigCameraCalibration";
@@ -134,7 +122,6 @@
         #endregion
         public System.Windows.Forms.PictureBox calib_image;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.ListBox calib_data;
         private System.Windows.Forms.ProgressBar progressCalib;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
