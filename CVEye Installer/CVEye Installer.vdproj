@@ -261,6 +261,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F561797D85AB4850A1C71935828F14BA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_9F3C604E155148E8ACA4FD69285FBC66"
         "MsmSig" = "8:_UNDEFINED"
@@ -1186,6 +1192,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F561797D85AB4850A1C71935828F14BA"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\history.txt"
+            "TargetName" = "8:history.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_7602269F809447C8B15735E48CD0C8B7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }

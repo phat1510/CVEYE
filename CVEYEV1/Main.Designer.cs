@@ -67,7 +67,6 @@
             this.Reset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.Progress = new System.Windows.Forms.ProgressBar();
-            this.data_mor = new System.Windows.Forms.ListBox();
             this.status_label = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -514,15 +513,6 @@
             this.Progress.Size = new System.Drawing.Size(280, 22);
             this.Progress.TabIndex = 72;
             // 
-            // data_mor
-            // 
-            this.data_mor.FormattingEnabled = true;
-            this.data_mor.Location = new System.Drawing.Point(657, 601);
-            this.data_mor.Name = "data_mor";
-            this.data_mor.Size = new System.Drawing.Size(235, 95);
-            this.data_mor.TabIndex = 73;
-            this.data_mor.Visible = false;
-            // 
             // status_label
             // 
             this.status_label.AutoSize = true;
@@ -919,7 +909,6 @@
             this.ClientSize = new System.Drawing.Size(1350, 730);
             this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
-            this.Controls.Add(this.data_mor);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.Progress);
@@ -995,7 +984,6 @@
         private System.Windows.Forms.ToolStripMenuItem cameraCalibrationToolStripMenuItem;
         public System.Windows.Forms.ComboBox tmp_item_name;
         public System.Windows.Forms.PictureBox pattern_field;
-        public System.Windows.Forms.ListBox data_mor;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ToolStripMenuItem paintingConditionToolStripMenuItem;
         private System.Windows.Forms.Button RefAllHome;

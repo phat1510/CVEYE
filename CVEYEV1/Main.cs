@@ -243,7 +243,6 @@ namespace CVEYEV1
 
             if (scriptObject != null)
                 scriptObject.Code(macroName);
-            //else MessageBox.Show("Can not connect to Mach3.");
         }
 
         // 10 Hz Update DRO and some other task
@@ -535,7 +534,7 @@ namespace CVEYEV1
         private void Init_Form()
         {
             Con_Painting_Point = new ConfigPaintingPoints();
-            //Enabled = false;
+            Enabled = false;
         }
 
         private void Init_Graphic()
@@ -777,159 +776,131 @@ namespace CVEYEV1
 
         public void Detect_Pattern()
         {
-            //try
-            //{
-            // Tick time
-            Stopwatch watch = Stopwatch.StartNew();
-
-            // Clear list box
-            data_mor.Items.Clear();
-
-            // Initiate processing time
-            long rotation_time = watch.ElapsedMilliseconds;
-
-            // Load database
-            ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");
-            XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
-            XElement Parameters = SysData.Element("System").Element("PaintingConditionWindow").Element("Parameters");
-
-            // Call current item
-            ConfigPaintingPoints.get_item = ConfigPaintingPoints.dispensing_data.Element("Field")
-                .Elements("Item")
-                .Where(x => x.Element("Name").Value == tmp_item_name.Text)
-                .Single();
-
-            // List positions to list
-            List<XElement> point_list = ConfigPaintingPoints.get_item.Element("Points").Elements("Point").ToList();
-
-            // Get processing time
-            data_mor.Items.Add("Load XML:   " + (watch.ElapsedMilliseconds - rotation_time));
-            rotation_time = watch.ElapsedMilliseconds;
-
-            // Update progress bar
-            Progress.Value = 5;
-
-            // Filter and convert to binary image
-            //Frame_Analyze();
-
-            // Get processing time
-            data_mor.Items.Add("Source processing:   " + (watch.ElapsedMilliseconds - rotation_time));
-            rotation_time = watch.ElapsedMilliseconds;
-
-            // Update progress bar
-            Progress.Value = 10;
-
-            List<PointF> centerList = new List<PointF>();
-            List<double> angleList = new List<double>();
-
-            // Rotation center point
-            PointF rot_cen = new PointF(tmp_raw.Rows / 2, tmp_raw.Cols / 2);
-
-            // ROI size
-            Size roi_size = new Size(roi_dim, roi_dim);
-
-            // ROI location
-            Point roi_location = new Point();
-            Mat roi_rot = new Mat();
-            //Mat mat_edge = new Mat();
-            //img_gray.CopyTo(mat_edge);
-
-            //CvInvoke.Canny(img_gray, mat_edge,
-            //    double.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value) - 25,
-            //    double.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value) + 25, 5, true);
-            //CvInvoke.BitwiseNot(mat_edge, mat_edge);
-
-            // Get processing time
-            data_mor.Items.Add("Edge detection:   " + (watch.ElapsedMilliseconds - rotation_time));
-            rotation_time = watch.ElapsedMilliseconds;
-
-            // Update progress bar
-            Progress.Value = 15;
-
-            //using (Image<Gray, byte> img_edge = mat_edge.ToImage<Gray, byte>().Copy())
-            using (Mat img_gray = Frame_Analyze())
-            using (Image<Bgr, byte> img_items = img_capture_undist.Clone())
-            using (Image<Gray, byte> tmp_rot_dir = new Image<Gray, byte>(roi_dim, roi_dim))
-            using (gcode)            
+            using (StreamWriter logStream = new StreamWriter("history.txt", true))
             {
-                // Circle Hough Transform
-                CircleF[] img_circles = CvInvoke.HoughCircles(
-                    img_gray, // Array of circles data
-                    HoughType.Gradient,
-                    2,
-                    100,
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value));
+                logStream.WriteLine(DateTime.Now);
+                logStream.WriteLine(tmp_item_name.Text);
 
-                // Display number of items
-                num_of_items.Text = img_circles.Length.ToString();
+                // Tick time
+                Stopwatch watch = Stopwatch.StartNew();
+                // Initiate processing time
+                long currentTime = watch.ElapsedMilliseconds;
+
+                // Load database
+                ConfigPaintingPoints.dispensing_data = XDocument.Load("_database.xml");
+                XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
+                XElement Parameters = SysData.Element("System").Element("PaintingConditionWindow").Element("Parameters");
+
+                // Get current item painting points
+                ConfigPaintingPoints.get_item = ConfigPaintingPoints.dispensing_data.Element("Field")
+                    .Elements("Item")
+                    .Where(x => x.Element("Name").Value == tmp_item_name.Text)
+                    .Single();
+
+                // List painting points to list
+                List<XElement> point_list = ConfigPaintingPoints.get_item.Element("Points").Elements("Point").ToList();
 
                 // Get processing time
-                data_mor.Items.Add("Center detection:   " + (watch.ElapsedMilliseconds - rotation_time));
-                rotation_time = watch.ElapsedMilliseconds;
+                logStream.WriteLine("Load XML:   " + (watch.ElapsedMilliseconds - currentTime));
+                currentTime = watch.ElapsedMilliseconds;
                 // Update progress bar
-                Progress.Value = 20;
+                Progress.Value = 3;
 
-                for (int circle_num = 0; circle_num < img_circles.Length; circle_num++) // take the most memory
+                List<PointF> centerList = new List<PointF>();
+                List<double> angleList = new List<double>();
+
+                // Rotation center point
+                PointF rot_cen = new PointF(tmp_raw.Rows / 2, tmp_raw.Cols / 2);
+
+                // ROI size
+                Size roi_size = new Size(roi_dim, roi_dim);
+
+                // ROI location
+                Point roi_location = new Point();
+
+                using (Mat img_gray = Frame_Analyze())
+                using (Image<Bgr, byte> img_items = img_capture_undist.Clone())
+                using (Image<Gray, byte> tmp_rot_dir = new Image<Gray, byte>(roi_dim, roi_dim))
+                using (gcode)
                 {
-                    // 
-                    CircleF circle = img_circles[circle_num];
+                    // Get processing time
+                    logStream.WriteLine("Source processing:   " + (watch.ElapsedMilliseconds - currentTime));
+                    currentTime = watch.ElapsedMilliseconds;
+                    // Update progress bar
+                    Progress.Value = 5;
 
-                    // Inside painting mode
-                    if (Inside.Checked)
+                    // Circle Hough Transform
+                    CircleF[] img_circles = CvInvoke.HoughCircles(
+                        img_gray, // Array of circles data
+                        HoughType.Gradient,
+                        2,
+                        100,
+                        int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value),
+                        int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value),
+                        int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value),
+                        int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value));
+
+                    // Display number of items
+                    logStream.WriteLine("Num of Items:      " + img_circles.Length);
+                    num_of_items.Text = img_circles.Length.ToString();
+
+                    // Get processing time
+                    logStream.WriteLine("Center detection:   " + (watch.ElapsedMilliseconds - currentTime));
+                    currentTime = watch.ElapsedMilliseconds;
+                    // Update progress bar
+                    Progress.Value = 10;
+
+                    // 2D Rotation matrix
+                    Matrix<double> tmp_dst = new Matrix<double>(3, 3);
+
+                    for (int circle_num = 0; circle_num < img_circles.Length; circle_num++) // take the most memory
                     {
-                        // Cal ROI location
-                        roi_location = new Point((int)Math.Round(circle.Center.X) - roi_dim / 2,
-                                        (int)Math.Round(circle.Center.Y) - roi_dim / 2);
+                        // 
+                        CircleF circle = img_circles[circle_num];
 
-                        // Data allocation
-                        byte[] roiData = new byte[roi_dim * roi_dim];
-                        GCHandle handle = GCHandle.Alloc(roiData, GCHandleType.Pinned);
-                        using (Image<Gray,byte> src = img_threshold.ToImage<Gray,byte>())
-                        using (Image<Gray, byte> roi_getting_img = GetSourceROI(src, roi_location, roi_dim))
+                        // Inside painting mode
+                        if (Inside.Checked)
                         {
-                            CvInvoke.BitwiseNot(roi_getting_img, roi_getting_img);
+                            // Cal ROI location
+                            roi_location = new Point((int)Math.Round(circle.Center.X) - roi_dim / 2,
+                                            (int)Math.Round(circle.Center.Y) - roi_dim / 2);
 
-                            using (Mat tempMat = new Mat(roi_getting_img.Size, DepthType.Cv8U, 1, handle.AddrOfPinnedObject(), roi_getting_img.Width))
+                            // Data allocation
+                            byte[] roiData = new byte[roi_dim * roi_dim];
+                            GCHandle handle = GCHandle.Alloc(roiData, GCHandleType.Pinned);
+                            using (Image<Gray, byte> src = img_threshold.ToImage<Gray, byte>())
+                            using (Image<Gray, byte> roi_getting_img = GetSourceROI(src, roi_location, roi_dim))
                             {
-                                CvInvoke.BitwiseNot(roi_getting_img, tempMat);
-                                //CvInvoke.Imwrite("data/roi" + circle_num.ToString() + ".jpg", tempMat); // Sure!!!
-                            }
-                            handle.Free();
-                        }
+                                CvInvoke.BitwiseNot(roi_getting_img, roi_getting_img);
 
-                        rotation_time = watch.ElapsedMilliseconds;
-
-                        #region Estimate pattern direction [Input: tmp_raw - Output: get_angle] 
-
-                        // 2D Rotation matrix
-                        Matrix<double> tmp_dst = new Matrix<double>(3, 3);
-
-                        //
-                        int get_min = 0;
-                        CircleF get_circle = new CircleF();
-                        double get_angle = 0;
-                        //Image<Gray, byte> tmp_rot_img = new Image<Gray, byte>(new Size(roi_dim, roi_dim));
-
-                        // Data allocation
-
-
-                        // Find maching angle
-                        for (int cnt = 0; cnt < 360; cnt++)
-                        {
-                            // Specific value of each position
-                            int pixel_sum = 0;
-
-                            // Template rotation 
-                            using (Mat tmp_rot = new Mat())
-                            {
-                                CvInvoke.GetRotationMatrix2D(rot_cen, cnt, 1, tmp_dst);
-                                CvInvoke.WarpAffine(tmp_raw, tmp_rot, tmp_dst, tmp_raw.Size); // ~100 ms => it takes almost scanning time, we should improve
-
-                                using (Image<Gray, byte> tmp_rot_img = tmp_rot.ToImage<Gray, byte>())
+                                using (Mat tempMat = new Mat(roi_getting_img.Size, DepthType.Cv8U, 1, handle.AddrOfPinnedObject(), roi_getting_img.Width))
                                 {
+                                    CvInvoke.BitwiseNot(roi_getting_img, tempMat);
+                                    //CvInvoke.Imwrite("data/roi" + circle_num.ToString() + ".jpg", tempMat); // Sure!!!
+                                }
+                                handle.Free();
+                            }
+
+                            #region Estimate pattern direction [Input: tmp_raw - Output: get_angle] 
+
+                            // Maching value
+                            int get_min = 0;
+                            double get_angle = 0;
+                            CircleF get_circle = new CircleF();
+
+                            // Find maching angle
+                            for (int cnt = 0; cnt < 360; cnt = cnt + 1)
+                            {
+                                // Sum of pixels value, update each cycle
+                                int pixel_sum = 0;
+
+                                // Template rotation 
+                                using (Mat tmp_rot = new Mat())
+                                {
+                                    CvInvoke.GetRotationMatrix2D(rot_cen, cnt, 1, tmp_dst);
+                                    CvInvoke.WarpAffine(tmp_raw, tmp_rot, tmp_dst, tmp_raw.Size); // ~100 ms => it takes almost scanning time, we should improve
+
+                                    using (Image<Gray, byte> tmp_rot_img = tmp_rot.ToImage<Gray, byte>())
                                     using (Mat _tmp_rot = tmp_rot_img.Mat)
                                     {
                                         byte[] tmpData = new byte[roi_dim * roi_dim];
@@ -963,125 +934,119 @@ namespace CVEYEV1
                                                 get_angle = cnt;
                                             }
                                         }
-
                                     }
                                 }
                             }
+                            #endregion
+
+                            get_circle = new CircleF(circle.Center, circle.Radius);
+
+                            // Show detected items
+                            Draw_Matching(img_items, get_circle, get_angle);
+
+                            // Add data to list
+                            angleList.Add(get_angle);
+                            centerList.Add(circle.Center);
+
+                        }
+                        else
+                        {
+                            angleList.Add(0);
+                            centerList.Add(circle.Center);
+                            img_items.Draw(new CircleF(circle.Center, 52), new Bgr(Color.Red), 3);
                         }
 
-                        //data_mor.Items.Add("Template " + circle_num.ToString() + " :" + (watch.ElapsedMilliseconds - rotation_time));
-                        //rotation_time = watch.ElapsedMilliseconds;
-
-                        #endregion
-
-                        get_circle = new CircleF(circle.Center, circle.Radius);
-
-                        // Show detected items
-                        Draw_Matching(img_items, get_circle, get_angle);
-
-                        // Add data to list
-                        angleList.Add(get_angle);
-                        centerList.Add(circle.Center);
-
+                        // Update progress bar
+                        Progress.Value = 10 + ((circle_num + 1) * 100 / img_circles.Length) * 90 / 100;
+                        Progress.Refresh();
                     }
-                    else
+
+                    logStream.WriteLine("Template Maching:   " + (watch.ElapsedMilliseconds - currentTime));
+                    currentTime = watch.ElapsedMilliseconds;
+
+                    // Item sorting
+                    centerList = SortByDistance(centerList, angleList);
+                    //centerList = HelixSort(centerList);
+
+                    #region Macro of Painting Process
+                    int t = 0;
+                    foreach (PointF centerPoint in centerList)
                     {
-                        angleList.Add(0);
-                        centerList.Add(circle.Center);
-                        img_items.Draw(new CircleF(circle.Center, 52), new Bgr(Color.Red), 3);
-                    }
+                        // Calculate center coordinate
+                        double cen_X = xCompensate(centerPoint.X) + x_pixel_offset;
+                        double cen_Y = yCompensate(centerPoint.Y) + y_pixel_offset;
+                        PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
 
-                    // Update progress bar
-                    Progress.Value = 20 + ((circle_num + 1) * 100 / img_circles.Length) * 80 / 100;
-                    Progress.Refresh();
+                        // Global painting points rotation
+                        cenPoint = RotateFOV(cenPoint, 0.15);
+
+                        cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
+                        cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
+
+                        // Invert y axis direction
+                        cen_Y = -cen_Y;
+
+                        if (Inside.Checked)
+                        {
+                            //Show global painting points
+                            Real_PointsWarpAffine(point_list, centerPoint, angleListSort[t], img_items);
+
+                            //Gcode building
+                            Running_Procedure(ConfigPaintingPoints.affine_painting_points, (float)cen_X, (float)cen_Y, Parameters);
+                        }
+                        else
+                        {
+                            // Build gcode for circle painting
+                            Running_Circle((float)cen_X, (float)cen_Y, Parameters);
+                        }
+
+                        // Draw the tracking line
+                        if (t > 0)
+                            // Draw point to point
+                            img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
+                        else
+                            // Draw the start point
+                            img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
+
+                        t++;
+                    }
+                    #endregion
+
+                    #region Complete Painting Process
+
+                    // Return to z safe
+                    gcode.WriteLine("Code \"G00 Z" + Parameters.Attribute("zSafe").Value + "\"");
+                    Wait(50);
+
+                    // Turn off piston
+                    gcode.WriteLine("DeactivateSignal(OUTPUT6)");
+                    gcode.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
+
+                    //Return home
+                    gcode.WriteLine("Code \"G90 G54 G00 X-80 Y-430\"");
+                    gcode.Close();
+                    #endregion
+
+                    logStream.WriteLine("Macro buiding:   " + (watch.ElapsedMilliseconds - currentTime));
+
+                    // View result
+                    pattern_field.Image = img_items.Bitmap;
+                    pattern_field.Refresh();
+
+                    // Save detected items result
+                    //CvInvoke.Imwrite("result/1.img_capture_undist.jpg", img_capture_undist);
+                    //CvInvoke.Imwrite("result/2.img_gray.jpg", img_gray);
+                    //CvInvoke.Imwrite("result/3.img_edge_clone.jpg", img_edge_clone);
+                    CvInvoke.Imwrite("result/4.img_items.jpg", img_items);
+                    //CvInvoke.Imwrite("result/5.img_edge.jpg", mat_edge);
+                    //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
                 }
 
-                // Points sorting
-                centerList = SortByDistance(centerList, angleList);
-                //centerList = HelixSort(centerList);
-
-                #region Macro of Painting Process
-                int t = 0;
-                foreach (PointF centerPoint in centerList)
-                {
-                    // Calculate center coordinate
-                    double cen_X = xCompensate(centerPoint.X) + x_pixel_offset;
-                    double cen_Y = yCompensate(centerPoint.Y) + y_pixel_offset;
-                    PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-                    // Global painting points rotation
-                    cenPoint = RotateFOV(cenPoint, 0.15);
-
-                    cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
-                    cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
-
-                    // Invert y axis direction
-                    cen_Y = -cen_Y;
-
-                    if (Inside.Checked)
-                    {
-                        //Show global painting points
-                        Real_PointsWarpAffine(point_list, centerPoint, angleListSort[t], img_items);
-
-                        //Gcode building
-                        Running_Procedure(ConfigPaintingPoints.affine_painting_points, (float)cen_X, (float)cen_Y, Parameters);
-                    }
-                    else
-                    {
-                        // Build gcode for circle painting
-                        Running_Circle((float)cen_X, (float)cen_Y, Parameters);
-                    }
-
-                    // Draw the tracking line
-                    if (t > 0)
-                        // Draw point to point
-                        img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
-                    else
-                        // Draw the start point
-                        img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
-
-                    t++;
-                }
-                #endregion
-
-                #region Complete Painting Process
-
-                // Return to z safe
-                gcode.WriteLine("Code \"G00 Z" + Parameters.Attribute("zSafe").Value + "\"");
-                Wait(50);
-
-                // Turn off piston
-                gcode.WriteLine("DeactivateSignal(OUTPUT6)");
-                gcode.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
-
-                //Return home
-                gcode.WriteLine("Code \"G90 G54 G00 X-80 Y-430\"");
-                gcode.Close();
-                #endregion
-
-                // View result
-                pattern_field.Image = img_items.Bitmap;
-                pattern_field.Refresh();
-
-                // Save detected items result
-                //CvInvoke.Imwrite("result/1.img_capture_undist.jpg", img_capture_undist);
-                //CvInvoke.Imwrite("result/2.img_gray.jpg", img_gray);
-                //CvInvoke.Imwrite("result/3.img_edge_clone.jpg", img_edge_clone);
-                CvInvoke.Imwrite("result/4.img_items.jpg", img_items);
-                //CvInvoke.Imwrite("result/5.img_edge.jpg", mat_edge);
-                //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
+                // Tock timer
+                logStream.WriteLine("Total:     " + watch.ElapsedMilliseconds);
+                logStream.WriteLine("_________________________");
+                elapsed_time.Text = watch.ElapsedMilliseconds.ToString();
             }
-
-            // Release memory
-            roi_rot.Dispose();
-
-            // Tock timer
-            elapsed_time.Text = watch.ElapsedMilliseconds.ToString();
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show(e.Message);
-            //}
         }
 
         private List<PointF> sortedList(List<PointF> pointList)
@@ -1845,8 +1810,6 @@ namespace CVEYEV1
                         status_label.Text = "Camera Bật";
                         status_label.Refresh();
 
-                        data_mor.Items.Clear();
-
                         switchCamera = true;
                     }
                     else MessageBox.Show("Camera Đang Mở", "CVEye");
@@ -1912,38 +1875,45 @@ namespace CVEYEV1
 
         private void DetectClick(object sender, EventArgs e)
         {
-            first_item = true; // reset first item flag
+            try
+            {
+                first_item = true; // reset first item flag
 
-            // View captured image
-            pattern_field.Image = img_capture_undist.Bitmap;
-            pattern_field.Refresh();
+                // View captured image
+                pattern_field.Image = img_capture_undist.Bitmap;
+                pattern_field.Refresh();
 
-            // Create new mach3 macro
-            if (gcode != null)
-                gcode.Close();
-            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
+                // Create new mach3 macro
+                if (gcode != null)
+                    gcode.Close();
+                gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
 
-            // Reload XML
-            SysData = XDocument.Load("_system.xml");
+                // Reload XML
+                SysData = XDocument.Load("_system.xml");
 
-            // Update working status
-            //status_label.Text = "Detecting...";
+                // Update working status
+                //status_label.Text = "Detecting...";
 
-            status_label.Text = "Đang quét ảnh...";
-            pattern_field.Refresh(); // to remove the old text on camera window
-            status_label.Refresh();
+                status_label.Text = "Đang quét ảnh...";
+                pattern_field.Refresh(); // to remove the old text on camera window
+                status_label.Refresh();
 
-            //detecting = true;
+                //detecting = true;
 
-            // Start detecting
-            Detect_Pattern();
+                // Start detecting
+                Detect_Pattern();
 
-            // Update working status
-            //status_label.Text = "Detected";
-            status_label.Text = "Hoàn tất quét ảnh";
-            status_label.Refresh();
+                // Update working status
+                //status_label.Text = "Detected";
+                status_label.Text = "Hoàn tất quét ảnh";
+                status_label.Refresh();
 
-            detected = true;
+                detected = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ResetClick(object sender, EventArgs e)
@@ -2224,9 +2194,9 @@ namespace CVEYEV1
         {
             GetMach3Instance();
 
-            // Start Mach3
-            //if (mach3 == null)
-                //Init_Mach3();
+            //Start Mach3
+            if (mach3 == null)
+                Init_Mach3();
         }
 
         private void CVEye_Load(object sender, EventArgs e)
