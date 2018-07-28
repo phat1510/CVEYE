@@ -1346,7 +1346,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:CVEye"
+        "ProductName" = "8:CVEye (Beta)"
         "ProductCode" = "8:{B58022F5-8025-4DD3-B490-9496B6C02DAA}"
         "PackageCode" = "8:{7E856550-D7D3-4CB6-9898-B8A1411E87F8}"
         "UpgradeCode" = "8:{63AA392D-6279-43D1-A81F-B48A0B000C60}"
@@ -1365,7 +1365,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_3FBE1F8E0A2047C9BE2D0B31910882F0"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"

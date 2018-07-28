@@ -66,13 +66,15 @@ namespace CVEYEV1
         private VideoCapture _capture;
         private const int screen_height = 1944;
         private const int screen_width = 2592;
-        private const int pt_width = 50;
-        private const int pt_height = 38;
+        //private const int pt_width = 50;
+        //private const int pt_height = 38;
+        private const int pt_width = 48;
+        private const int pt_height = 36;
         private float square_size = 10f;
         private Size pt_size = new Size(pt_width, pt_height);
         private VectorOfPointF corners = new VectorOfPointF();
         private Bgr[] line_color_array = new Bgr[pt_width * pt_height];
-        private static Mat[] frame_array_buffer = new Mat[30];
+        private static Mat[] frame_array_buffer = new Mat[100];
         private int frame_buffer_savepoint = 0;
 
         public enum Mode
@@ -112,7 +114,8 @@ namespace CVEYEV1
 
         #region Miscellaneous
 
-        const int roi_dim = 110;
+        //const int roi_dim = 110;
+        const int roi_dim = 121;
 
         const float in_circle_radius = (float)11.9; //mm
 
@@ -413,7 +416,7 @@ namespace CVEYEV1
                     //Try to create the capture
                     try
                     {
-                        _capture = new VideoCapture();
+                        _capture = new VideoCapture(1);
                         _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height);
                         _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width);
 
@@ -534,7 +537,7 @@ namespace CVEYEV1
         private void Init_Form()
         {
             Con_Painting_Point = new ConfigPaintingPoints();
-            Enabled = false;
+            //Enabled = false;
         }
 
         private void Init_Graphic()
@@ -563,11 +566,14 @@ namespace CVEYEV1
                     // Calibration process
                     if (currentMode == Mode.SavingFrames)
                     {
+                        //status_label.Text = "Saving Frames";
+                        //status_label.Refresh();
+
                         find_chessboard = CvInvoke.FindChessboardCorners(frame_gray, pt_size, corners);
 
                         if (find_chessboard)
                         {
-                            CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
+                            CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
 
                             if (start_calib)
                             {
@@ -580,7 +586,11 @@ namespace CVEYEV1
                                     start_calib = false;
                                     currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
                                 }
+
+                                status_label.Text = "Frame: " + frame_buffer_savepoint.ToString() + "/" + frame_array_buffer.Length.ToString();
+                                status_label.Refresh();
                             }
+
                             // Draw the found corners
                             img_capture.Draw(new CircleF(corners[0], 10), new Bgr(Color.Yellow), 4);
                             for (int i = 1; i < corners.Size; i++)
@@ -592,8 +602,13 @@ namespace CVEYEV1
                             // Wait for chessboard moving
                             Thread.Sleep(100);
                         }
-                        corners = new VectorOfPointF();
-                        find_chessboard = false;
+                        else
+                        {
+                            corners = new VectorOfPointF();
+
+                            status_label.Text = "Cannot Detect Conners";
+                            status_label.Refresh();
+                        }                        
 
                         // View raw image
                         pattern_field.Image = img_capture.Bitmap;
@@ -602,6 +617,9 @@ namespace CVEYEV1
 
                     if (currentMode == Mode.Caluculating_Intrinsics)
                     {
+                        status_label.Text = "Caluculating Intrinsics...";
+                        status_label.Refresh();
+
                         for (int k = 0; k < frame_array_buffer.Length; k++)
                         {
                             // Detect corners of each stored frame
@@ -609,7 +627,7 @@ namespace CVEYEV1
                             CvInvoke.FindChessboardCorners(frame_array_buffer[k], pt_size, corners_point_vector[k]);
 
                             // For accuracy 
-                            CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.1));
+                            CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
 
                             // Fill objects list with the real world mesurments for the intrinsic calculations
                             List<MCvPoint3D32f> object_list = new List<MCvPoint3D32f>();
@@ -623,7 +641,14 @@ namespace CVEYEV1
 
                             corners_object_list[k] = object_list.ToArray();
                             corners_point_list[k] = corners_point_vector[k].ToArray();
+
+                            status_label.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
+                            status_label.Refresh();
                         }
+
+
+                        status_label.Text = "Getting Camera Matrices";
+                        status_label.Refresh();
 
                         double error = CvInvoke.CalibrateCamera(
                             corners_object_list,
@@ -638,9 +663,16 @@ namespace CVEYEV1
                         currentMode = Mode.Calibrated;
 
                         // Save Camera Calibration Matrices
+                        status_label.Text = "Saving Data";
+                        status_label.Refresh();
+                        Thread.Sleep(1000);
+
                         FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
                         fs.Write(cameraMat, "Camera_Matrix");
                         fs.Write(distCoeffsMat, "Distortion_Coefficients");
+
+                        status_label.Text = "Calibration Completed";
+                        status_label.Refresh();
                     }
 
                     if (currentMode == Mode.Calibrated)
@@ -737,6 +769,12 @@ namespace CVEYEV1
                         double.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value),
                         sigmaY, bordertype);
 
+                    //// Pyramid down and up filter
+                    //PyrFilter(img_capture_undist.Mat);
+                    //PyrFilter(img_capture_undist.Mat);
+                    //PyrFilter(img_capture_undist.Mat);
+                    //PyrFilter(img_capture_undist.Mat);
+
                     // Convert the image to grayscale
                     CvInvoke.CvtColor(img_blur, mat_gray, ColorConversion.Bgr2Gray);
 
@@ -769,6 +807,10 @@ namespace CVEYEV1
                         95,
                         1);
                 }
+                // Dilite threshold image
+                //var element = CvInvoke.GetStructuringElement(ElementShape.Cross, new Size(3, 3), new Point(-1, -1));
+                //CvInvoke.Dilate(img_threshold, img_threshold, element, new Point(-1, -1), 2, BorderType.Reflect, default(MCvScalar));
+                //CvInvoke.Erode(img_threshold, img_threshold, element, new Point(-1, -1), 2, BorderType.Reflect, default(MCvScalar));
 
                 return mat_gray;
             }
@@ -853,6 +895,8 @@ namespace CVEYEV1
                     // 2D Rotation matrix
                     Matrix<double> tmp_dst = new Matrix<double>(3, 3);
 
+                    double raSum = 0;
+
                     for (int circle_num = 0; circle_num < img_circles.Length; circle_num++) // take the most memory
                     {
                         // 
@@ -914,7 +958,7 @@ namespace CVEYEV1
                                         _handle.Free();
 
                                         // Get maching value
-                                        for (int i = 0; i < 12100; i++) // Taking 15 - 20 ms
+                                        for (int i = 0; i < 14641; i++) // Taking 15 - 20 ms
                                         {
                                             if (tmpData[i] == 0)
                                                 pixel_sum += roiData[i];
@@ -953,13 +997,22 @@ namespace CVEYEV1
                         {
                             angleList.Add(0);
                             centerList.Add(circle.Center);
-                            img_items.Draw(new CircleF(circle.Center, 52), new Bgr(Color.Red), 3);
+                            img_items.Draw(new CircleF(circle.Center, 60), new Bgr(Color.Red), 3);
                         }
+
+                        raSum = raSum + circle.Radius;
 
                         // Update progress bar
                         Progress.Value = 10 + ((circle_num + 1) * 100 / img_circles.Length) * 90 / 100;
                         Progress.Refresh();
                     }
+
+                    double raAvg = raSum / img_circles.Length;
+                    double scale = 31 / (2 * raAvg);
+
+                    logStream.WriteLine("raAvg:   " + raAvg);
+                    logStream.WriteLine("scale:   " + scale);
+
 
                     logStream.WriteLine("Template Maching:   " + (watch.ElapsedMilliseconds - currentTime));
                     currentTime = watch.ElapsedMilliseconds;
@@ -978,10 +1031,11 @@ namespace CVEYEV1
                         PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
 
                         // Global painting points rotation
-                        cenPoint = RotateFOV(cenPoint, 0.15);
+                        double dirCom = 0.15;
+                        cenPoint = RotateFOV(cenPoint, dirCom);
 
-                        cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
-                        cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
+                        cen_X = Math.Round(cenPoint.X * scale, 3);
+                        cen_Y = Math.Round(cenPoint.Y * scale, 3);
 
                         // Invert y axis direction
                         cen_Y = -cen_Y;
@@ -1001,12 +1055,12 @@ namespace CVEYEV1
                         }
 
                         // Draw the tracking line
-                        if (t > 0)
-                            // Draw point to point
-                            img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
-                        else
-                            // Draw the start point
-                            img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
+                        //if (t > 0)
+                        //    // Draw point to point
+                        //    img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
+                        //else
+                        //    // Draw the start point
+                        //    img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
 
                         t++;
                     }
@@ -1331,7 +1385,7 @@ namespace CVEYEV1
 
             VectorOfPointF corner_set = new VectorOfPointF();
             Mat sample_frame = new Mat();
-            Size sample_size = new Size(50, 38);
+            Size sample_size = new Size(pt_width, pt_height);
 
             // Convert BGR to GRAY image
             CvInvoke.CvtColor(sample, sample_frame, ColorConversion.Bgr2Gray);
@@ -1339,16 +1393,31 @@ namespace CVEYEV1
             // Find corners on chess board image
             if (CvInvoke.FindChessboardCorners(sample_frame, sample_size, corner_set))
                 CvInvoke.CornerSubPix(sample_frame, corner_set, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
+            else
+                MessageBox.Show("Cannot Find Corners", "CVEye");
 
-            //
+            // Initialize some variables
             int ref_num = 1;
             byte point_index = 0;
             PointF[] com_point = new PointF[2]; // compensation point
             double slope, intercept;
-            byte getRow = 19;
-            byte getCol = 25;
+
+            //byte getCol = 25;
+            //byte getRow = 19;  
+
+            float squareSize = (float)52.08;
+            byte getCol = pt_width / 2;
+            byte getRow = pt_height / 2;
 
             // Find XAxis node
+            //section = SysData.Element("System")
+            //.Elements("CameraCalibrationWindow")
+            //.Elements("Compensation")
+            //.Elements("Section")
+            //.Where(x => x.Element("Name").Value == "XAxis")
+            //.Single();
+            //section.Element("Data").RemoveAll();
+
             section = SysData.Element("System")
             .Elements("CameraCalibrationWindow")
             .Elements("Compensation")
@@ -1357,14 +1426,84 @@ namespace CVEYEV1
             .Single();
             section.Element("Data").RemoveAll();
 
-            for (int i = 50 * getRow; i < 50 * getRow + 50; i++)
+
+            // New variable
+            PointF[] rowComPoint = new PointF[2];
+            PointF[] colComPoint = new PointF[2];
+
+            using (StreamWriter logStream = new StreamWriter("history.txt"))
+            {
+                // Scan all corner points
+                for (int col = 0; col < pt_width; col++) // column scan                
+                {
+                    if (col >= 1)
+                    {
+                        logStream.WriteLine("Column:    " + col);
+
+                        for (int row = 0; row < pt_height; row++) // row scan
+                        {
+                            // Corner index of array
+                            byte rowOri = pt_height / 2;
+                            int cornerPosOri = pt_width * rowOri + col;
+                            int cornerPos = pt_width * row + col;
+
+                            // Calculate stretch error
+                            rowComPoint[point_index].X = corner_set[cornerPosOri].Y + squareSize * row - squareSize * rowOri; // ref
+                            float err = corner_set[cornerPos].Y - rowComPoint[point_index].X;
+                            rowComPoint[point_index].Y = err;
+
+                            if (point_index > 0)
+                            {
+                                // a = (y0 - y1)/(x0 - x1)
+                                slope = (rowComPoint[point_index - 1].Y - rowComPoint[point_index].Y) / (0 - squareSize);
+
+                                // b = (x0y1 - x1y0)/(x0 - x1)
+                                intercept = (0 * rowComPoint[point_index].Y - squareSize * rowComPoint[point_index - 1].Y) / (0 - squareSize);
+
+                                slope = Math.Round(slope, 4);
+                                intercept = Math.Round(intercept, 4);
+
+                                // Draw something
+                                sample.Draw(new Cross2DF(corner_set[cornerPos], 10, 10), new Bgr(Color.Red), 2);
+                                sample.Draw(cornerPos.ToString(), new Point((int)corner_set[cornerPos].X - 10, (int)corner_set[cornerPos].Y - 10), FontFace.HersheyPlain, 1.2, new Bgr(Color.GreenYellow), 1);
+
+                                // Test
+                                //logStream.WriteLine(((row == 1) ? 0 : rowComPoint[point_index - 1].X) + " " + slope + "   " + intercept + "    " + ((row == pt_height - 1) ? 1944 : rowComPoint[point_index].X));
+
+                                //section.Element("Data").Add(new XElement("Segment",
+                                //    new XAttribute("start", (row == 1) ? 0 : rowComPoint[point_index - 1].X)),
+                                //    new XAttribute("slope", slope),
+                                //    new XAttribute("intercept", intercept),
+                                //    new XAttribute("stop", ((row == pt_height - 1) ? 1944 : rowComPoint[point_index].X)));
+                                //SysData.Save("_system.xml");
+
+                                // Update previous value
+                                rowComPoint[point_index - 1] = rowComPoint[point_index];
+                                point_index = 0;
+                            }
+                            point_index++;
+                        }
+                    }
+
+                    // Reset var
+                    rowComPoint = new PointF[2];
+                    point_index = 0;
+                }
+            }
+
+            
+
+            return;
+
+            for (int i = pt_width * getRow; i < pt_width * getRow + pt_width; i++)
             {
                 // Draw detected corners from left to right
-                sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
-                sample.Draw(new LineSegment2DF(new PointF(corner_set[50 * getRow + getCol].X + (float)47.8 * (getCol - ref_num - 1), 0), new PointF(corner_set[50 * getRow + getCol].X + (float)47.8 * (getCol - ref_num - 1), 1944)), ((getCol - ref_num - 1) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
+                //sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
+                sample.Draw(new Cross2DF(corner_set[i], 10, 10), new Bgr(Color.Red), 2);
+                sample.Draw(new LineSegment2DF(new PointF(corner_set[pt_width * getRow + getCol].X + squareSize * (getCol - ref_num), 0), new PointF(corner_set[pt_width * getRow + getCol].X + squareSize * (getCol - ref_num), 1944)), ((getCol - ref_num) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
 
                 // Calculate stretch error
-                com_point[point_index].X = corner_set[50 * getRow + getCol].X + (float)47.8 * (ref_num - 1 - getCol);
+                com_point[point_index].X = corner_set[pt_width * getRow + getCol].X + squareSize * (ref_num - getCol - 1);
                 float err = corner_set[i].X - com_point[point_index].X;
                 com_point[point_index].Y = err;
 
@@ -1381,10 +1520,10 @@ namespace CVEYEV1
                     intercept = Math.Round(intercept, 3);
 
                     section.Element("Data").Add(new XElement("Line",
-                    new XAttribute("start", (i == 50 * getRow + 1) ? 0 : com_point[point_index - 1].X),
+                    new XAttribute("start", (i == pt_width * getRow + 1) ? 0 : com_point[point_index - 1].X),
                     new XAttribute("slope", slope),
                     new XAttribute("intercept", intercept),
-                    new XAttribute("stop", (i == 50 * getRow + 49) ? 2592 : com_point[point_index].X)));
+                    new XAttribute("stop", (i == pt_width * getRow + (pt_width - 1)) ? 2592 : com_point[point_index].X)));
 
                     com_point[point_index - 1] = com_point[point_index];
                     point_index = 0;
@@ -1404,15 +1543,18 @@ namespace CVEYEV1
             section.Element("Data").RemoveAll();
 
             ref_num = 1;
-            for (int i = getCol; i < getCol + 50 * 38; i = i + 50)
+            point_index = 0;
+            //for (int i = getCol; i < getCol + 50 * 38; i = i + 50)
+            for (int i = getCol; i < getCol + pt_width * pt_height; i = i + pt_width)
             {
                 // Draw detected corners from top to bottom
-                // form getCol to getCol + 50 * 37
-                sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
-                sample.Draw(new LineSegment2DF(new PointF(0, corner_set[getCol + getRow * 50].Y + (float)47.8 * (getRow - ref_num)), new PointF(2592, corner_set[getCol + getRow * 50].Y + (float)47.8 * (getRow - ref_num))), ((getRow - ref_num) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
+                // from getCol to getCol + 50 * 37
+                //sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
+                sample.Draw(new Cross2DF(corner_set[i], 10, 10), new Bgr(Color.Red), 2);
+                sample.Draw(new LineSegment2DF(new PointF(0, corner_set[getCol + getRow * pt_width].Y + squareSize * (getRow - ref_num)), new PointF(2592, corner_set[getCol + getRow * pt_width].Y + squareSize * (getRow - ref_num))), ((getRow - ref_num) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
 
                 // Calculate stretch error
-                com_point[point_index].X = corner_set[getCol + getRow * 50].Y + (float)47.8 * (ref_num - getRow - 1);
+                com_point[point_index].X = corner_set[getCol + getRow * pt_width].Y + squareSize * (ref_num - getRow - 1);
                 float err = corner_set[i].Y - com_point[point_index].X;
                 com_point[point_index].Y = err;
 
@@ -1429,10 +1571,10 @@ namespace CVEYEV1
                     intercept = Math.Round(intercept, 3);
 
                     section.Element("Data").Add(new XElement("Line",
-                    new XAttribute("start", (i == getCol) ? 0 : com_point[point_index - 1].X),
+                    new XAttribute("start", (i == getCol + pt_width) ? 0 : com_point[point_index - 1].X),
                     new XAttribute("slope", slope),
                     new XAttribute("intercept", intercept),
-                    new XAttribute("stop", (i == getCol + 50 * 38 - 50) ? 1944 : com_point[point_index].X)));
+                    new XAttribute("stop", (i == getCol + pt_width * pt_height - pt_width) ? 1944 : com_point[point_index].X)));
 
                     com_point[point_index - 1] = com_point[point_index];
                     point_index = 0;
@@ -1447,8 +1589,8 @@ namespace CVEYEV1
             // For G54 calibration
 
             // Calculate center coordinate
-            double cen_X = xCompensate(corner_set[50 * getRow + getCol].X) + x_pixel_offset;
-            double cen_Y = yCompensate(corner_set[50 * getRow + getCol].Y) + y_pixel_offset;
+            double cen_X = xCompensate(corner_set[pt_width * getRow + getCol].X) + x_pixel_offset;
+            double cen_Y = yCompensate(corner_set[pt_width * getRow + getCol].Y) + y_pixel_offset;
 
             PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
 
@@ -1483,8 +1625,8 @@ namespace CVEYEV1
             foreach (XElement element in point_list)
             {
                 // Convert pixel to mm
-                X = Math.Round((Points[j].X - 42.0) * ConfigPaintingPoints.real_accuracy, 3);
-                Y = -Math.Round((Points[j].Y + 7.0) * ConfigPaintingPoints.real_accuracy, 3);
+                X = Math.Round((Points[j].X + x_pixel_offset) * ConfigPaintingPoints.real_accuracy, 3); //
+                Y = -Math.Round((Points[j].Y + y_pixel_offset) * ConfigPaintingPoints.real_accuracy, 3); //
 
                 //--------------------- Build Gcode-------------------
 
@@ -1677,7 +1819,7 @@ namespace CVEYEV1
 
         private void Draw_Matching(Image<Bgr, byte> Input, CircleF circle, double angle)
         {
-            int line_width = 3;
+            int line_width = 2;
 
             if (((int)(circle.Center.X + circle.Radius) < Input.Size.Width + 1 || (int)(circle.Center.X - circle.Radius) > 1) &&
                ((int)(circle.Center.Y + circle.Radius) < Input.Size.Height + 1 || (int)(circle.Center.Y - circle.Radius) > 1))
@@ -1696,16 +1838,17 @@ namespace CVEYEV1
 
         public static void Draw_Grid(Image<Bgr, byte> Input)
         {
-            const double _scale = 47.8; // pixels per 10 mm
+            const double _scale = 52.08; // pixels per 10 mm
             LineSegment2DF vertical = new LineSegment2DF();
             LineSegment2DF horizontal = new LineSegment2DF();
 
             // Vertical lines
-            for (int i = 1; i < 56; i++)
+            byte vline_num = 48;
+            for (int i = 1; i < vline_num; i++)
             {
-                vertical.P1 = new PointF(screen_width / 2 + (float)_scale * (i - 28), 0);
-                vertical.P2 = new PointF(screen_width / 2 + (float)_scale * (i - 28), screen_height);
-                if (i == 28)
+                vertical.P1 = new PointF(screen_width / 2 + (float)_scale * (i - vline_num / 2), 0);
+                vertical.P2 = new PointF(screen_width / 2 + (float)_scale * (i - vline_num / 2), screen_height);
+                if (i == vline_num / 2)
                 {
                     Input.Draw(vertical, new Bgr(Color.Red), 2);
                 }
@@ -1716,11 +1859,12 @@ namespace CVEYEV1
             }
 
             // Horizontal lines
-            for (int i = 0; i < 42; i++)
+            byte hline_num = 36;
+            for (int i = 0; i < hline_num; i++)
             {
-                horizontal.P1 = new PointF(0, screen_height / 2 + (float)_scale * (i - 20));
-                horizontal.P2 = new PointF(screen_width, screen_height / 2 + (float)_scale * (i - 20));
-                if (i == 20)
+                horizontal.P1 = new PointF(0, screen_height / 2 + (float)_scale * (i - hline_num / 2 - 1));
+                horizontal.P2 = new PointF(screen_width, screen_height / 2 + (float)_scale * (i - hline_num / 2 - 1));
+                if (i == hline_num / 2 + 1)
                 {
                     Input.Draw(horizontal, new Bgr(Color.Red), 2);
                 }
@@ -2192,11 +2336,11 @@ namespace CVEYEV1
 
         private void CVEye_Shown(object sender, EventArgs e)
         {
-            GetMach3Instance();
+            //GetMach3Instance();
 
-            //Start Mach3
-            if (mach3 == null)
-                Init_Mach3();
+            ////Start Mach3
+            //if (mach3 == null)
+            //    Init_Mach3();
         }
 
         private void CVEye_Load(object sender, EventArgs e)
@@ -2230,6 +2374,39 @@ namespace CVEYEV1
         private void ColorChanged(object sender, EventArgs e)
         {
             valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //using (img_capture_undist)
+            {
+                //CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(121, 121));
+                //CvInvoke.Threshold(img_capture_undist, img_threshold, 200, 255, ThresholdType.Binary);
+                ////img_threshold.ConvertTo(img_threshold, DepthType.Cv8U);
+                //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
+                CvInvoke.PyrDown(img_capture_undist, img_capture_undist, BorderType.Default);
+                CvInvoke.Imwrite("result/PyrDown.jpg", img_capture_undist);
+            }
+
+        }
+
+        private void PyrFilter(Mat src)
+        {
+            CvInvoke.PyrDown(src, src, BorderType.Default);
+            CvInvoke.PyrUp(src, src, BorderType.Default);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            using (Image<Bgr, byte> drawImg = CVEye.img_capture_undist.Clone())
+            {
+                //
+                CVEye.PixelsCompensation(drawImg);
+                CVEye.Draw_Grid(drawImg);
+                pattern_field.Image = drawImg.Bitmap;
+                pattern_field.Refresh();
+                CvInvoke.Imwrite("result/4.img_items.jpg", drawImg);
+            }
         }
 
         private void TimerDROupdate_Tick(object sender, EventArgs e)

@@ -39,10 +39,10 @@
             this.Cancel = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.min_ra = new System.Windows.Forms.NumericUpDown();
             this.max_ra = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.min_ra = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -57,8 +57,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.houge_param2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.min_ra)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_ra)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.min_ra)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -228,30 +228,12 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(218, 120);
             this.tableLayoutPanel1.TabIndex = 65;
             // 
-            // min_ra
-            // 
-            this.min_ra.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.min_ra.Location = new System.Drawing.Point(158, 63);
-            this.min_ra.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.min_ra.Name = "min_ra";
-            this.min_ra.Size = new System.Drawing.Size(49, 22);
-            this.min_ra.TabIndex = 66;
-            this.min_ra.Value = new decimal(new int[] {
-            73,
-            0,
-            0,
-            0});
-            // 
             // max_ra
             // 
             this.max_ra.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.max_ra.Location = new System.Drawing.Point(158, 93);
             this.max_ra.Maximum = new decimal(new int[] {
-            200,
+            2000,
             0,
             0,
             0});
@@ -264,6 +246,17 @@
             0,
             0});
             // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(3, 97);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(119, 16);
+            this.label1.TabIndex = 65;
+            this.label1.Text = "Max Circle Radius:";
+            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -275,16 +268,23 @@
             this.label2.TabIndex = 66;
             this.label2.Text = "Min Circle Radius:";
             // 
-            // label1
+            // min_ra
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 97);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 16);
-            this.label1.TabIndex = 65;
-            this.label1.Text = "Max Circle Radius:";
+            this.min_ra.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.min_ra.Location = new System.Drawing.Point(158, 63);
+            this.min_ra.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.min_ra.Name = "min_ra";
+            this.min_ra.Size = new System.Drawing.Size(49, 22);
+            this.min_ra.TabIndex = 66;
+            this.min_ra.Value = new decimal(new int[] {
+            73,
+            0,
+            0,
+            0});
             // 
             // groupBox2
             // 
@@ -439,8 +439,8 @@
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.min_ra)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.max_ra)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.min_ra)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);

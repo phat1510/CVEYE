@@ -34,7 +34,7 @@ namespace CVEYEV1
 
         private double x_real_pos, y_real_pos;
         private int x_axis, y_axis;
-        public static double real_tmp_size = 110;
+        public static double real_tmp_size = 121;
         public static double raw_tmp_size = 430;
         public static double scale = Math.Round(real_tmp_size / raw_tmp_size, 4);
         public static string data_path = "_database.xml";
@@ -48,7 +48,7 @@ namespace CVEYEV1
         public static XDocument dispensing_data;
         public static XElement get_item;
 
-        public static double real_accuracy = 0.209; // mm per pixel // change from 0.213 to 0.209
+        public static double real_accuracy = 0.192; // mm per pixel // change from 0.213 to 0.209
 
         private bool clear =  false;
         private bool first_start = false;

@@ -99,6 +99,8 @@
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
             this.machStatus = new System.Windows.Forms.Label();
             this.lockCylinder = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
@@ -411,6 +413,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button4);
             this.groupBox1.Controls.Add(this.tableLayoutPanel4);
             this.groupBox1.Controls.Add(this.Outside);
             this.groupBox1.Controls.Add(this.tableLayoutPanel2);
@@ -519,7 +522,7 @@
             this.status_label.BackColor = System.Drawing.Color.Black;
             this.status_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.status_label.ForeColor = System.Drawing.Color.Chartreuse;
-            this.status_label.Location = new System.Drawing.Point(14, 38);
+            this.status_label.Location = new System.Drawing.Point(12, 706);
             this.status_label.Margin = new System.Windows.Forms.Padding(3);
             this.status_label.Name = "status_label";
             this.status_label.Size = new System.Drawing.Size(99, 20);
@@ -884,7 +887,7 @@
             // 
             this.machStatus.AutoSize = true;
             this.machStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.machStatus.Location = new System.Drawing.Point(12, 710);
+            this.machStatus.Location = new System.Drawing.Point(331, 710);
             this.machStatus.Name = "machStatus";
             this.machStatus.Size = new System.Drawing.Size(29, 16);
             this.machStatus.TabIndex = 78;
@@ -902,11 +905,34 @@
             this.lockCylinder.UseVisualStyleBackColor = true;
             this.lockCylinder.Click += new System.EventHandler(this.lockCylinderClick);
             // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(777, 57);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(104, 30);
+            this.button3.TabIndex = 9;
+            this.button3.Text = "Build tmp";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(6, 449);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(104, 30);
+            this.button4.TabIndex = 82;
+            this.button4.Text = "Compensate";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
             this.Controls.Add(this.groupBox2);
@@ -923,7 +949,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CVEye";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "CVEye";
+            this.Text = "CVEye (Beta)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CVEye_Closing);
             this.Load += new System.EventHandler(this.CVEye_Load);
             this.Shown += new System.EventHandler(this.CVEye_Shown);
@@ -1022,6 +1048,8 @@
         private System.Windows.Forms.PictureBox ledY;
         private System.Windows.Forms.PictureBox ledX;
         private System.Windows.Forms.Button lockCylinder;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
 
