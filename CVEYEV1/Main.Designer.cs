@@ -60,6 +60,7 @@
             this.item_color = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
@@ -100,7 +101,6 @@
             this.machStatus = new System.Windows.Forms.Label();
             this.lockCylinder = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
@@ -427,6 +427,17 @@
             this.groupBox1.TabIndex = 65;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(9, 445);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(104, 30);
+            this.button4.TabIndex = 82;
+            this.button4.Text = "Compensate";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // tableLayoutPanel4
             // 
@@ -915,17 +926,6 @@
             this.button3.Text = "Build tmp";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(6, 449);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(104, 30);
-            this.button4.TabIndex = 82;
-            this.button4.Text = "Compensate";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // CVEye
             // 

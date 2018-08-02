@@ -208,7 +208,7 @@ namespace CVEYEV1
                 }
 
                 // Send CVEye window to front
-                IntPtr CVEyeWindow = FindWindowByCaption(IntPtr.Zero, "CVEye");
+                IntPtr CVEyeWindow = FindWindowByCaption(IntPtr.Zero, "CVEye (Beta)");
                 SetForegroundWindow(CVEyeWindow);
 
                 // Enable main form after Mach3 is ready
@@ -298,6 +298,7 @@ namespace CVEYEV1
                     {
                         machStatus.Text = "Chế Độ Khẩn Cấp";
                         machStatus.Refresh();
+
 
                         EnableButton(true);
                     }
@@ -718,18 +719,27 @@ namespace CVEYEV1
             // Reset number of points
             ConfigPaintingPoints.point_num = 0;
 
+            // Rotation center compensation
+            float xRotCenter = (float)xCompensate(rot_center);
+            float yRotCenter = (float)yCompensate(rot_center);
+
+            // translation -> rotation -> translation
             foreach (XElement element in point_list)
             {
-                // translation -> rotation -> translation
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X = (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle))) + rot_center.X;
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y = (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle))) + rot_center.Y;
+                // Compute camera points
+                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X =
+                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle))) + rot_center.X;
+                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y =
+                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle))) + rot_center.Y;
 
-                //draw_image_bgr.Draw(new CircleF(Config_Painting_Point.affine_painting_points[Config_Painting_Point.point_num], 1), new Bgr(Color.Red), 2);
+                // For checking
                 draw_image_bgr.Draw(new Cross2DF(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num], 2, 2), new Bgr(Color.Red), 1);
 
-                // Compensate x, y coordinate
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X = (float)xCompensate(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X);
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y = (float)yCompensate(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y);
+                // Compute machine points
+                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X =
+                (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle))) + xRotCenter;
+                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y =
+                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle))) + yRotCenter;
 
                 // Matching camera coordinate with machine coordinate
                 ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num] = RotateFOV(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num], 0.15);
@@ -1026,8 +1036,8 @@ namespace CVEYEV1
                     foreach (PointF centerPoint in centerList)
                     {
                         // Calculate center coordinate
-                        double cen_X = xCompensate(centerPoint.X) + x_pixel_offset;
-                        double cen_Y = yCompensate(centerPoint.Y) + y_pixel_offset;
+                        double cen_X = xCompensate(centerPoint) + x_pixel_offset;
+                        double cen_Y = yCompensate(centerPoint) + y_pixel_offset;
                         PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
 
                         // Global painting points rotation
@@ -1077,7 +1087,7 @@ namespace CVEYEV1
                     gcode.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
 
                     //Return home
-                    gcode.WriteLine("Code \"G90 G54 G00 X-80 Y-430\"");
+                    gcode.WriteLine("Code \"G90 G54 G00 X-90 Y-400\"");
                     gcode.Close();
                     #endregion
 
@@ -1093,7 +1103,7 @@ namespace CVEYEV1
                     //CvInvoke.Imwrite("result/3.img_edge_clone.jpg", img_edge_clone);
                     CvInvoke.Imwrite("result/4.img_items.jpg", img_items);
                     //CvInvoke.Imwrite("result/5.img_edge.jpg", mat_edge);
-                    //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
+                    CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
                 }
 
                 // Tock timer
@@ -1177,35 +1187,13 @@ namespace CVEYEV1
         public void TemplateGraph(Mat template)
         {
             ConfigPaintingPoints.dispensing_data = XDocument.Load(ConfigPaintingPoints.data_path);
+
             ConfigPaintingPoints.get_item = ConfigPaintingPoints.dispensing_data.Element("Field")
                 .Elements("Item")
                 .Where(x => x.Element("Name").Value == tmp_item_name.Text)
                 .Single();
+
             ConfigPaintingPoints.get_item.Element("PixelsPosition").RemoveAll();
-
-            //int k = 0;
-            //int index = 0;
-
-            //for (int i = 0; i < template.Rows; i++)
-            //{
-            //    for (int j = 0; j < template.Cols; j++)
-            //    {
-            //        index = (i - 50) * (i - 50) + (j - 50) * (j - 50);
-            //        // Check inside pattern and check inside observed circle
-            //        if (index < 2500)
-            //        {
-            //            if (template.ToImage<Gray, byte>().Data[i, j, 0] == 0)
-            //            {
-
-            //                Config_Painting_Point.get_item.Element("PixelsPosition").Add(new XElement("Pos",
-            //                    new XAttribute("No.", k),
-            //                    new XAttribute("Row", i),
-            //                    new XAttribute("Col", j)));
-            //            }
-            //        }
-            //        k++;
-            //    }
-            //}
 
             ConfigPaintingPoints.dispensing_data.Save(ConfigPaintingPoints.data_path);
         }
@@ -1317,63 +1305,86 @@ namespace CVEYEV1
             return smallestDistance.Value;
         }
 
-        // Compensate x axis value
-        public static double xCompensate(double x)
+        public static bool CheckInside(PointF point)
         {
-            SysData = XDocument.Load("_system.xml");
-            XElement dataX;
+            bool inside = false;
 
-            // Get left node
-            dataX = SysData.Element("System")
-                    .Elements("CameraCalibrationWindow")
-                    .Elements("Compensation")
-                    .Elements("Section")
-                    .Where(j => j.Element("Name").Value == "XAxis")
-                    .Single();
-            dataX = dataX.Element("Data");
-            List<XElement> XList = dataX.Elements("Line").ToList();
+            if ((point.Y <= screen_height) && (point.Y >= 0) && (point.X <= screen_width) && (point.X >= 0))
+            {
+                inside = true;
+            }
 
+            return inside;
+        }
+
+        // Compensate x axis value
+        public static double xCompensate(PointF point)
+        {
             double value = 0;
 
-            // Compensation loop
-            foreach (XElement element in XList)
+            if (CheckInside(point))
             {
-                if (x >= double.Parse(element.Attribute("start").Value) && x < double.Parse(element.Attribute("stop").Value))
-                {
-                    value = x - (x * double.Parse(element.Attribute("slope").Value) +
-                                     double.Parse(element.Attribute("intercept").Value));
-                }
+                XElement dataX;
+
+                // Get left node
+                dataX = SysData.Element("System")
+                        .Element("CameraCalibrationWindow")
+                        .Element("xCompensation");
+
+                //
+                dataX = dataX.Elements("Row").
+                    Where(j => ((float.Parse(j.Element("rowSegment").Attribute("start").Value) <= point.Y) &&
+                    (float.Parse(j.Element("rowSegment").Attribute("end").Value) > point.Y))).
+                    Single();
+
+                //
+                dataX = dataX.Elements("colSegment").Where(j => ((float.Parse(j.Attribute("start").Value) <= point.X) &&
+                (float.Parse(j.Attribute("stop").Value) > point.X))).
+                Single();
+
+                // Compute compensated value
+                value = point.X - ((point.X - float.Parse(dataX.Attribute("start").Value)) * double.Parse(dataX.Attribute("slope").Value) +
+                                 double.Parse(dataX.Attribute("intercept").Value));
+                //logStream.WriteLine(value);
             }
+
+            else MessageBox.Show("Out of compensation range", "CVEye");
+
             return value;
         }
 
         // Compensate y axis value
-        public static double yCompensate(double y)
+        public static double yCompensate(PointF point)
         {
-            SysData = XDocument.Load("_system.xml");
-            XElement dataY;
-
-            // Get YAxis node
-            dataY = SysData.Element("System")
-                    .Elements("CameraCalibrationWindow")
-                    .Elements("Compensation")
-                    .Elements("Section")
-                    .Where(j => j.Element("Name").Value == "YAxis")
-                    .Single();
-            dataY = dataY.Element("Data");
-            List<XElement> YList = dataY.Elements("Line").ToList();
-
             double value = 0;
 
-            // Y compensation
-            foreach (XElement element in YList)
+            if (CheckInside(point))
             {
-                if (y >= double.Parse(element.Attribute("start").Value) && y < double.Parse(element.Attribute("stop").Value))
-                {
-                    value = y - (y * double.Parse(element.Attribute("slope").Value) +
-                                    double.Parse(element.Attribute("intercept").Value));
-                }
+                XElement dataX;
+
+                // Get left node
+                dataX = SysData.Element("System")
+                        .Element("CameraCalibrationWindow")
+                        .Element("yCompensation");
+
+                //
+                dataX = dataX.Elements("Column").
+                    Where(j => ((float.Parse(j.Element("colSegment").Attribute("start").Value) <= point.X) &&
+                    (float.Parse(j.Element("colSegment").Attribute("end").Value) > point.X))).
+                    Single();
+
+                //
+                dataX = dataX.Elements("rowSegment").Where(j => ((float.Parse(j.Attribute("start").Value) <= point.Y) &&
+                (float.Parse(j.Attribute("stop").Value) > point.Y))).
+                Single();
+
+                // Compute compensated value
+                value = point.Y - ((point.Y - float.Parse(dataX.Attribute("start").Value)) * double.Parse(dataX.Attribute("slope").Value) +
+                                 double.Parse(dataX.Attribute("intercept").Value));
+                //logStream.WriteLine(value);
             }
+
+            else MessageBox.Show("Out of compensation range", "CVEye");
 
             return value;
         }
@@ -1382,6 +1393,9 @@ namespace CVEYEV1
         {
             SysData = XDocument.Load("_system.xml");
             XElement section;
+            SysData.Element("System").Element("CameraCalibrationWindow").RemoveAll();
+            SysData.Element("System").Element("CameraCalibrationWindow").Add(new XElement("xCompensation"), new XElement("yCompensation"));
+
 
             VectorOfPointF corner_set = new VectorOfPointF();
             Mat sample_frame = new Mat();
@@ -1392,220 +1406,219 @@ namespace CVEYEV1
 
             // Find corners on chess board image
             if (CvInvoke.FindChessboardCorners(sample_frame, sample_size, corner_set))
-                CvInvoke.CornerSubPix(sample_frame, corner_set, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
-            else
-                MessageBox.Show("Cannot Find Corners", "CVEye");
-
-            // Initialize some variables
-            int ref_num = 1;
-            byte point_index = 0;
-            PointF[] com_point = new PointF[2]; // compensation point
-            double slope, intercept;
-
-            //byte getCol = 25;
-            //byte getRow = 19;  
-
-            float squareSize = (float)52.08;
-            byte getCol = pt_width / 2;
-            byte getRow = pt_height / 2;
-
-            // Find XAxis node
-            //section = SysData.Element("System")
-            //.Elements("CameraCalibrationWindow")
-            //.Elements("Compensation")
-            //.Elements("Section")
-            //.Where(x => x.Element("Name").Value == "XAxis")
-            //.Single();
-            //section.Element("Data").RemoveAll();
-
-            section = SysData.Element("System")
-            .Elements("CameraCalibrationWindow")
-            .Elements("Compensation")
-            .Elements("Section")
-            .Where(x => x.Element("Name").Value == "XAxis")
-            .Single();
-            section.Element("Data").RemoveAll();
-
-
-            // New variable
-            PointF[] rowComPoint = new PointF[2];
-            PointF[] colComPoint = new PointF[2];
-
-            using (StreamWriter logStream = new StreamWriter("history.txt"))
             {
-                // Scan all corner points
-                for (int col = 0; col < pt_width; col++) // column scan                
+                CvInvoke.CornerSubPix(sample_frame, corner_set, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
+
+                // Initialize some variables
+                PointF[] com_point = new PointF[2]; // compensation point
+                double slope, intercept;
+
+                //byte getCol = 25;
+                //byte getRow = 19;
+
+                float squareSize = (float)52.08;
+
+                // New variable
+                PointF[] rowComPoint = new PointF[2];
+                PointF[] colComPoint = new PointF[2];
+
+                using (StreamWriter logStream = new StreamWriter("history.txt"))
                 {
-                    if (col >= 1)
+                    //
+                    section = SysData.Element("System").Element("CameraCalibrationWindow").Element("yCompensation");
+
+                    // Center of corner array
+                    int cornerPosOri = pt_width * pt_height / 2 - pt_width / 2;
+                    float xsegEnd = 0;
+
+                    // Y axis compensation data
+                    for (int col = 0; col < pt_width; col++) // column scan                
                     {
-                        logStream.WriteLine("Column:    " + col);
+                        // Add new column segment
+                        section.Add(new XElement("Column", new XElement("Num", col)));
+
+                        byte rowSegNum = pt_height / 2 - 1;
+                        byte colSegNum = pt_width / 2;
+
+                        // Segment value
+                        float xsegStart = (col == 0) ? 0 : xsegEnd;
+                        xsegEnd = (col == pt_width - 1) ? 2592 : corner_set[cornerPosOri].X + squareSize * col - squareSize * colSegNum;
+
+                        // Create segments length
+                        section.Elements("Column").Where(j => j.Element("Num").Value == col.ToString()).Single().Add(new XElement("colSegment",
+                            new XAttribute("start", xsegStart),
+                            new XAttribute("end", xsegEnd)));
+
+                        //
+                        sample.Draw(new LineSegment2DF(new PointF(corner_set[cornerPosOri].X + squareSize * col - squareSize * colSegNum, 0),
+                            new PointF(corner_set[cornerPosOri].X + squareSize * col - squareSize * colSegNum, 1944)), new Bgr(Color.Blue), 1);
+
+                        byte rowIndex = 0;
 
                         for (int row = 0; row < pt_height; row++) // row scan
                         {
                             // Corner index of array
-                            byte rowOri = pt_height / 2;
-                            int cornerPosOri = pt_width * rowOri + col;
                             int cornerPos = pt_width * row + col;
 
                             // Calculate stretch error
-                            rowComPoint[point_index].X = corner_set[cornerPosOri].Y + squareSize * row - squareSize * rowOri; // ref
-                            float err = corner_set[cornerPos].Y - rowComPoint[point_index].X;
-                            rowComPoint[point_index].Y = err;
+                            rowComPoint[rowIndex].X = corner_set[cornerPosOri].Y + squareSize * row - squareSize * rowSegNum; // ref
+                            float err = corner_set[cornerPos].Y - rowComPoint[rowIndex].X;
+                            rowComPoint[rowIndex].Y = err;
 
-                            if (point_index > 0)
+                            if (col == 1)
+                                sample.Draw(new LineSegment2DF(new PointF(0, rowComPoint[rowIndex].X),
+                                    new PointF(2592, rowComPoint[rowIndex].X)),
+                                    new Bgr(Color.Blue), 1);
+
+                            // Error law
+                            if (rowIndex > 0)
                             {
                                 // a = (y0 - y1)/(x0 - x1)
-                                slope = (rowComPoint[point_index - 1].Y - rowComPoint[point_index].Y) / (0 - squareSize);
+                                slope = (rowComPoint[rowIndex - 1].Y - rowComPoint[rowIndex].Y) / (0 - squareSize);
 
                                 // b = (x0y1 - x1y0)/(x0 - x1)
-                                intercept = (0 * rowComPoint[point_index].Y - squareSize * rowComPoint[point_index - 1].Y) / (0 - squareSize);
+                                intercept = (0 * rowComPoint[rowIndex].Y - squareSize * rowComPoint[rowIndex - 1].Y) / (0 - squareSize);
 
                                 slope = Math.Round(slope, 4);
                                 intercept = Math.Round(intercept, 4);
 
-                                // Draw something
-                                sample.Draw(new Cross2DF(corner_set[cornerPos], 10, 10), new Bgr(Color.Red), 2);
-                                sample.Draw(cornerPos.ToString(), new Point((int)corner_set[cornerPos].X - 10, (int)corner_set[cornerPos].Y - 10), FontFace.HersheyPlain, 1.2, new Bgr(Color.GreenYellow), 1);
-
                                 // Test
-                                //logStream.WriteLine(((row == 1) ? 0 : rowComPoint[point_index - 1].X) + " " + slope + "   " + intercept + "    " + ((row == pt_height - 1) ? 1944 : rowComPoint[point_index].X));
+                                //logStream.WriteLine(((row == 1) ? 0 : rowComPoint[point_index - 1].X) + " " + slope + "   " + intercept + "    " + ((row == pt_height - 1) ? 1944 : rowComPoint[point_index].X));                          
 
-                                //section.Element("Data").Add(new XElement("Segment",
-                                //    new XAttribute("start", (row == 1) ? 0 : rowComPoint[point_index - 1].X)),
-                                //    new XAttribute("slope", slope),
-                                //    new XAttribute("intercept", intercept),
-                                //    new XAttribute("stop", ((row == pt_height - 1) ? 1944 : rowComPoint[point_index].X)));
-                                //SysData.Save("_system.xml");
+                                section.Elements("Column").Where(j => j.Element("Num").Value == col.ToString()).Single().
+                                    Add(new XElement("rowSegment",
+                                    new XAttribute("start", (row == 1) ? 0 : rowComPoint[rowIndex - 1].X),
+                                    new XAttribute("slope", slope),
+                                    new XAttribute("intercept", intercept),
+                                    new XAttribute("stop", (row == pt_height - 1) ? 1944 : rowComPoint[rowIndex].X)));
 
                                 // Update previous value
-                                rowComPoint[point_index - 1] = rowComPoint[point_index];
-                                point_index = 0;
+                                rowComPoint[rowIndex - 1] = rowComPoint[rowIndex];
+                                rowIndex = 0;
                             }
-                            point_index++;
+
+                            // Draw something
+                            sample.Draw(new Cross2DF(corner_set[cornerPos], 10, 10), new Bgr(Color.Red), 2);
+                            //sample.Draw(cornerPos.ToString(),
+                            //    new Point((int)corner_set[cornerPos].X - 10, (int)corner_set[cornerPos].Y - 10),
+                            //    FontFace.HersheyPlain,
+                            //    1.2,
+                            //    new Bgr(Color.GreenYellow),
+                            //    1);
+                            rowIndex++;
+                        }
+                        // Reset var
+                        rowComPoint = new PointF[2];
+                    }
+
+                    //
+                    section = SysData.Element("System").Element("CameraCalibrationWindow").Element("xCompensation");
+
+                    float ysegEnd = 0;
+
+                    // X axis compensation data
+                    for (int row = 0; row < pt_height; row++)
+                    {
+                        // Add new column segment
+                        section.Add(new XElement("Row", new XElement("Num", row)));
+
+                        byte rowSegNum = pt_height / 2 - 1;
+                        byte colSegNum = pt_width / 2;
+
+                        float ysegStart = (row == 0) ? 0 : ysegEnd;
+                        ysegEnd = (row == pt_height - 1) ? 1944 : corner_set[cornerPosOri].Y + squareSize * row - squareSize * rowSegNum;
+
+                        // Create segments length
+                        section.Elements("Row").Where(j => j.Element("Num").Value == row.ToString()).Single().Add(new XElement("rowSegment",
+                            new XAttribute("start", ysegStart),
+                            new XAttribute("end", ysegEnd)));
+
+
+                        byte colIndex = 0;
+                        for (int col = 0; col < pt_width; col++)
+                        {
+                            // Corner index of array
+                            int cornerPos = pt_width * row + col;
+
+                            // Calculate stretch error
+                            colComPoint[colIndex].X = corner_set[cornerPosOri].X + squareSize * col - squareSize * colSegNum; // ref
+                            float err = corner_set[cornerPos].X - colComPoint[colIndex].X;
+                            colComPoint[colIndex].Y = err;
+
+                            //logStream.WriteLine(err);
+
+                            // Error law
+                            if (colIndex > 0)
+                            {
+                                // a = (y0 - y1)/(x0 - x1)
+                                slope = (colComPoint[colIndex - 1].Y - colComPoint[colIndex].Y) / (0 - squareSize);
+
+                                // b = (x0y1 - x1y0)/(x0 - x1)
+                                intercept = (0 * colComPoint[colIndex].Y - squareSize * colComPoint[colIndex - 1].Y) / (0 - squareSize);
+
+                                slope = Math.Round(slope, 4);
+                                intercept = Math.Round(intercept, 4);
+
+                                section.Elements("Row").Where(j => j.Element("Num").Value == row.ToString()).Single().
+                                    Add(new XElement("colSegment",
+                                    new XAttribute("start", (col == 1) ? 0 : colComPoint[colIndex - 1].X),
+                                    new XAttribute("slope", slope),
+                                    new XAttribute("intercept", intercept),
+                                    new XAttribute("stop", (col == pt_width - 1) ? 2592 : colComPoint[colIndex].X)));
+
+
+                                // Update previous value
+                                colComPoint[colIndex - 1] = colComPoint[colIndex];
+                                colIndex = 0;
+                            }
+
+                            colIndex++;
+                        }
+
+                        // Reset value
+                        colComPoint = new PointF[2];
+                    }
+
+                    SysData.Save("_system.xml");
+
+                    for (int row = 0; row < pt_height; row++)
+                    {
+                        for (int col = 0; col < pt_width; col++)
+                        {
+                            int cornerPos = pt_width * row + col;
+                            double xCom = xCompensate(corner_set[cornerPos]);
+                            double yCom = yCompensate(corner_set[cornerPos]);
+                            sample.Draw(new Cross2DF(new PointF((float)xCom, (float)yCom), 10, 10), new Bgr(Color.GreenYellow), 2);
                         }
                     }
 
-                    // Reset var
-                    rowComPoint = new PointF[2];
-                    point_index = 0;
+
+                    // For G54 calibration
+
+                    // Calculate center coordinate
+                    double cen_X = xCompensate(corner_set[cornerPosOri]) + x_pixel_offset;
+                    double cen_Y = yCompensate(corner_set[cornerPosOri]) + y_pixel_offset;
+
+                    PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
+
+                    // Global painting points rotation
+                    cenPoint = RotateFOV(cenPoint, 0.15);
+
+                    cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
+                    cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
+
+                    // Invert y axis direction
+                    cen_Y = -cen_Y;
+
+                    using (gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
+                    {
+                        gcode.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
+                        gcode.Close();
+                    }
                 }
             }
-
-            
-
-            return;
-
-            for (int i = pt_width * getRow; i < pt_width * getRow + pt_width; i++)
-            {
-                // Draw detected corners from left to right
-                //sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
-                sample.Draw(new Cross2DF(corner_set[i], 10, 10), new Bgr(Color.Red), 2);
-                sample.Draw(new LineSegment2DF(new PointF(corner_set[pt_width * getRow + getCol].X + squareSize * (getCol - ref_num), 0), new PointF(corner_set[pt_width * getRow + getCol].X + squareSize * (getCol - ref_num), 1944)), ((getCol - ref_num) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
-
-                // Calculate stretch error
-                com_point[point_index].X = corner_set[pt_width * getRow + getCol].X + squareSize * (ref_num - getCol - 1);
-                float err = corner_set[i].X - com_point[point_index].X;
-                com_point[point_index].Y = err;
-
-                if (point_index > 0)
-                {
-                    // a = (y0 - y1)/(x0 - x1)
-                    slope = (com_point[point_index - 1].Y - com_point[point_index].Y) / (com_point[point_index - 1].X - com_point[point_index].X);
-
-                    // b = (x0y1 - x1y0)/(x0 - x1)
-                    intercept = (com_point[point_index - 1].X * com_point[point_index].Y - com_point[point_index].X * com_point[point_index - 1].Y) /
-                        (com_point[point_index - 1].X - com_point[point_index].X);
-
-                    slope = Math.Round(slope, 3);
-                    intercept = Math.Round(intercept, 3);
-
-                    section.Element("Data").Add(new XElement("Line",
-                    new XAttribute("start", (i == pt_width * getRow + 1) ? 0 : com_point[point_index - 1].X),
-                    new XAttribute("slope", slope),
-                    new XAttribute("intercept", intercept),
-                    new XAttribute("stop", (i == pt_width * getRow + (pt_width - 1)) ? 2592 : com_point[point_index].X)));
-
-                    com_point[point_index - 1] = com_point[point_index];
-                    point_index = 0;
-                }
-
-                ref_num++;
-                point_index++;
-            }
-
-            // Find YAxis node
-            section = SysData.Element("System")
-            .Elements("CameraCalibrationWindow")
-            .Elements("Compensation")
-            .Elements("Section")
-            .Where(x => x.Element("Name").Value == "YAxis")
-            .Single();
-            section.Element("Data").RemoveAll();
-
-            ref_num = 1;
-            point_index = 0;
-            //for (int i = getCol; i < getCol + 50 * 38; i = i + 50)
-            for (int i = getCol; i < getCol + pt_width * pt_height; i = i + pt_width)
-            {
-                // Draw detected corners from top to bottom
-                // from getCol to getCol + 50 * 37
-                //sample.Draw(new CircleF(corner_set[i], 8), new Bgr(Color.Red), 2);
-                sample.Draw(new Cross2DF(corner_set[i], 10, 10), new Bgr(Color.Red), 2);
-                sample.Draw(new LineSegment2DF(new PointF(0, corner_set[getCol + getRow * pt_width].Y + squareSize * (getRow - ref_num)), new PointF(2592, corner_set[getCol + getRow * pt_width].Y + squareSize * (getRow - ref_num))), ((getRow - ref_num) == 0) ? new Bgr(Color.Red) : new Bgr(Color.Blue), 1);
-
-                // Calculate stretch error
-                com_point[point_index].X = corner_set[getCol + getRow * pt_width].Y + squareSize * (ref_num - getRow - 1);
-                float err = corner_set[i].Y - com_point[point_index].X;
-                com_point[point_index].Y = err;
-
-                if (point_index > 0)
-                {
-                    // a = (y0 - y1)/(x0 - x1)
-                    slope = (com_point[point_index - 1].Y - com_point[point_index].Y) / (com_point[point_index - 1].X - com_point[point_index].X);
-
-                    // b = (x0y1 - x1y0)/(x0 - x1)
-                    intercept = (com_point[point_index - 1].X * com_point[point_index].Y - com_point[point_index].X * com_point[point_index - 1].Y) /
-                        (com_point[point_index - 1].X - com_point[point_index].X);
-
-                    slope = Math.Round(slope, 3);
-                    intercept = Math.Round(intercept, 3);
-
-                    section.Element("Data").Add(new XElement("Line",
-                    new XAttribute("start", (i == getCol + pt_width) ? 0 : com_point[point_index - 1].X),
-                    new XAttribute("slope", slope),
-                    new XAttribute("intercept", intercept),
-                    new XAttribute("stop", (i == getCol + pt_width * pt_height - pt_width) ? 1944 : com_point[point_index].X)));
-
-                    com_point[point_index - 1] = com_point[point_index];
-                    point_index = 0;
-                }
-
-                ref_num++;
-                point_index++;
-            }
-
-            SysData.Save("_system.xml");
-
-            // For G54 calibration
-
-            // Calculate center coordinate
-            double cen_X = xCompensate(corner_set[pt_width * getRow + getCol].X) + x_pixel_offset;
-            double cen_Y = yCompensate(corner_set[pt_width * getRow + getCol].Y) + y_pixel_offset;
-
-            PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-            // Global painting points rotation
-            cenPoint = RotateFOV(cenPoint, 0.15);
-
-            cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
-            cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
-
-            // Invert y axis direction
-            cen_Y = -cen_Y;
-
-            gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
-            gcode.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
-            gcode.Close();
+            else
+                MessageBox.Show("Cannot Find Corners", "CVEye");
         }
 
         private void Running_Procedure(PointF[] Points, float cenX, float cenY, XElement Parameters)
