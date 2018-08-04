@@ -40,7 +40,12 @@ namespace CVEYEV1
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("ImageFiltering",
                 new XAttribute("gaussian_sig", gaussian_sig.Value),
                 new XAttribute("G_blur", ((G_blur.CheckState == CheckState.Checked) ? 1 : 0))));
-            
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("PSTTransform",
+                new XAttribute("cn1", cn1.Value),
+                new XAttribute("cn2", cn2.Value),
+                new XAttribute("cn3", cn3.Value),
+                new XAttribute("cn4", cn4.Value)));
+
             // Save document
             CVEye.SysData.Save("_system.xml");
 
@@ -60,6 +65,10 @@ namespace CVEYEV1
             max_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value);
             gaussian_sig.Value      = decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value);
             G_blur.CheckState       = (decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
+            cn1.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn1").Value);
+            cn2.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn2").Value);
+            cn3.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn3").Value);
+            cn4.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn4").Value);
         }
 
         private void Cancel_Click(object sender, EventArgs e)

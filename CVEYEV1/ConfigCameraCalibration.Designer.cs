@@ -28,25 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.calib_image = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.progressCalib = new System.Windows.Forms.ProgressBar();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.calib_image)).BeginInit();
             this.SuspendLayout();
-            // 
-            // calib_image
-            // 
-            this.calib_image.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.calib_image.Location = new System.Drawing.Point(14, 14);
-            this.calib_image.Margin = new System.Windows.Forms.Padding(5);
-            this.calib_image.Name = "calib_image";
-            this.calib_image.Size = new System.Drawing.Size(800, 600);
-            this.calib_image.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.calib_image.TabIndex = 77;
-            this.calib_image.TabStop = false;
             // 
             // label1
             // 
@@ -60,7 +47,7 @@
             // 
             // progressCalib
             // 
-            this.progressCalib.Location = new System.Drawing.Point(12, 622);
+            this.progressCalib.Location = new System.Drawing.Point(12, 107);
             this.progressCalib.Name = "progressCalib";
             this.progressCalib.Size = new System.Drawing.Size(146, 28);
             this.progressCalib.TabIndex = 82;
@@ -68,9 +55,9 @@
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(393, 622);
+            this.button5.Location = new System.Drawing.Point(12, 12);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(100, 28);
+            this.button5.Size = new System.Drawing.Size(146, 28);
             this.button5.TabIndex = 83;
             this.button5.Text = "Calibrate";
             this.button5.UseVisualStyleBackColor = true;
@@ -79,7 +66,7 @@
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(512, 622);
+            this.button6.Location = new System.Drawing.Point(200, 12);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(100, 28);
             this.button6.TabIndex = 84;
@@ -90,7 +77,7 @@
             // button7
             // 
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(714, 622);
+            this.button7.Location = new System.Drawing.Point(200, 107);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(100, 28);
             this.button7.TabIndex = 85;
@@ -102,25 +89,22 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 656);
+            this.ClientSize = new System.Drawing.Size(325, 168);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.progressCalib);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.calib_image);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ConfigCameraCalibration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Camera Calibration";
-            ((System.ComponentModel.ISupportInitialize)(this.calib_image)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        public System.Windows.Forms.PictureBox calib_image;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ProgressBar progressCalib;
         private System.Windows.Forms.Button button5;

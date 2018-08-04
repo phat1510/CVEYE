@@ -52,6 +52,16 @@
             this.correctionRange = new System.Windows.Forms.NumericUpDown();
             this.cannyThresh = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cn4 = new System.Windows.Forms.NumericUpDown();
+            this.cn2 = new System.Windows.Forms.NumericUpDown();
+            this.cn1 = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.cn3 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.gaussian_sig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param2)).BeginInit();
@@ -65,6 +75,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.ErrConstraint)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.correctionRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresh)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cn4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn3)).BeginInit();
             this.SuspendLayout();
             // 
             // OK
@@ -72,7 +88,7 @@
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.OK.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OK.Location = new System.Drawing.Point(318, 200);
+            this.OK.Location = new System.Drawing.Point(318, 281);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 0;
@@ -185,7 +201,7 @@
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Cancel.Location = new System.Drawing.Point(403, 200);
+            this.Cancel.Location = new System.Drawing.Point(403, 281);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 61;
@@ -292,7 +308,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.gaussian_sig);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 139);
+            this.groupBox2.Location = new System.Drawing.Point(250, 170);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(230, 85);
             this.groupBox2.TabIndex = 63;
@@ -419,13 +435,169 @@
             this.label9.TabIndex = 43;
             this.label9.Text = "Correction Range:";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.tableLayoutPanel3);
+            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox4.Location = new System.Drawing.Point(12, 139);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(228, 152);
+            this.groupBox4.TabIndex = 65;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "PST Transform";
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71.55963F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.44037F));
+            this.tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cn4, 1, 3);
+            this.tableLayoutPanel3.Controls.Add(this.cn2, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.cn1, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label10, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label11, 0, 3);
+            this.tableLayoutPanel3.Controls.Add(this.label12, 0, 2);
+            this.tableLayoutPanel3.Controls.Add(this.cn3, 1, 2);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(6, 21);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 4;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(218, 120);
+            this.tableLayoutPanel3.TabIndex = 66;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(3, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(34, 16);
+            this.label5.TabIndex = 41;
+            this.label5.Text = "Cn1:";
+            // 
+            // cn4
+            // 
+            this.cn4.DecimalPlaces = 1;
+            this.cn4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cn4.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.cn4.Location = new System.Drawing.Point(158, 93);
+            this.cn4.Name = "cn4";
+            this.cn4.Size = new System.Drawing.Size(49, 22);
+            this.cn4.TabIndex = 65;
+            this.cn4.Value = new decimal(new int[] {
+            76,
+            0,
+            0,
+            0});
+            // 
+            // cn2
+            // 
+            this.cn2.DecimalPlaces = 1;
+            this.cn2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cn2.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.cn2.Location = new System.Drawing.Point(158, 33);
+            this.cn2.Name = "cn2";
+            this.cn2.Size = new System.Drawing.Size(49, 22);
+            this.cn2.TabIndex = 44;
+            this.cn2.Value = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+            // 
+            // cn1
+            // 
+            this.cn1.DecimalPlaces = 1;
+            this.cn1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cn1.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.cn1.Location = new System.Drawing.Point(158, 3);
+            this.cn1.Name = "cn1";
+            this.cn1.Size = new System.Drawing.Size(49, 22);
+            this.cn1.TabIndex = 42;
+            this.cn1.Value = new decimal(new int[] {
+            65,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(3, 37);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(34, 16);
+            this.label10.TabIndex = 43;
+            this.label10.Text = "Cn2:";
+            // 
+            // label11
+            // 
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(3, 97);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(34, 16);
+            this.label11.TabIndex = 65;
+            this.label11.Text = "Cn4:";
+            // 
+            // label12
+            // 
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(3, 67);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(34, 16);
+            this.label12.TabIndex = 66;
+            this.label12.Text = "Cn3:";
+            // 
+            // cn3
+            // 
+            this.cn3.DecimalPlaces = 1;
+            this.cn3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cn3.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.cn3.Location = new System.Drawing.Point(158, 63);
+            this.cn3.Name = "cn3";
+            this.cn3.Size = new System.Drawing.Size(49, 22);
+            this.cn3.TabIndex = 66;
+            this.cn3.Value = new decimal(new int[] {
+            73,
+            0,
+            0,
+            0});
+            // 
             // ConfigImageProcessing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 235);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(490, 316);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
@@ -449,6 +621,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.ErrConstraint)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.correctionRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresh)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.cn4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cn3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -479,5 +658,15 @@
         public System.Windows.Forms.NumericUpDown correctionRange;
         public System.Windows.Forms.NumericUpDown cannyThresh;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.NumericUpDown cn4;
+        public System.Windows.Forms.NumericUpDown cn2;
+        public System.Windows.Forms.NumericUpDown cn1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        public System.Windows.Forms.NumericUpDown cn3;
     }
 }

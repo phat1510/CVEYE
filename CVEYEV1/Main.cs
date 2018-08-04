@@ -35,10 +35,6 @@ namespace CVEYEV1
 {
     public partial class CVEye : Form
     {
-        #region Subform
-        private ConfigPaintingPoints Con_Painting_Point;
-        #endregion
-
         #region Mach3
         private IMach4 mach3;
         private IMyScriptObject scriptObject;
@@ -96,12 +92,13 @@ namespace CVEYEV1
         #endregion
 
         #region Image Processing
-        //public static Image<Bgr, byte> img_capture;
         public static Image<Bgr, byte> img_capture_undist;
         public Mat tmp_raw = new Mat();
-        //private Mat img_raw = new Mat();
-        //private Mat img_gray = new Mat();
         private Mat img_threshold = new Mat();
+
+        private PointF[] affine_painting_points;
+        private byte tmpSize = 121;
+        public static double _accuracy;
         #endregion
 
         #region IO
@@ -117,7 +114,7 @@ namespace CVEYEV1
         //const int roi_dim = 110;
         const int roi_dim = 121;
 
-        const float in_circle_radius = (float)11.9; //mm
+        const float in_circle_radius = 12.0f; //mm
 
         const double x_pixel_offset = -43; // pixels
         const double y_pixel_offset = 9;
@@ -149,8 +146,6 @@ namespace CVEYEV1
         private bool hightolow = false;
         private bool preactive = false;
         private bool active = false;
-
-
         #endregion
 
         public CVEye()
@@ -160,8 +155,6 @@ namespace CVEYEV1
             Init_XML();
 
             Init_Directory();
-
-            Init_Form();
 
             Init_Graphic();
         }
@@ -319,6 +312,7 @@ namespace CVEYEV1
                     // Toggle RESET button
                     ResetToggling();
                 }
+
             }
             catch
             {
@@ -484,6 +478,8 @@ namespace CVEYEV1
             item_color.Text = SysData.Element("System").Element("MainWindow").Element("Template").Attribute("WorkingColor").Value;
             valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
 
+            _accuracy = double.Parse(SysData.Element("System").Element("CameraCalibrationWindow").Element("Accuracy").Attribute("Value").Value);
+
             // View the previous working template
             ViewTemplate(tmp_item_name.Text);
         }
@@ -535,17 +531,13 @@ namespace CVEYEV1
             SysData.Save("_system.xml");
         }
 
-        private void Init_Form()
-        {
-            Con_Painting_Point = new ConfigPaintingPoints();
-            //Enabled = false;
-        }
-
         private void Init_Graphic()
         {
             ledX.BackColor = Color.Gray;
             ledY.BackColor = Color.Gray;
             ledZ.BackColor = Color.Gray;
+
+            //Enabled = false;
         }
 
         // Get frame with camera calibration
@@ -609,7 +601,7 @@ namespace CVEYEV1
 
                             status_label.Text = "Cannot Detect Conners";
                             status_label.Refresh();
-                        }                        
+                        }
 
                         // View raw image
                         pattern_field.Image = img_capture.Bitmap;
@@ -711,13 +703,13 @@ namespace CVEYEV1
         // Apply affine transformation for painting points
         public void Real_PointsWarpAffine(List<XElement> point_list, PointF rot_center, double rot_angle, Image<Bgr, byte> draw_image_bgr)
         {
-            ConfigPaintingPoints.affine_painting_points = new PointF[50];
+            affine_painting_points = new PointF[20];
 
             // Invert rotation direction
             double angle = Math.Round((360 - rot_angle) * Math.PI / 180, 3);
 
             // Reset number of points
-            ConfigPaintingPoints.point_num = 0;
+            int point_num = 0;
 
             // Rotation center compensation
             float xRotCenter = (float)xCompensate(rot_center);
@@ -727,25 +719,24 @@ namespace CVEYEV1
             foreach (XElement element in point_list)
             {
                 // Compute camera points
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X =
-                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle))) + rot_center.X;
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y =
-                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle))) + rot_center.Y;
+                affine_painting_points[point_num].X =
+                    (float)((double.Parse(element.Attribute("X").Value) - tmpSize / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - tmpSize / 2) * Math.Sin(angle))) + rot_center.X;
+                affine_painting_points[point_num].Y =
+                    (float)((double.Parse(element.Attribute("X").Value) - tmpSize / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - tmpSize / 2) * Math.Cos(angle))) + rot_center.Y;
 
                 // For checking
-                draw_image_bgr.Draw(new Cross2DF(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num], 2, 2), new Bgr(Color.Red), 1);
+                draw_image_bgr.Draw(new Cross2DF(affine_painting_points[point_num], 2, 2), new Bgr(Color.Red), 1);
 
                 // Compute machine points
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].X =
-                (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle))) + xRotCenter;
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num].Y =
-                    (float)((double.Parse(element.Attribute("X").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ConfigPaintingPoints.real_tmp_size / 2) * Math.Cos(angle))) + yRotCenter;
+                affine_painting_points[point_num].X =
+                (float)((double.Parse(element.Attribute("X").Value) - tmpSize / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - tmpSize / 2) * Math.Sin(angle))) + xRotCenter;
+                affine_painting_points[point_num].Y =
+                    (float)((double.Parse(element.Attribute("X").Value) - tmpSize / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - tmpSize / 2) * Math.Cos(angle))) + yRotCenter;
 
                 // Matching camera coordinate with machine coordinate
-                ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num] = RotateFOV(ConfigPaintingPoints.affine_painting_points[ConfigPaintingPoints.point_num], 0.15);
+                affine_painting_points[point_num] = RotateFOV(affine_painting_points[point_num], 0.5);
 
-
-                ConfigPaintingPoints.point_num++;
+                point_num++;
             }
         }
 
@@ -764,65 +755,104 @@ namespace CVEYEV1
         // Image filtering
         public Mat Frame_Analyze()
         {
+            //
             XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
 
-            Mat mat_gray = new Mat();
-            using (Mat img_blur = new Mat(), img_hist = new Mat(), img_raw = img_capture_undist.Mat)
+            
+            using (Image<Bgr, byte> imgHalfRight = img_capture_undist.Clone())
             {
-                if (byte.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1)
+                using (Image<Bgr, byte> imgHalfLeft = img_capture_undist.Clone())
                 {
-                    // Blurs an image using a Gaussian filter
-                    Size ksize = new Size(9, 9);
-                    double sigmaY = 0;
-                    BorderType bordertype = BorderType.Reflect;
-                    CvInvoke.GaussianBlur(img_raw, img_blur, ksize,
-                        double.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value),
-                        sigmaY, bordertype);
+                    Mat homograyphy = new Mat();
+                    //
+                    PointF[] src = new PointF[4];
+                    PointF[] dst = new PointF[4];
+                    src[0] = new PointF(0, 0);
+                    src[1] = new PointF(screen_width / 2, float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn1").Value));
+                    src[2] = new PointF(screen_width / 2, screen_height - float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn2").Value));
+                    src[3] = new PointF(0, screen_height);
+                    dst[0] = new PointF(0, 0);
+                    dst[1] = new PointF(screen_width / 2, 0);
+                    dst[2] = new PointF(screen_width / 2, screen_height);
+                    dst[3] = new PointF(0, screen_height);
+                    homograyphy = CvInvoke.GetPerspectiveTransform(src, dst);
+                    CvInvoke.WarpPerspective(img_capture_undist, imgHalfLeft, homograyphy, img_capture_undist.Size);
 
-                    //// Pyramid down and up filter
-                    //PyrFilter(img_capture_undist.Mat);
-                    //PyrFilter(img_capture_undist.Mat);
-                    //PyrFilter(img_capture_undist.Mat);
-                    //PyrFilter(img_capture_undist.Mat);
+                    // Set ROI to image
+                    Rectangle roi_rec = new Rectangle(new Point(0, 0), new Size(screen_width / 2, screen_height));
+                    CvInvoke.cvSetImageROI(imgHalfLeft.Ptr, roi_rec);
 
-                    // Convert the image to grayscale
-                    CvInvoke.CvtColor(img_blur, mat_gray, ColorConversion.Bgr2Gray);
+                    src[0] = new PointF(screen_width / 2, float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn3").Value));
+                    src[1] = new PointF(screen_width, 0);
+                    src[2] = new PointF(screen_width, screen_height);
+                    src[3] = new PointF(screen_width / 2, screen_height - float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn4").Value));
+                    dst[0] = new PointF(screen_width / 2, 0);
+                    dst[1] = new PointF(screen_width, 0);
+                    dst[2] = new PointF(screen_width, screen_height);
+                    dst[3] = new PointF(screen_width / 2, screen_height);
+                    homograyphy = CvInvoke.GetPerspectiveTransform(src, dst);
+                    CvInvoke.WarpPerspective(img_capture_undist, imgHalfRight, homograyphy, img_capture_undist.Size);
+                    homograyphy.Dispose();
 
-                    // Applies an adaptive threshold to the image
-                    CvInvoke.AdaptiveThreshold(mat_gray,
-                        img_threshold,
-                        255,
-                        AdaptiveThresholdType.GaussianC,
-                        ThresholdType.Binary,
-                        95,
-                        1.5);
+                    // Merge half left and half right
+                    CvInvoke.cvSetImageROI(imgHalfRight.Ptr, roi_rec);
+                    imgHalfLeft.CopyTo(imgHalfRight);
                 }
-                else
+                CvInvoke.cvResetImageROI(imgHalfRight.Ptr);
+
+                Mat mat_gray = new Mat();
+                using (Mat img_blur = new Mat(), img_hist = new Mat(), img_raw = imgHalfRight.Mat)
                 {
-                    // Pyramid down and up filter
-                    CvInvoke.PyrDown(img_raw, img_blur, BorderType.Default);
-                    CvInvoke.PyrUp(img_blur, img_blur, BorderType.Default);
+                    if (byte.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1)
+                    {
+                        // Blurs an image using a Gaussian filter
+                        Size ksize = new Size(9, 9);
+                        double sigmaY = 0;
+                        BorderType bordertype = BorderType.Reflect;
+                        CvInvoke.GaussianBlur(img_raw, img_blur, ksize,
+                            double.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value),
+                            sigmaY, bordertype);
 
-                    // Convert the image to grayscale
-                    CvInvoke.CvtColor(img_blur, mat_gray, ColorConversion.Bgr2Gray);
+                        //// Pyramid down and up filter
+                        //PyrFilter(img_capture_undist.Mat);
+                        //PyrFilter(img_capture_undist.Mat);
+                        //PyrFilter(img_capture_undist.Mat);
+                        //PyrFilter(img_capture_undist.Mat);
 
-                    CvInvoke.EqualizeHist(mat_gray, img_hist);
+                        // Convert the image to grayscale
+                        CvInvoke.CvtColor(img_blur, mat_gray, ColorConversion.Bgr2Gray);
 
-                    // Applies an adaptive threshold to the image
-                    CvInvoke.AdaptiveThreshold(img_hist,
-                        img_threshold,
-                        255,
-                        AdaptiveThresholdType.GaussianC,
-                        ThresholdType.Binary,
-                        95,
-                        1);
+                        // Applies an adaptive threshold to the image
+                        CvInvoke.AdaptiveThreshold(mat_gray,
+                            img_threshold,
+                            255,
+                            AdaptiveThresholdType.GaussianC,
+                            ThresholdType.Binary,
+                            95,
+                            1.5);
+                    }
+                    else
+                    {
+                        // Pyramid down and up filter
+                        CvInvoke.PyrDown(img_raw, img_blur, BorderType.Default);
+                        CvInvoke.PyrUp(img_blur, img_blur, BorderType.Default);
+
+                        // Convert the image to grayscale
+                        CvInvoke.CvtColor(img_blur, mat_gray, ColorConversion.Bgr2Gray);
+
+                        CvInvoke.EqualizeHist(mat_gray, img_hist);
+
+                        // Applies an adaptive threshold to the image
+                        CvInvoke.AdaptiveThreshold(img_hist,
+                            img_threshold,
+                            255,
+                            AdaptiveThresholdType.GaussianC,
+                            ThresholdType.Binary,
+                            95,
+                            1);
+                    }
+                    return mat_gray;
                 }
-                // Dilite threshold image
-                //var element = CvInvoke.GetStructuringElement(ElementShape.Cross, new Size(3, 3), new Point(-1, -1));
-                //CvInvoke.Dilate(img_threshold, img_threshold, element, new Point(-1, -1), 2, BorderType.Reflect, default(MCvScalar));
-                //CvInvoke.Erode(img_threshold, img_threshold, element, new Point(-1, -1), 2, BorderType.Reflect, default(MCvScalar));
-
-                return mat_gray;
             }
         }
 
@@ -885,7 +915,7 @@ namespace CVEYEV1
                     CircleF[] img_circles = CvInvoke.HoughCircles(
                         img_gray, // Array of circles data
                         HoughType.Gradient,
-                        2,
+                        1.7,
                         100,
                         int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value),
                         int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value),
@@ -894,7 +924,8 @@ namespace CVEYEV1
 
                     // Display number of items
                     logStream.WriteLine("Num of Items:      " + img_circles.Length);
-                    num_of_items.Text = img_circles.Length.ToString();
+                    processLog.Items.Add("Số mẫu tìm được:  " + img_circles.Length.ToString() + " mẫu.");
+                    processLog.Refresh();
 
                     // Get processing time
                     logStream.WriteLine("Center detection:   " + (watch.ElapsedMilliseconds - currentTime));
@@ -1007,7 +1038,10 @@ namespace CVEYEV1
                         {
                             angleList.Add(0);
                             centerList.Add(circle.Center);
-                            img_items.Draw(new CircleF(circle.Center, 60), new Bgr(Color.Red), 3);
+                            img_items.Draw(new CircleF(circle.Center, (float)61.8), new Bgr(Color.Red), 1);
+
+                            // For test
+                            logStream.WriteLine(circle.Center.X + "     " + circle.Center.Y);
                         }
 
                         raSum = raSum + circle.Radius;
@@ -1016,13 +1050,6 @@ namespace CVEYEV1
                         Progress.Value = 10 + ((circle_num + 1) * 100 / img_circles.Length) * 90 / 100;
                         Progress.Refresh();
                     }
-
-                    double raAvg = raSum / img_circles.Length;
-                    double scale = 31 / (2 * raAvg);
-
-                    logStream.WriteLine("raAvg:   " + raAvg);
-                    logStream.WriteLine("scale:   " + scale);
-
 
                     logStream.WriteLine("Template Maching:   " + (watch.ElapsedMilliseconds - currentTime));
                     currentTime = watch.ElapsedMilliseconds;
@@ -1041,11 +1068,11 @@ namespace CVEYEV1
                         PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
 
                         // Global painting points rotation
-                        double dirCom = 0.15;
+                        double dirCom = 0.5;
                         cenPoint = RotateFOV(cenPoint, dirCom);
 
-                        cen_X = Math.Round(cenPoint.X * scale, 3);
-                        cen_Y = Math.Round(cenPoint.Y * scale, 3);
+                        cen_X = Math.Round(cenPoint.X * _accuracy, 3);
+                        cen_Y = Math.Round(cenPoint.Y * _accuracy, 3);
 
                         // Invert y axis direction
                         cen_Y = -cen_Y;
@@ -1056,7 +1083,7 @@ namespace CVEYEV1
                             Real_PointsWarpAffine(point_list, centerPoint, angleListSort[t], img_items);
 
                             //Gcode building
-                            Running_Procedure(ConfigPaintingPoints.affine_painting_points, (float)cen_X, (float)cen_Y, Parameters);
+                            Running_Procedure(affine_painting_points, Parameters);
                         }
                         else
                         {
@@ -1064,13 +1091,13 @@ namespace CVEYEV1
                             Running_Circle((float)cen_X, (float)cen_Y, Parameters);
                         }
 
-                        // Draw the tracking line
-                        //if (t > 0)
-                        //    // Draw point to point
-                        //    img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
-                        //else
-                        //    // Draw the start point
-                        //    img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
+                        //Draw the tracking line
+                        if (t > 0)
+                            // Draw point to point
+                            img_items.Draw(new LineSegment2DF(centerList[t - 1], centerList[t]), new Bgr(Color.Red), 2);
+                        else
+                            // Draw the start point
+                            img_items.Draw(new CircleF(centerList[t], 2), new Bgr(Color.Red), 2);
 
                         t++;
                     }
@@ -1095,6 +1122,7 @@ namespace CVEYEV1
 
                     // View result
                     pattern_field.Image = img_items.Bitmap;
+                    //pattern_field.Image = img_capture_undist.Bitmap;
                     pattern_field.Refresh();
 
                     // Save detected items result
@@ -1109,7 +1137,10 @@ namespace CVEYEV1
                 // Tock timer
                 logStream.WriteLine("Total:     " + watch.ElapsedMilliseconds);
                 logStream.WriteLine("_________________________");
-                elapsed_time.Text = watch.ElapsedMilliseconds.ToString();
+
+                processLog.Items.Add("Thời gian xử lý:  " + watch.ElapsedMilliseconds.ToString() + " ms.");
+                processLog.Items.Add("Thời gian sơn ước tính:  " + "Chưa xác định");
+                processLog.Refresh();
             }
         }
 
@@ -1207,7 +1238,7 @@ namespace CVEYEV1
             double norm;
             double maxnorm = 0;
 
-            
+
             for (int i = 0; i < 360; i++)
             {
                 int k = 0;
@@ -1245,7 +1276,7 @@ namespace CVEYEV1
 
             return ouput;
         }
-        
+
         public List<PointF> SortByDistance(List<PointF> pointList, List<double> angleList)
         {
             List<PointF> output = new List<PointF>();
@@ -1407,6 +1438,7 @@ namespace CVEYEV1
             // Find corners on chess board image
             if (CvInvoke.FindChessboardCorners(sample_frame, sample_size, corner_set))
             {
+                //
                 CvInvoke.CornerSubPix(sample_frame, corner_set, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
 
                 // Initialize some variables
@@ -1416,7 +1448,12 @@ namespace CVEYEV1
                 //byte getCol = 25;
                 //byte getRow = 19;
 
-                float squareSize = (float)52.08;
+                float squareSize = ((corner_set[889].X - corner_set[888].X) +
+                    (corner_set[841].X - corner_set[840].X) +
+                    (corner_set[793].X - corner_set[792].X)) / 3;
+                _accuracy = 10 / squareSize;
+
+                SysData.Element("System").Element("CameraCalibrationWindow").Add(new XElement("Accuracy", new XAttribute("Value", _accuracy)));
 
                 // New variable
                 PointF[] rowComPoint = new PointF[2];
@@ -1424,6 +1461,7 @@ namespace CVEYEV1
 
                 using (StreamWriter logStream = new StreamWriter("history.txt"))
                 {
+
                     //
                     section = SysData.Element("System").Element("CameraCalibrationWindow").Element("yCompensation");
 
@@ -1580,48 +1618,53 @@ namespace CVEYEV1
                     }
 
                     SysData.Save("_system.xml");
-
-                    for (int row = 0; row < pt_height; row++)
-                    {
-                        for (int col = 0; col < pt_width; col++)
-                        {
-                            int cornerPos = pt_width * row + col;
-                            double xCom = xCompensate(corner_set[cornerPos]);
-                            double yCom = yCompensate(corner_set[cornerPos]);
-                            sample.Draw(new Cross2DF(new PointF((float)xCom, (float)yCom), 10, 10), new Bgr(Color.GreenYellow), 2);
-                        }
-                    }
-
-
-                    // For G54 calibration
-
-                    // Calculate center coordinate
-                    double cen_X = xCompensate(corner_set[cornerPosOri]) + x_pixel_offset;
-                    double cen_Y = yCompensate(corner_set[cornerPosOri]) + y_pixel_offset;
-
-                    PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-                    // Global painting points rotation
-                    cenPoint = RotateFOV(cenPoint, 0.15);
-
-                    cen_X = Math.Round(cenPoint.X * ConfigPaintingPoints.real_accuracy, 3);
-                    cen_Y = Math.Round(cenPoint.Y * ConfigPaintingPoints.real_accuracy, 3);
-
-                    // Invert y axis direction
-                    cen_Y = -cen_Y;
+                    SysData = XDocument.Load("_system.xml");
 
                     using (gcode = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
                     {
-                        gcode.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
+
+                        for (int cornerPos = 840; cornerPos < 841; cornerPos++)
+                        //for (int row = 0; row < pt_height; row++)
+                        {
+                            //for (int col = 0; col < pt_width; col++)
+                            {
+                                //int cornerPos = pt_width * row + col;
+                                double xCom = xCompensate(corner_set[cornerPos]);
+                                double yCom = yCompensate(corner_set[cornerPos]);
+                                sample.Draw(new Cross2DF(new PointF((float)xCom, (float)yCom), 10, 10), new Bgr(Color.GreenYellow), 2);
+
+
+                                // For G54 calibration
+
+                                // Calculate center coordinate
+                                double cen_X = xCompensate(corner_set[cornerPos]) + x_pixel_offset;
+                                double cen_Y = yCompensate(corner_set[cornerPos]) + y_pixel_offset;
+
+                                PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
+
+                                // Global painting points rotation
+                                cenPoint = RotateFOV(cenPoint, 0.5);
+
+                                cen_X = Math.Round(cenPoint.X * _accuracy, 3);
+                                cen_Y = Math.Round(cenPoint.Y * _accuracy, 3);
+
+                                // Invert y axis direction
+                                cen_Y = -cen_Y;
+
+                                gcode.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
+                            }
+                        }
+
                         gcode.Close();
                     }
                 }
             }
             else
                 MessageBox.Show("Cannot Find Corners", "CVEye");
+
         }
 
-        private void Running_Procedure(PointF[] Points, float cenX, float cenY, XElement Parameters)
+        private void Running_Procedure(PointF[] Points, XElement Parameters)
         {
             double X, Y; //mm
 
@@ -1638,8 +1681,8 @@ namespace CVEYEV1
             foreach (XElement element in point_list)
             {
                 // Convert pixel to mm
-                X = Math.Round((Points[j].X + x_pixel_offset) * ConfigPaintingPoints.real_accuracy, 3); //
-                Y = -Math.Round((Points[j].Y + y_pixel_offset) * ConfigPaintingPoints.real_accuracy, 3); //
+                X = Math.Round((Points[j].X + x_pixel_offset) * _accuracy, 3); //
+                Y = -Math.Round((Points[j].Y + y_pixel_offset) * _accuracy, 3); //
 
                 //--------------------- Build Gcode-------------------
 
@@ -1707,7 +1750,7 @@ namespace CVEYEV1
 
                 // Select paiting channel
                 gcode.WriteLine("ActivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
-                
+
                 // Move to the first point of inside circle
                 gcode.WriteLine("Code \"G00 X" + startpoint_X + " Y" + startpoint_Y + "\"");
                 Wait(1000);
@@ -1797,7 +1840,7 @@ namespace CVEYEV1
             gcode.WriteLine("Sleep(" + time.ToString() + ")");
             gcode.WriteLine("Wend");
         }
-        
+
         private byte GetValveNum(string colorName)
         {
             byte valve_num = 0;
@@ -1907,9 +1950,7 @@ namespace CVEYEV1
 
         private void paintingPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (first_start01)
-                Con_Painting_Point = new ConfigPaintingPoints();
-            first_start01 = false;
+            ConfigPaintingPoints Con_Painting_Point = new ConfigPaintingPoints();
             Con_Painting_Point.ShowDialog();
         }
 
@@ -2040,6 +2081,8 @@ namespace CVEYEV1
                 pattern_field.Image = img_capture_undist.Bitmap;
                 pattern_field.Refresh();
 
+                processLog.Items.Clear();
+
                 // Create new mach3 macro
                 if (gcode != null)
                     gcode.Close();
@@ -2164,7 +2207,7 @@ namespace CVEYEV1
                         if (lowSpeed)
                             HighSpeedMode();
 
-                        scriptObject.Code("G90 G54 G01 X420 Y-430 F6000");
+                        scriptObject.Code("M666");
                     }
                 }
                 else MessageBox.Show("Bạn chưa thiết lập gốc máy.", "CVEye");
@@ -2262,7 +2305,7 @@ namespace CVEYEV1
         #endregion
 
         #region Other events
-        
+
         private void Name_Changed(object sender, EventArgs e)
         {
             // Preview current template
@@ -2270,6 +2313,74 @@ namespace CVEYEV1
             Template.Refresh();
         }
 
+        private void CVEye_Shown(object sender, EventArgs e)
+        {
+            GetMach3Instance();
+
+            //Start Mach3
+            if (mach3 == null)
+                Init_Mach3();
+        }
+
+        private void CVEye_Load(object sender, EventArgs e)
+        {
+            timerDROupdate.Enabled = true;
+        }
+
+        private void CVEye_Closing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult dialog = MessageBox.Show("Bạn muốn thoát phần mềm?", "CVEye",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dialog == DialogResult.No)
+                e.Cancel = true;
+            else
+            {
+                GetMach3Instance();
+
+                if (scriptObject != null)
+                    scriptObject.Code("M94");
+                Thread.Sleep(100);
+
+                // Close Mach3
+                if (mach3 != null)
+                    mach3.ShutDown();
+
+                WriteSystemData();
+            }
+        }
+
+        private void ColorChanged(object sender, EventArgs e)
+        {
+            valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //using (img_capture_undist)
+            {
+                //CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(121, 121));
+                //CvInvoke.Threshold(img_capture_undist, img_threshold, 200, 255, ThresholdType.Binary);
+                ////img_threshold.ConvertTo(img_threshold, DepthType.Cv8U);
+                //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
+                CvInvoke.PyrDown(img_capture_undist, img_capture_undist, BorderType.Default);
+                CvInvoke.Imwrite("result/PyrDown.jpg", img_capture_undist);
+            }
+
+        }
+
+        private void PyrFilter(Mat src)
+        {
+            CvInvoke.PyrDown(src, src, BorderType.Default);
+            CvInvoke.PyrUp(src, src, BorderType.Default);
+        }
+
+        private void TimerDROupdate_Tick(object sender, EventArgs e)
+        {
+            UpdateDRO();
+        }
+
+        // Reload template
         private void ViewTemplate(string value)
         {
             switch (value)
@@ -2345,86 +2456,6 @@ namespace CVEYEV1
                     Template.Image = new Image<Bgr, byte>("pattern_data/02/sol02.jpg").Bitmap;
                     break;
             }
-        }
-
-        private void CVEye_Shown(object sender, EventArgs e)
-        {
-            //GetMach3Instance();
-
-            ////Start Mach3
-            //if (mach3 == null)
-            //    Init_Mach3();
-        }
-
-        private void CVEye_Load(object sender, EventArgs e)
-        {
-            timerDROupdate.Enabled = true;            
-        }
-        
-        private void CVEye_Closing(object sender, FormClosingEventArgs e)
-        {
-            DialogResult dialog = MessageBox.Show("Bạn muốn thoát phần mềm?", "CVEye", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (dialog == DialogResult.No)
-                e.Cancel = true;
-            else
-            {
-                GetMach3Instance();
-
-                if (scriptObject != null)
-                    scriptObject.Code("M94");
-                Thread.Sleep(100);
-
-                // Close Mach3
-                if (mach3 != null)
-                    mach3.ShutDown();
-
-                WriteSystemData();
-            }
-        }
-
-        private void ColorChanged(object sender, EventArgs e)
-        {
-            valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            //using (img_capture_undist)
-            {
-                //CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(121, 121));
-                //CvInvoke.Threshold(img_capture_undist, img_threshold, 200, 255, ThresholdType.Binary);
-                ////img_threshold.ConvertTo(img_threshold, DepthType.Cv8U);
-                //CvInvoke.Imwrite("result/6.img_threshold.jpg", img_threshold);
-                CvInvoke.PyrDown(img_capture_undist, img_capture_undist, BorderType.Default);
-                CvInvoke.Imwrite("result/PyrDown.jpg", img_capture_undist);
-            }
-
-        }
-
-        private void PyrFilter(Mat src)
-        {
-            CvInvoke.PyrDown(src, src, BorderType.Default);
-            CvInvoke.PyrUp(src, src, BorderType.Default);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            using (Image<Bgr, byte> drawImg = CVEye.img_capture_undist.Clone())
-            {
-                //
-                CVEye.PixelsCompensation(drawImg);
-                CVEye.Draw_Grid(drawImg);
-                pattern_field.Image = drawImg.Bitmap;
-                pattern_field.Refresh();
-                CvInvoke.Imwrite("result/4.img_items.jpg", drawImg);
-            }
-        }
-
-        private void TimerDROupdate_Tick(object sender, EventArgs e)
-        {
-            UpdateDRO();
         }
         #endregion
     }

@@ -32,8 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CVEye));
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,18 +50,15 @@
             this.pattern_field = new System.Windows.Forms.PictureBox();
             this.Detect_items = new System.Windows.Forms.Button();
             this.Template = new System.Windows.Forms.PictureBox();
-            this.num_of_items = new System.Windows.Forms.TextBox();
-            this.elapsed_time = new System.Windows.Forms.TextBox();
             this.tmp_item_name = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.item_color = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
+            this.button3 = new System.Windows.Forms.Button();
             this.run = new System.Windows.Forms.Button();
             this.Reset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -100,13 +95,12 @@
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
             this.machStatus = new System.Windows.Forms.Label();
             this.lockCylinder = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.processLog = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tableLayoutPanel4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).BeginInit();
@@ -137,28 +131,6 @@
             this.button1.Text = "Bật camera";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Video_Click);
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 7);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(110, 16);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Số mẫu tìm được:";
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(3, 37);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(96, 16);
-            this.label9.TabIndex = 8;
-            this.label9.Text = "Thời gian xử lý:";
             // 
             // fileToolStripMenuItem
             // 
@@ -308,26 +280,6 @@
             this.Template.TabIndex = 0;
             this.Template.TabStop = false;
             // 
-            // num_of_items
-            // 
-            this.num_of_items.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.num_of_items.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.num_of_items.Location = new System.Drawing.Point(138, 4);
-            this.num_of_items.Name = "num_of_items";
-            this.num_of_items.ReadOnly = true;
-            this.num_of_items.Size = new System.Drawing.Size(66, 22);
-            this.num_of_items.TabIndex = 66;
-            // 
-            // elapsed_time
-            // 
-            this.elapsed_time.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.elapsed_time.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.elapsed_time.Location = new System.Drawing.Point(138, 34);
-            this.elapsed_time.Name = "elapsed_time";
-            this.elapsed_time.ReadOnly = true;
-            this.elapsed_time.Size = new System.Drawing.Size(66, 22);
-            this.elapsed_time.TabIndex = 70;
-            // 
             // tmp_item_name
             // 
             this.tmp_item_name.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -413,8 +365,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Controls.Add(this.tableLayoutPanel4);
             this.groupBox1.Controls.Add(this.Outside);
             this.groupBox1.Controls.Add(this.tableLayoutPanel2);
             this.groupBox1.Controls.Add(this.Template);
@@ -423,42 +373,10 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(907, 108);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(230, 511);
+            this.groupBox1.Size = new System.Drawing.Size(230, 365);
             this.groupBox1.TabIndex = 65;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(9, 445);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(104, 30);
-            this.button4.TabIndex = 82;
-            this.button4.Text = "Compensate";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // tableLayoutPanel4
-            // 
-            this.tableLayoutPanel4.ColumnCount = 2;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.03209F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.96791F));
-            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.elapsed_time, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.label9, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.num_of_items, 1, 0);
-            this.tableLayoutPanel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(6, 367);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 2;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(212, 60);
-            this.tableLayoutPanel4.TabIndex = 78;
             // 
             // Outside
             // 
@@ -481,6 +399,17 @@
             this.Inside.TabStop = true;
             this.Inside.Text = "Sơn chữ";
             this.Inside.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(777, 86);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(104, 30);
+            this.button3.TabIndex = 9;
+            this.button3.Text = "Build tmp";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // run
             // 
@@ -665,9 +594,9 @@
             this.label15.Location = new System.Drawing.Point(6, 402);
             this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(98, 16);
+            this.label15.Size = new System.Drawing.Size(131, 16);
             this.label15.TabIndex = 80;
-            this.label15.Text = "Điều khiển van:";
+            this.label15.Text = "Điều khiển đầu phun:";
             // 
             // tableLayoutPanel3
             // 
@@ -886,7 +815,7 @@
             this.TestValve.Name = "TestValve";
             this.TestValve.Size = new System.Drawing.Size(176, 30);
             this.TestValve.TabIndex = 69;
-            this.TestValve.Text = "Phun thử";
+            this.TestValve.Text = "Xả sơn";
             this.TestValve.UseVisualStyleBackColor = false;
             this.TestValve.Click += new System.EventHandler(this.TestValve_Click);
             // 
@@ -916,22 +845,22 @@
             this.lockCylinder.UseVisualStyleBackColor = true;
             this.lockCylinder.Click += new System.EventHandler(this.lockCylinderClick);
             // 
-            // button3
+            // processLog
             // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(777, 57);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(104, 30);
-            this.button3.TabIndex = 9;
-            this.button3.Text = "Build tmp";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.processLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.processLog.FormattingEnabled = true;
+            this.processLog.ItemHeight = 16;
+            this.processLog.Location = new System.Drawing.Point(907, 488);
+            this.processLog.Name = "processLog";
+            this.processLog.Size = new System.Drawing.Size(230, 132);
+            this.processLog.TabIndex = 82;
             // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.processLog);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
@@ -961,8 +890,6 @@
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tableLayoutPanel4.ResumeLayout(false);
-            this.tableLayoutPanel4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -987,16 +914,12 @@
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button Detect_items;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ToolStripMenuItem imageProcessingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem paintingPointToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manualToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.PictureBox Template;
-        private System.Windows.Forms.TextBox elapsed_time;
-        private System.Windows.Forms.TextBox num_of_items;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.ComboBox item_color;
         private System.Windows.Forms.Label label5;
@@ -1022,7 +945,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Timer timerDROupdate;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox7;
@@ -1049,7 +971,7 @@
         private System.Windows.Forms.PictureBox ledX;
         private System.Windows.Forms.Button lockCylinder;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ListBox processLog;
     }
 }
 

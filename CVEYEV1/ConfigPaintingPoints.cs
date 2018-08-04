@@ -34,13 +34,13 @@ namespace CVEYEV1
 
         private double x_real_pos, y_real_pos;
         private int x_axis, y_axis;
-        public static double real_tmp_size = 121;
-        public static double raw_tmp_size = 430;
-        public static double scale = Math.Round(real_tmp_size / raw_tmp_size, 4);
+        private double real_tmp_size = 121;
+        private double raw_tmp_size = 430;
+        private double scale = 0;
         public static string data_path = "_database.xml";
 
         public static Point[] painting_points;
-        public static PointF[] affine_painting_points;
+        //public static PointF[] affine_painting_points;
 
         Image<Bgr, byte> points_tracking;
         public static int point_num = 0;
@@ -48,7 +48,7 @@ namespace CVEYEV1
         public static XDocument dispensing_data;
         public static XElement get_item;
 
-        public static double real_accuracy = 0.192; // mm per pixel // change from 0.213 to 0.209
+        public static double real_accuracy = 0;
 
         private bool clear =  false;
         private bool first_start = false;
@@ -62,7 +62,10 @@ namespace CVEYEV1
             Init_Xml();
 
             painting_points = new Point[25];
-            affine_painting_points = new PointF[25];
+            //affine_painting_points = new PointF[25];
+
+            scale = real_tmp_size / raw_tmp_size;
+            real_accuracy = CVEye._accuracy;
 
         }
 
@@ -129,7 +132,9 @@ namespace CVEYEV1
                     k++;
 
                 }
+
                 template_view.Image = points_tracking.Bitmap;
+                template_view.Refresh();
             }
             catch (Exception ex)
             {
@@ -173,10 +178,10 @@ namespace CVEYEV1
             template_clone.Draw(vertical, new Bgr(System.Drawing.Color.Blue), 1);
             template_clone.Draw(horizontal, new Bgr(System.Drawing.Color.Blue), 1);
 
-            float needle_cir;
-            needle_cir = ((float)needle_dia.Value / (float)real_accuracy) / (float)scale;
+            double needle_cir;
+            needle_cir = ((double)needle_dia.Value / real_accuracy) / scale;
 
-            template_clone.Draw(new CircleF(new PointF(x_axis, y_axis), needle_cir / 2), new Bgr(System.Drawing.Color.GreenYellow), 1);
+            template_clone.Draw(new CircleF(new PointF(x_axis, y_axis), (float)needle_cir), new Bgr(System.Drawing.Color.GreenYellow), 1);
 
             template_view.Image = template_clone.Bitmap;
         }
@@ -365,7 +370,7 @@ namespace CVEYEV1
 
         private void OK_Click(object sender, EventArgs e)
         {
-            Hide();
+            Close();
         }
 
         private void CellClick(object sender, EventArgs e)

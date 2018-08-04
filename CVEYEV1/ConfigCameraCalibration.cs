@@ -23,8 +23,7 @@ namespace CVEYEV1
         public ConfigCameraCalibration()
         {
             InitializeComponent();
-            //if (CVEye.cameraOn)
-            calib_image.Image = CVEye.img_capture_undist.Bitmap;
+            //if (CVEye.cameraOn)        
         }
 
         private void CameraCalibrate_Click(object sender, EventArgs e)
@@ -36,14 +35,9 @@ namespace CVEYEV1
         {
             using (Image<Bgr, byte> drawImg = CVEye.img_capture_undist.Clone())
             {
-                //
                 CVEye.PixelsCompensation(drawImg);
                 CVEye.Draw_Grid(drawImg);
-                calib_image.Image = drawImg.Bitmap;
-
-                // Save image to image library
-                // CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", CVEye.img_capture_undist);
-                CvInvoke.Imwrite("result/4.img_items.jpg", drawImg);
+                CvInvoke.Imwrite("result/comResult.jpg", drawImg);
             }
         }
 
