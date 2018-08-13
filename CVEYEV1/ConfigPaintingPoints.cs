@@ -28,6 +28,7 @@ namespace CVEYEV1
     {
         // 
         private Image<Bgr,byte> template_img;
+        private Image<Bgr, byte> points_tracking;
 
         private double mouse_val;
         private bool mouse_enter;
@@ -39,10 +40,10 @@ namespace CVEYEV1
         private double scale = 0;
         public static string data_path = "_database.xml";
 
-        public static Point[] painting_points;
+        public static Point[] painting_points = new Point[25];
         //public static PointF[] affine_painting_points;
 
-        Image<Bgr, byte> points_tracking;
+
         public static int point_num = 0;
 
         public static XDocument dispensing_data;
@@ -52,34 +53,14 @@ namespace CVEYEV1
 
         private bool clear =  false;
         private bool first_start = false;
+        //private bool gridEnter = false;
 
         public ConfigPaintingPoints()
         {
             InitializeComponent();
-
-            Init_Image();
-
-            Init_Xml();
-
-            painting_points = new Point[25];
-            //affine_painting_points = new PointF[25];
-
+            
             scale = real_tmp_size / raw_tmp_size;
             real_accuracy = CVEye._accuracy;
-
-        }
-
-        private void Init_Image()
-        {
-            template_img = new Image<Bgr, byte>("pattern_data/01/gen01.jpg");
-            //template_view.Image = template_img.Bitmap;
-            points_tracking = template_img.Clone();
-        }
-
-        private void Init_Xml()
-        {
-            // Load up-to-date XML database
-            LoadXml();   
         }
 
         // Load points data to data table
@@ -87,10 +68,8 @@ namespace CVEYEV1
         {
             try
             {
-                points_tracking = template_img.Clone();
-                PointF[] draw_point = new PointF[2];
-                int t = 0;
-                int k = 1;
+                //
+                LoadTmp(item_name.Text);
 
                 // Clear and load points data
                 Data_Grid.Rows.Clear();
@@ -103,7 +82,11 @@ namespace CVEYEV1
                     .Single();
 
                 List<XElement> point_list = get_item.Element("Points").Elements("Point").ToList();
-                
+
+                PointF[] draw_point = new PointF[2];
+                int t = 0;
+                int k = 1;
+
                 foreach (XElement element in point_list)
                 {
                     Data_Grid.Rows.Add(k,
@@ -111,7 +94,7 @@ namespace CVEYEV1
                         element.Attribute("Y").Value,
                         element.Attribute("Z").Value,
                         element.Attribute("T").Value,
-                        element.Attribute("C").Value);                                       
+                        element.Attribute("C").Value);
 
                     // Preview point tracking
                     if (t == 1)
@@ -130,11 +113,12 @@ namespace CVEYEV1
                     points_tracking.Draw(k.ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(System.Drawing.Color.YellowGreen));
 
                     k++;
-
                 }
 
-                template_view.Image = points_tracking.Bitmap;
-                template_view.Refresh();
+                // 
+                templateImg.Image = points_tracking.Bitmap;
+                templateImg.Refresh();
+
             }
             catch (Exception ex)
             {
@@ -142,55 +126,48 @@ namespace CVEYEV1
             }
         }
 
-        private void Reload_Template(string tmp_path)
-        {
-            template_img = new Image<Bgr, byte>(tmp_path);
-            template_view.Image = new Image<Bgr, byte>(tmp_path).Bitmap;
-            points_tracking = template_img.Clone();
-        }
-
         private void Name_Changed(object sender, EventArgs e)
         {
             LoadXml();
-            view_template(item_name.Text);
             point_num = 0;
         }
 
         private void ViewPixelInfo(MouseEventArgs e)
         {
-            Image<Bgr, byte> template_clone;
-            template_clone = points_tracking.Clone();
+            using (Image<Bgr, byte> tmp = points_tracking.Clone())
+            {
+                LineSegment2DF vertical = new LineSegment2DF();
+                LineSegment2DF horizontal = new LineSegment2DF();
 
-            LineSegment2DF vertical = new LineSegment2DF();
-            LineSegment2DF horizontal = new LineSegment2DF();
+                // Cursor in picture box position
+                x_axis = e.Location.X + 1;
+                y_axis = e.Location.Y + 1;
 
-            // Cursor in picture box position
-            x_axis = e.Location.X + 1;
-            y_axis = e.Location.Y + 1;
+                CalculateLocalPosition();
 
-            CalculateLocalPosition();
+                vertical.P1 = new Point(x_axis, 0);
+                vertical.P2 = new Point(x_axis, templateImg.Height);
+                horizontal.P1 = new Point(0, y_axis);
+                horizontal.P2 = new Point(templateImg.Width, y_axis);
 
-            vertical.P1 = new Point(x_axis, 0);
-            vertical.P2 = new Point(x_axis, template_view.Height);
-            horizontal.P1 = new Point(0, y_axis);
-            horizontal.P2 = new Point(template_view.Width, y_axis);
+                tmp.Draw(vertical, new Bgr(System.Drawing.Color.Blue), 1);
+                tmp.Draw(horizontal, new Bgr(System.Drawing.Color.Blue), 1);
 
-            template_clone.Draw(vertical, new Bgr(System.Drawing.Color.Blue), 1);
-            template_clone.Draw(horizontal, new Bgr(System.Drawing.Color.Blue), 1);
+                double needle_cir;
+                needle_cir = ((double)needle_dia.Value / real_accuracy) / scale;
 
-            double needle_cir;
-            needle_cir = ((double)needle_dia.Value / real_accuracy) / scale;
+                tmp.Draw(new CircleF(new PointF(x_axis, y_axis), (float)needle_cir / 2), new Bgr(System.Drawing.Color.GreenYellow), 1);
 
-            template_clone.Draw(new CircleF(new PointF(x_axis, y_axis), (float)needle_cir), new Bgr(System.Drawing.Color.GreenYellow), 1);
-
-            template_view.Image = template_clone.Bitmap;
+                templateImg.Image = tmp.Bitmap;
+                templateImg.Refresh();
+            }
         }
 
         // Get local painting points
         private void Template_Click(object sender, MouseEventArgs e)
         {
             if (clear || point_num == 0)
-            {  
+            {
                 // Drawing
                 painting_points[point_num] = new Point(x_axis, y_axis);
 
@@ -209,19 +186,49 @@ namespace CVEYEV1
         private void CalculateLocalPosition()
         {
             // Calculate real painting point local coordinate
-            x_real_pos = Math.Round(x_axis * scale, 3);
-            y_real_pos = Math.Round(y_axis * scale, 3);
+            x_real_pos = Math.Round(x_axis * scale, 1);
+            y_real_pos = Math.Round(y_axis * scale, 1);
 
             // Show value
-            x_pos_lb.Text = Convert.ToString(x_real_pos);
-            y_pos_lb.Text = Convert.ToString(y_real_pos);
+            x_pos_lb.Text = x_real_pos.ToString();
+            y_pos_lb.Text = y_real_pos.ToString();
         }
 
-        private void template_view_MouseWheel(object sender, MouseEventArgs e)
+        private void DataGridMouseWheel(object sender, MouseEventArgs e)
         {
-            if (mouse_enter)
+            using (Image<Bgr, byte> tmp = points_tracking.Clone())
             {
-                mouse_val += e.Delta;
+                mouse_val += e.Delta / 120;
+                status.Text = mouse_val.ToString();
+
+                Data_Grid.CurrentCell.Value = Math.Round(float.Parse(Data_Grid.CurrentCell.Value.ToString()) + (float)e.Delta / 240, 1).ToString();
+                Data_Grid.Refresh();
+
+                int pointinx = 0;
+                PointF[] draw_point = new PointF[2];
+                for (int idx = 0; idx < Data_Grid.RowCount - 1; idx++)
+                {
+                    // Preview point tracking
+                    if (pointinx == 1)
+                    {
+                        draw_point[pointinx] = new PointF((float)(float.Parse(Data_Grid.Rows[idx].Cells[1].Value.ToString()) / scale), (float)(float.Parse(Data_Grid.Rows[idx].Cells[2].Value.ToString()) / scale));
+                        tmp.Draw(new LineSegment2DF(draw_point[pointinx - 1], draw_point[pointinx]),
+                            new Bgr(System.Drawing.Color.Cyan), 1);
+                        draw_point[pointinx - 1] = draw_point[pointinx];
+                    }
+                    else
+                    {
+                        draw_point[pointinx] = new PointF(float.Parse(Data_Grid.Rows[0].Cells[1].Value.ToString()) / (float)scale, float.Parse(Data_Grid.Rows[0].Cells[2].Value.ToString()) / (float)scale);
+                        //draw_point[pointinx] = new PointF(0, 0);
+                        pointinx++;
+                    }
+
+                    tmp.Draw((idx + 1).ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(System.Drawing.Color.YellowGreen));
+                }
+
+                // 
+                templateImg.Image = tmp.Bitmap;
+                templateImg.Refresh();
             }
         }
 
@@ -229,9 +236,10 @@ namespace CVEYEV1
         {
             try
             {
-                painting_points = new Point[100];
+                painting_points = new Point[25];
+
                 // Refresh picture box
-                template_view.Image = template_img.Bitmap;
+                templateImg.Image = template_img.Bitmap;
                 points_tracking = template_img.Clone();
                 point_num = 0;
 
@@ -244,7 +252,7 @@ namespace CVEYEV1
                 .Where(x => x.Element("Name").Value == item_name.Text)
                 .Single();
 
-                if (get_item !=null)
+                if (get_item != null)
                     get_item.Element("Points").RemoveAll();
                 else
                     MessageBox.Show("Nothing to clear");
@@ -252,13 +260,14 @@ namespace CVEYEV1
                 dispensing_data.Save(data_path);
                 clear = true;
                 status.Text = "Cleared";
+
             }
             catch (Exception)
             {
                 MessageBox.Show("Exception thrown");
 
                 // Refresh picture box
-                template_view.Image = template_img.Bitmap;
+                templateImg.Image = template_img.Bitmap;
                 points_tracking = template_img.Clone();
                 point_num = 0;
 
@@ -269,7 +278,7 @@ namespace CVEYEV1
 
         private void UpdateDatabase()
         {
-            // Save dispensing data to XML
+            // Reload
             dispensing_data = XDocument.Load(data_path);
 
             // Remove current item
@@ -333,8 +342,10 @@ namespace CVEYEV1
                 // Update new painting points
                 UpdateDatabase();
 
+                LoadXml();
+
                 // Refresh picture box
-                points_tracking = template_img.Clone();
+                //points_tracking = template_img.Clone();
                 point_num = 0;
                 status.Text = "Saved";
 
@@ -344,23 +355,6 @@ namespace CVEYEV1
                 MessageBox.Show("Exception thrown");
             }
 
-        }
-
-        private void pattern_field_MouseEnter(object sender, EventArgs e)
-        {
-            mouse_enter = true;
-            MouseWheel += template_view_MouseWheel;
-        }
-
-        private void pattern_field_MouseMove(object sender, MouseEventArgs e)
-        {
-            //Draw_Cross(e);
-            ViewPixelInfo(e);
-        }
-
-        private void pattern_field_MouseLeave(object sender, EventArgs e)
-        {
-            mouse_enter = !mouse_enter;
         }
 
         private void ItemNameChange(object sender, EventArgs e)
@@ -374,22 +368,63 @@ namespace CVEYEV1
         }
 
         private void CellClick(object sender, EventArgs e)
-        {
-            first_start = true;
-        }
+        {            
+            using (Image<Bgr, byte> tmp = points_tracking.Clone())
+            {
+                if (Data_Grid.RowCount > 1)
+                {
+                    PointF currentPoint = new PointF(float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString()) / (float)scale,
+                        float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString()) / (float)scale);
+                    tmp.Draw(new CircleF(currentPoint, 5), new Bgr(System.Drawing.Color.GreenYellow), 2);
 
-        private void _FromClosing(object sender, FormClosingEventArgs e)
-        {
-            CVEye.first_start01 = true;
+                    templateImg.Image = tmp.Bitmap;
+                    templateImg.Refresh();
+                }
+            }
+
+            MouseWheel += DataGridMouseWheel;
+            status.Text = "mouse click";
+
+            first_start = true;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
         {
             Close();
-            CVEye.first_start01 = true;
         }
 
-        private void view_template(string value)
+        private void pattern_field_MouseEnter(object sender, EventArgs e)
+        {
+            mouse_enter = true;
+        }
+
+        private void pattern_field_MouseMove(object sender, MouseEventArgs e)
+        {
+            ViewPixelInfo(e);
+        }
+
+        private void pattern_field_MouseLeave(object sender, EventArgs e)
+        {
+            mouse_enter = !mouse_enter;
+        }
+
+        private void ConfigPaintingPoints_Load(object sender, EventArgs e)
+        {
+            LoadXml();
+        }
+
+        private void Data_Grid_MouseEnter(object sender, EventArgs e)
+        {
+            //gridEnter = true;
+        }
+
+        private void Reload_Template(string tmp_path)
+        {
+            template_img = new Image<Bgr, byte>(tmp_path);
+            points_tracking = template_img.Clone();
+        }
+
+        private void LoadTmp(string value)
         {
             switch (value)
             {

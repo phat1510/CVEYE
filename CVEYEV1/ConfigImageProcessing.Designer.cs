@@ -55,13 +55,13 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
-            this.cn4 = new System.Windows.Forms.NumericUpDown();
-            this.cn2 = new System.Windows.Forms.NumericUpDown();
-            this.cn1 = new System.Windows.Forms.NumericUpDown();
+            this.cnl4 = new System.Windows.Forms.NumericUpDown();
+            this.cnl2 = new System.Windows.Forms.NumericUpDown();
+            this.cnl1 = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.cn3 = new System.Windows.Forms.NumericUpDown();
+            this.cnl3 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.gaussian_sig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param2)).BeginInit();
@@ -77,10 +77,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresh)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cn4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl3)).BeginInit();
             this.SuspendLayout();
             // 
             // OK
@@ -116,14 +116,14 @@
             0,
             0,
             65536});
-            this.gaussian_sig.Location = new System.Drawing.Point(168, 54);
+            this.gaussian_sig.Location = new System.Drawing.Point(120, 50);
             this.gaussian_sig.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.gaussian_sig.Name = "gaussian_sig";
-            this.gaussian_sig.Size = new System.Drawing.Size(49, 22);
+            this.gaussian_sig.Size = new System.Drawing.Size(97, 22);
             this.gaussian_sig.TabIndex = 46;
             // 
             // houge_param1
@@ -148,7 +148,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(6, 54);
+            this.label4.Location = new System.Drawing.Point(6, 53);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(108, 16);
             this.label4.TabIndex = 45;
@@ -329,8 +329,8 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71.55963F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.44037F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.84404F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.15596F));
             this.tableLayoutPanel2.Controls.Add(this.ErrConstraint, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label6, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.label8, 0, 0);
@@ -351,14 +351,14 @@
             // ErrConstraint
             // 
             this.ErrConstraint.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ErrConstraint.Location = new System.Drawing.Point(158, 63);
+            this.ErrConstraint.Location = new System.Drawing.Point(139, 63);
             this.ErrConstraint.Maximum = new decimal(new int[] {
             15,
             0,
             0,
             0});
             this.ErrConstraint.Name = "ErrConstraint";
-            this.ErrConstraint.Size = new System.Drawing.Size(49, 22);
+            this.ErrConstraint.Size = new System.Drawing.Size(76, 22);
             this.ErrConstraint.TabIndex = 65;
             this.ErrConstraint.Value = new decimal(new int[] {
             15,
@@ -391,14 +391,14 @@
             // correctionRange
             // 
             this.correctionRange.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.correctionRange.Location = new System.Drawing.Point(158, 33);
+            this.correctionRange.Location = new System.Drawing.Point(139, 33);
             this.correctionRange.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
             this.correctionRange.Name = "correctionRange";
-            this.correctionRange.Size = new System.Drawing.Size(49, 22);
+            this.correctionRange.Size = new System.Drawing.Size(76, 22);
             this.correctionRange.TabIndex = 44;
             this.correctionRange.Value = new decimal(new int[] {
             3,
@@ -409,14 +409,14 @@
             // cannyThresh
             // 
             this.cannyThresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cannyThresh.Location = new System.Drawing.Point(158, 3);
+            this.cannyThresh.Location = new System.Drawing.Point(139, 3);
             this.cannyThresh.Maximum = new decimal(new int[] {
             500,
             0,
             0,
             0});
             this.cannyThresh.Name = "cannyThresh";
-            this.cannyThresh.Size = new System.Drawing.Size(49, 22);
+            this.cannyThresh.Size = new System.Drawing.Size(76, 22);
             this.cannyThresh.TabIndex = 42;
             this.cannyThresh.Value = new decimal(new int[] {
             475,
@@ -449,25 +449,25 @@
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71.55963F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.44037F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
             this.tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.cn4, 1, 3);
-            this.tableLayoutPanel3.Controls.Add(this.cn2, 1, 1);
-            this.tableLayoutPanel3.Controls.Add(this.cn1, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cnl1, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.cnl4, 1, 3);
+            this.tableLayoutPanel3.Controls.Add(this.cnl2, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.label10, 0, 1);
             this.tableLayoutPanel3.Controls.Add(this.label11, 0, 3);
             this.tableLayoutPanel3.Controls.Add(this.label12, 0, 2);
-            this.tableLayoutPanel3.Controls.Add(this.cn3, 1, 2);
+            this.tableLayoutPanel3.Controls.Add(this.cnl3, 1, 2);
             this.tableLayoutPanel3.Location = new System.Drawing.Point(6, 21);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 4;
+            this.tableLayoutPanel3.RowCount = 5;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(218, 120);
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(207, 120);
             this.tableLayoutPanel3.TabIndex = 66;
             // 
             // label5
@@ -481,58 +481,58 @@
             this.label5.TabIndex = 41;
             this.label5.Text = "Cn1:";
             // 
-            // cn4
+            // cnl4
             // 
-            this.cn4.DecimalPlaces = 1;
-            this.cn4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cn4.Increment = new decimal(new int[] {
+            this.cnl4.DecimalPlaces = 1;
+            this.cnl4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cnl4.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.cn4.Location = new System.Drawing.Point(158, 93);
-            this.cn4.Name = "cn4";
-            this.cn4.Size = new System.Drawing.Size(49, 22);
-            this.cn4.TabIndex = 65;
-            this.cn4.Value = new decimal(new int[] {
+            this.cnl4.Location = new System.Drawing.Point(69, 93);
+            this.cnl4.Name = "cnl4";
+            this.cnl4.Size = new System.Drawing.Size(135, 22);
+            this.cnl4.TabIndex = 65;
+            this.cnl4.Value = new decimal(new int[] {
             76,
             0,
             0,
             0});
             // 
-            // cn2
+            // cnl2
             // 
-            this.cn2.DecimalPlaces = 1;
-            this.cn2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cn2.Increment = new decimal(new int[] {
+            this.cnl2.DecimalPlaces = 1;
+            this.cnl2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cnl2.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.cn2.Location = new System.Drawing.Point(158, 33);
-            this.cn2.Name = "cn2";
-            this.cn2.Size = new System.Drawing.Size(49, 22);
-            this.cn2.TabIndex = 44;
-            this.cn2.Value = new decimal(new int[] {
+            this.cnl2.Location = new System.Drawing.Point(69, 33);
+            this.cnl2.Name = "cnl2";
+            this.cnl2.Size = new System.Drawing.Size(135, 22);
+            this.cnl2.TabIndex = 44;
+            this.cnl2.Value = new decimal(new int[] {
             40,
             0,
             0,
             0});
             // 
-            // cn1
+            // cnl1
             // 
-            this.cn1.DecimalPlaces = 1;
-            this.cn1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cn1.Increment = new decimal(new int[] {
+            this.cnl1.DecimalPlaces = 1;
+            this.cnl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cnl1.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.cn1.Location = new System.Drawing.Point(158, 3);
-            this.cn1.Name = "cn1";
-            this.cn1.Size = new System.Drawing.Size(49, 22);
-            this.cn1.TabIndex = 42;
-            this.cn1.Value = new decimal(new int[] {
+            this.cnl1.Location = new System.Drawing.Point(69, 3);
+            this.cnl1.Name = "cnl1";
+            this.cnl1.Size = new System.Drawing.Size(135, 22);
+            this.cnl1.TabIndex = 42;
+            this.cnl1.Value = new decimal(new int[] {
             65,
             0,
             0,
@@ -571,20 +571,20 @@
             this.label12.TabIndex = 66;
             this.label12.Text = "Cn3:";
             // 
-            // cn3
+            // cnl3
             // 
-            this.cn3.DecimalPlaces = 1;
-            this.cn3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cn3.Increment = new decimal(new int[] {
+            this.cnl3.DecimalPlaces = 1;
+            this.cnl3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cnl3.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.cn3.Location = new System.Drawing.Point(158, 63);
-            this.cn3.Name = "cn3";
-            this.cn3.Size = new System.Drawing.Size(49, 22);
-            this.cn3.TabIndex = 66;
-            this.cn3.Value = new decimal(new int[] {
+            this.cnl3.Location = new System.Drawing.Point(69, 63);
+            this.cnl3.Name = "cnl3";
+            this.cnl3.Size = new System.Drawing.Size(135, 22);
+            this.cnl3.TabIndex = 66;
+            this.cnl3.Value = new decimal(new int[] {
             73,
             0,
             0,
@@ -624,10 +624,10 @@
             this.groupBox4.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.cn4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cn3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cnl3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -661,12 +661,12 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label label5;
-        public System.Windows.Forms.NumericUpDown cn4;
-        public System.Windows.Forms.NumericUpDown cn2;
-        public System.Windows.Forms.NumericUpDown cn1;
+        public System.Windows.Forms.NumericUpDown cnl4;
+        public System.Windows.Forms.NumericUpDown cnl2;
+        public System.Windows.Forms.NumericUpDown cnl1;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
-        public System.Windows.Forms.NumericUpDown cn3;
+        public System.Windows.Forms.NumericUpDown cnl3;
     }
 }

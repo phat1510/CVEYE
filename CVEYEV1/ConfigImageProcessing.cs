@@ -27,24 +27,23 @@ namespace CVEYEV1
             CVEye.SysData = XDocument.Load("_system.xml");
 
             // Update new data
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").RemoveAll();
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("MachingCorrection",
-                new XAttribute("cannyThresh", cannyThresh.Value),
-                new XAttribute("correctionRange", correctionRange.Value),
-                new XAttribute("ErrConstraint", ErrConstraint.Value)));
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("HoughCirclesDetector",
-                new XAttribute("houge_param1", houge_param1.Value),
-                new XAttribute("houge_param2", houge_param2.Value),
-                new XAttribute("min_ra", min_ra.Value),
-                new XAttribute("max_ra", max_ra.Value)));
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("ImageFiltering",
-                new XAttribute("gaussian_sig", gaussian_sig.Value),
-                new XAttribute("G_blur", ((G_blur.CheckState == CheckState.Checked) ? 1 : 0))));
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Add(new XElement("PSTTransform",
-                new XAttribute("cn1", cn1.Value),
-                new XAttribute("cn2", cn2.Value),
-                new XAttribute("cn3", cn3.Value),
-                new XAttribute("cn4", cn4.Value)));
+
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("MachingCorrection").Attribute("cannyThresh").Value = cannyThresh.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("MachingCorrection").Attribute("correctionRange").Value = correctionRange.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("MachingCorrection").Attribute("ErrConstraint").Value = ErrConstraint.Value.ToString();
+
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("houge_param1").Value = houge_param1.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("houge_param2").Value = houge_param2.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("min_ra").Value = min_ra.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("max_ra").Value = max_ra.Value.ToString();
+
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("ImageFiltering").Attribute("gaussian_sig").Value = gaussian_sig.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("ImageFiltering").Attribute("G_blur").Value = ((G_blur.CheckState == CheckState.Checked) ? 1 : 0).ToString();
+
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge1").Value = cnl1.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge2").Value = cnl2.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge3").Value = cnl3.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge4").Value = cnl4.Value.ToString();
 
             // Save document
             CVEye.SysData.Save("_system.xml");
@@ -65,10 +64,10 @@ namespace CVEYEV1
             max_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value);
             gaussian_sig.Value      = decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value);
             G_blur.CheckState       = (decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
-            cn1.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn1").Value);
-            cn2.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn2").Value);
-            cn3.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn3").Value);
-            cn4.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("cn4").Value);
+            cnl1.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge1").Value);
+            cnl2.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge2").Value);
+            cnl3.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge3").Value);
+            cnl4.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge4").Value);
         }
 
         private void Cancel_Click(object sender, EventArgs e)

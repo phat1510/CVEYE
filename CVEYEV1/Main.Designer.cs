@@ -58,7 +58,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
-            this.button3 = new System.Windows.Forms.Button();
             this.run = new System.Windows.Forms.Button();
             this.Reset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -96,6 +95,8 @@
             this.machStatus = new System.Windows.Forms.Label();
             this.lockCylinder = new System.Windows.Forms.Button();
             this.processLog = new System.Windows.Forms.ListBox();
+            this.saveTemplate = new System.Windows.Forms.SaveFileDialog();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
@@ -371,7 +372,7 @@
             this.groupBox1.Controls.Add(this.Inside);
             this.groupBox1.Controls.Add(this.Detect_items);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(907, 108);
+            this.groupBox1.Location = new System.Drawing.Point(907, 144);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(230, 365);
             this.groupBox1.TabIndex = 65;
@@ -399,17 +400,6 @@
             this.Inside.TabStop = true;
             this.Inside.Text = "Sơn chữ";
             this.Inside.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(777, 86);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(104, 30);
-            this.button3.TabIndex = 9;
-            this.button3.Text = "Build tmp";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // run
             // 
@@ -442,7 +432,7 @@
             this.groupBox3.Controls.Add(this.button2);
             this.groupBox3.Controls.Add(this.button1);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(907, 36);
+            this.groupBox3.Location = new System.Drawing.Point(907, 72);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(230, 66);
             this.groupBox3.TabIndex = 71;
@@ -454,6 +444,7 @@
             this.Progress.Location = new System.Drawing.Point(601, 704);
             this.Progress.Name = "Progress";
             this.Progress.Size = new System.Drawing.Size(280, 22);
+            this.Progress.Step = 1;
             this.Progress.TabIndex = 72;
             // 
             // status_label
@@ -836,7 +827,7 @@
             // lockCylinder
             // 
             this.lockCylinder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lockCylinder.Location = new System.Drawing.Point(907, 632);
+            this.lockCylinder.Location = new System.Drawing.Point(907, 36);
             this.lockCylinder.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.lockCylinder.Name = "lockCylinder";
             this.lockCylinder.Size = new System.Drawing.Size(230, 30);
@@ -850,10 +841,15 @@
             this.processLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.processLog.FormattingEnabled = true;
             this.processLog.ItemHeight = 16;
-            this.processLog.Location = new System.Drawing.Point(907, 488);
+            this.processLog.Location = new System.Drawing.Point(907, 514);
             this.processLog.Name = "processLog";
-            this.processLog.Size = new System.Drawing.Size(230, 132);
+            this.processLog.Size = new System.Drawing.Size(230, 148);
             this.processLog.TabIndex = 82;
+            // 
+            // backgroundWorker
+            // 
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
             // 
             // CVEye
             // 
@@ -861,7 +857,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
             this.Controls.Add(this.processLog);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
             this.Controls.Add(this.groupBox2);
@@ -931,7 +926,6 @@
         private System.Windows.Forms.ProgressBar Progress;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.ToolStripMenuItem cameraCalibrationToolStripMenuItem;
-        public System.Windows.Forms.ComboBox tmp_item_name;
         public System.Windows.Forms.PictureBox pattern_field;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ToolStripMenuItem paintingConditionToolStripMenuItem;
@@ -970,8 +964,10 @@
         private System.Windows.Forms.PictureBox ledY;
         private System.Windows.Forms.PictureBox ledX;
         private System.Windows.Forms.Button lockCylinder;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ListBox processLog;
+        private System.Windows.Forms.SaveFileDialog saveTemplate;
+        public System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.ComboBox tmp_item_name;
     }
 }
 

@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00680B661EE243529F6B7B88025AFA15"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_02D6575405704F46BCD3E2BE7F902AF5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -129,6 +135,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7D5BFCC18DA645A39F3EBF96E8CF6E47"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7E420B61F5BE4B24A607485E7623B548"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -136,6 +148,12 @@
         "Entry"
         {
         "MsmKey" = "8:_82556764DBB1461694A3CDD8E4F378CC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_89385E2E7BAB468F99647DA2741BB902"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -207,6 +225,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C894EBC72C394B43B4B7A8C3B0C8B8B9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C9C196D11B444F3D99482E3EF69D8CBB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -262,6 +286,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F561797D85AB4850A1C71935828F14BA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FAC594A6D3544F4AB3B707108A5C50A6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -390,6 +420,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00680B661EE243529F6B7B88025AFA15"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\msvcp140.dll"
+            "TargetName" = "8:msvcp140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_02D6575405704F46BCD3E2BE7F902AF5"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\02\\ele02.jpg"
@@ -781,6 +831,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D5BFCC18DA645A39F3EBF96E8CF6E47"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\vcruntime140.dll"
+            "TargetName" = "8:vcruntime140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7E420B61F5BE4B24A607485E7623B548"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\01\\ad01.jpg"
@@ -807,6 +877,26 @@
             "TargetName" = "8:ad02.jpg"
             "Tag" = "8:"
             "Folder" = "8:_C2190B5253A040BE920FBE8D049FB14F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89385E2E7BAB468F99647DA2741BB902"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\cvextern.dll"
+            "TargetName" = "8:cvextern.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1012,6 +1102,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C894EBC72C394B43B4B7A8C3B0C8B8B9"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\concrt140.dll"
+            "TargetName" = "8:concrt140.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9C196D11B444F3D99482E3EF69D8CBB"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\01\\sol01.jpg"
@@ -1214,6 +1324,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FAC594A6D3544F4AB3B707108A5C50A6"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\opencv_ffmpeg320.dll"
+            "TargetName" = "8:opencv_ffmpeg320.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -1285,6 +1415,17 @@
                         {
                         }
                     }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_26450F1C929D4DF7A0A7BB6AC1E00005"
+                    {
+                    "Name" = "8:x86"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_2139CF5AD5DD419392C776351212E55E"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_F2479F757A2C4B69B21F5BD9BFEA2558"
                     {
                     "Name" = "8:pt_data_8bit"
@@ -1348,7 +1489,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CVEye (Beta)"
         "ProductCode" = "8:{B58022F5-8025-4DD3-B490-9496B6C02DAA}"
-        "PackageCode" = "8:{7E856550-D7D3-4CB6-9898-B8A1411E87F8}"
+        "PackageCode" = "8:{48739E05-DB3A-4CAE-88EB-72674B2578A3}"
         "UpgradeCode" = "8:{63AA392D-6279-43D1-A81F-B48A0B000C60}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
