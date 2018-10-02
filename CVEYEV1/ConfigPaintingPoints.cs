@@ -10,11 +10,9 @@ Decription:21/03/2018
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
 
 // EmguCV library
 using Emgu.CV;
@@ -38,18 +36,16 @@ namespace CVEYEV1
         private double real_tmp_size = 121;
         private double raw_tmp_size = 430;
         private double scale = 0;
-        public static string data_path = "_database.xml";
+        private string data_path = "_database.xml";
 
-        public static Point[] painting_points = new Point[25];
-        //public static PointF[] affine_painting_points;
+        private Point[] painting_points = new Point[25];
 
+        private int point_num = 0;
 
-        public static int point_num = 0;
+        private XDocument dispensing_data;
+        private XElement get_item;
 
-        public static XDocument dispensing_data;
-        public static XElement get_item;
-
-        public static double real_accuracy = 0;
+        private double real_accuracy = 0;
 
         private bool clear =  false;
         private bool first_start = false;
@@ -101,7 +97,7 @@ namespace CVEYEV1
                     {
                         draw_point[t] = new PointF((float)(float.Parse(element.Attribute("X").Value) / scale), (float)(float.Parse(element.Attribute("Y").Value) / scale));
                         points_tracking.Draw(new LineSegment2DF(draw_point[t - 1], draw_point[t]),
-                            new Bgr(System.Drawing.Color.Cyan), 1);
+                            new Bgr(Color.Cyan), 1);
                         draw_point[t - 1] = draw_point[t];
                     }
                     else
@@ -110,7 +106,7 @@ namespace CVEYEV1
                         t++;
                     }
 
-                    points_tracking.Draw(k.ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(System.Drawing.Color.YellowGreen));
+                    points_tracking.Draw(k.ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(Color.YellowGreen));
 
                     k++;
                 }
@@ -150,13 +146,13 @@ namespace CVEYEV1
                 horizontal.P1 = new Point(0, y_axis);
                 horizontal.P2 = new Point(templateImg.Width, y_axis);
 
-                tmp.Draw(vertical, new Bgr(System.Drawing.Color.Blue), 1);
-                tmp.Draw(horizontal, new Bgr(System.Drawing.Color.Blue), 1);
+                tmp.Draw(vertical, new Bgr(Color.Blue), 1);
+                tmp.Draw(horizontal, new Bgr(Color.Blue), 1);
 
                 double needle_cir;
                 needle_cir = ((double)needle_dia.Value / real_accuracy) / scale;
 
-                tmp.Draw(new CircleF(new PointF(x_axis, y_axis), (float)needle_cir / 2), new Bgr(System.Drawing.Color.GreenYellow), 1);
+                tmp.Draw(new CircleF(new PointF(x_axis, y_axis), (float)needle_cir / 2), new Bgr(Color.GreenYellow), 1);
 
                 templateImg.Image = tmp.Bitmap;
                 templateImg.Refresh();
@@ -174,7 +170,7 @@ namespace CVEYEV1
                 if (point_num > 0)
                 {
                     points_tracking.Draw(new LineSegment2DF(painting_points[point_num - 1], painting_points[point_num]),
-                        new Bgr(System.Drawing.Color.Cyan), 1);
+                        new Bgr(Color.Cyan), 1);
                 }
                 clear = true;
                 point_num++;
@@ -183,7 +179,7 @@ namespace CVEYEV1
             }
         }
 
-        private void CalculateLocalPosition()
+        public void CalculateLocalPosition()
         {
             // Calculate real painting point local coordinate
             x_real_pos = Math.Round(x_axis * scale, 1);
@@ -213,7 +209,7 @@ namespace CVEYEV1
                     {
                         draw_point[pointinx] = new PointF((float)(float.Parse(Data_Grid.Rows[idx].Cells[1].Value.ToString()) / scale), (float)(float.Parse(Data_Grid.Rows[idx].Cells[2].Value.ToString()) / scale));
                         tmp.Draw(new LineSegment2DF(draw_point[pointinx - 1], draw_point[pointinx]),
-                            new Bgr(System.Drawing.Color.Cyan), 1);
+                            new Bgr(Color.Cyan), 1);
                         draw_point[pointinx - 1] = draw_point[pointinx];
                     }
                     else
@@ -223,7 +219,7 @@ namespace CVEYEV1
                         pointinx++;
                     }
 
-                    tmp.Draw((idx + 1).ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(System.Drawing.Color.YellowGreen));
+                    tmp.Draw((idx + 1).ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(Color.YellowGreen));
                 }
 
                 // 
@@ -288,6 +284,9 @@ namespace CVEYEV1
             .Single();
             get_item.Element("Points").RemoveAll();
 
+            if (status.Text != "Cleared")
+                point_num = Data_Grid.RowCount - 1;
+
             for (int k = 0; k < point_num; k++)
             {
                 get_item.Element("Points").Add(new XElement("Point",
@@ -302,37 +301,85 @@ namespace CVEYEV1
             dispensing_data.Save(data_path);
         }
 
+        private void ViewCurrentPoint()
+        {
+            using (Image<Bgr, byte> tmp = points_tracking.Clone())
+            {
+                if (Data_Grid.RowCount > 1)
+                {
+                    PointF currentPoint = new PointF(float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString()) / (float)scale,
+                        float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString()) / (float)scale);
+
+                    tmp.Draw(new CircleF(currentPoint, 5), new Bgr(Color.GreenYellow), 2);
+
+                    templateImg.Image = tmp.Bitmap;
+                    templateImg.Refresh();
+                }
+            }
+
+            status.Text = "Cell is selected";
+
+            first_start = true;
+        }
+
+        #region Datagrid Events
+
         private void CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (first_start) // if does not use this condition, this event will run when program starts
             {
-                // Save dispensing data to XML
-                dispensing_data = XDocument.Load(data_path);
-
-                // Remove current item
-                get_item = dispensing_data.Element("Field")
-                .Elements("Item")
-                .Where(x => x.Element("Name").Value == item_name.Text)
-                .Single();
-                get_item.Element("Points").RemoveAll();
-
-                for (int k = 0; k < Data_Grid.RowCount - 1; k++)
+                using (Image<Bgr, byte> tmp = template_img.Clone())
                 {
-                    get_item.Element("Points").Add(new XElement("Point",
-                        new XAttribute("X", Data_Grid.Rows[k].Cells[1].Value),
-                        new XAttribute("Y", Data_Grid.Rows[k].Cells[2].Value),
-                        new XAttribute("Z", "-"),
-                        new XAttribute("T", "-"),
-                        new XAttribute("C", Data_Grid.Rows[k].Cells[5].Value)));
+                    PointF[] draw_point = new PointF[2];
+                    int t = 0;
+
+                    for (int k = 0; k < Data_Grid.RowCount - 1; k++)
+                    {
+                        float currentPointX = (float)(float.Parse(Data_Grid.Rows[k].Cells[1].Value.ToString()) / scale);
+                        float currentPointY = (float)(float.Parse(Data_Grid.Rows[k].Cells[2].Value.ToString()) / scale);
+
+                        PointF currentPoint = new PointF(currentPointX, currentPointY);
+
+                        // Preview point tracking
+                        if (t == 1)
+                        {
+                            draw_point[t] = currentPoint;
+
+                            tmp.Draw(new LineSegment2DF(draw_point[t - 1], draw_point[t]),
+                                new Bgr(Color.Cyan), 1);
+                            draw_point[t - 1] = draw_point[t];
+                        }
+                        else
+                        {
+                            draw_point[t] = currentPoint;
+                            t++;
+                        }
+
+                        tmp.Draw((k + 1).ToString(), new Point((int)draw_point[0].X, (int)draw_point[0].Y), FontFace.HersheySimplex, 0.5, new Bgr(Color.YellowGreen));
+                    }
+
+                    // 
+                    templateImg.Image = tmp.Bitmap;
+                    templateImg.Refresh();
                 }
-
-                // Save data to XML
-                dispensing_data.Save(data_path);
-
-                LoadXml();
-
-                status.Text = "Updated";
             }
+        }
+
+        private void CellClick(object sender, EventArgs e)
+        {
+            ViewCurrentPoint();
+        }
+
+        private void Data_Grid_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            //ViewCurrentPoint();
+        }
+
+        #endregion
+
+        private void ItemNameChange(object sender, EventArgs e)
+        {
+            LoadXml();
         }
 
         private void SaveDatabase_Click(object sender, EventArgs e)
@@ -357,35 +404,9 @@ namespace CVEYEV1
 
         }
 
-        private void ItemNameChange(object sender, EventArgs e)
-        {
-            LoadXml();
-        }
-
         private void OK_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void CellClick(object sender, EventArgs e)
-        {            
-            using (Image<Bgr, byte> tmp = points_tracking.Clone())
-            {
-                if (Data_Grid.RowCount > 1)
-                {
-                    PointF currentPoint = new PointF(float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString()) / (float)scale,
-                        float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString()) / (float)scale);
-                    tmp.Draw(new CircleF(currentPoint, 5), new Bgr(System.Drawing.Color.GreenYellow), 2);
-
-                    templateImg.Image = tmp.Bitmap;
-                    templateImg.Refresh();
-                }
-            }
-
-            MouseWheel += DataGridMouseWheel;
-            status.Text = "mouse click";
-
-            first_start = true;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -400,7 +421,8 @@ namespace CVEYEV1
 
         private void pattern_field_MouseMove(object sender, MouseEventArgs e)
         {
-            ViewPixelInfo(e);
+            if (status.Text == "Cleared")
+                ViewPixelInfo(e);
         }
 
         private void pattern_field_MouseLeave(object sender, EventArgs e)
@@ -411,11 +433,6 @@ namespace CVEYEV1
         private void ConfigPaintingPoints_Load(object sender, EventArgs e)
         {
             LoadXml();
-        }
-
-        private void Data_Grid_MouseEnter(object sender, EventArgs e)
-        {
-            //gridEnter = true;
         }
 
         private void Reload_Template(string tmp_path)
@@ -430,59 +447,59 @@ namespace CVEYEV1
             {
                 //case "General 01":
                 case "Tướng 01":
-                    Reload_Template("pattern_data/01/gen01.jpg");
+                    Reload_Template("pattern_data/01/cc11.jpg");
                     break;
                 //case "Advisor 01":
                 case "Sĩ 01":
-                    Reload_Template("pattern_data/01/ad01.jpg");
+                    Reload_Template("pattern_data/01/cc12.jpg");
                     break;
                 //case "Elephant 01":
                 case "Tượng 01":
-                    Reload_Template("pattern_data/01/ele01.jpg");
+                    Reload_Template("pattern_data/01/cc13.jpg");
                     break;
                 //case "Chariot 01":
                 case "Xe 01":
-                    Reload_Template("pattern_data/01/cha01.jpg");
+                    Reload_Template("pattern_data/01/cc14.jpg");
                     break;
                 //case "Cannon 01":
                 case "Pháo 01":
-                    Reload_Template("pattern_data/01/can01.jpg");
+                    Reload_Template("pattern_data/01/cc15.jpg");
                     break;
                 //case "Horse 01":
                 case "Ngựa 01":
-                    Reload_Template("pattern_data/01/hor01.jpg");
+                    Reload_Template("pattern_data/01/cc16.jpg");
                     break;
                 //case "Soldier 01":
                 case "Chốt 01":
-                    Reload_Template("pattern_data/01/sol01.jpg");
+                    Reload_Template("pattern_data/01/cc17.jpg");
                     break;
                 //case "General 02":
                 case "Tướng 02":
-                    Reload_Template("pattern_data/02/gen02.jpg");
+                    Reload_Template("pattern_data/02/cc21.jpg");
                     break;
                 //case "Advisor 02":
                 case "Sĩ 02":
-                    Reload_Template("pattern_data/02/ad02.jpg");
+                    Reload_Template("pattern_data/02/cc22.jpg");
                     break;
                 //case "Elephant 02":
                 case "Tượng 02":
-                    Reload_Template("pattern_data/02/ele02.jpg");
+                    Reload_Template("pattern_data/02/cc23.jpg");
                     break;
                 //case "Chariot 02":
                 case "Xe 02":
-                    Reload_Template("pattern_data/02/cha02.jpg");
+                    Reload_Template("pattern_data/02/cc24.jpg");
                     break;
                 //case "Cannon 02":
                 case "Pháo 02":
-                    Reload_Template("pattern_data/02/can02.jpg");
+                    Reload_Template("pattern_data/02/cc25.jpg");
                     break;
                 //case "Horse 02":
                 case "Ngựa 02":
-                    Reload_Template("pattern_data/02/hor02.jpg");
+                    Reload_Template("pattern_data/02/cc26.jpg");
                     break;
                 //case "Soldier 02":
                 case "Chốt 02":
-                    Reload_Template("pattern_data/02/sol02.jpg");
+                    Reload_Template("pattern_data/02/cc27.jpg");
                     break;
             }
         }

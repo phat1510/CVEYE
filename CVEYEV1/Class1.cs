@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CVEYEV1
+namespace ImageProcessing
 {
-    class Init
+    class TemplateMatching
     {
+        public void Test()
+        {
 
+        }
     }
 }

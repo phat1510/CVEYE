@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CVEye));
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.captureImg = new System.Windows.Forms.Button();
+            this.turnCamera = new System.Windows.Forms.Button();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,14 +48,15 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.pattern_field = new System.Windows.Forms.PictureBox();
-            this.Detect_items = new System.Windows.Forms.Button();
-            this.Template = new System.Windows.Forms.PictureBox();
+            this.startDetection = new System.Windows.Forms.Button();
+            this.templateField = new System.Windows.Forms.PictureBox();
             this.tmp_item_name = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.item_color = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.stopDetection = new System.Windows.Forms.Button();
             this.Outside = new System.Windows.Forms.RadioButton();
             this.Inside = new System.Windows.Forms.RadioButton();
             this.run = new System.Windows.Forms.Button();
@@ -65,10 +66,10 @@
             this.status_label = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ValveSwitching = new System.Windows.Forms.Button();
             this.ledZ = new System.Windows.Forms.PictureBox();
             this.ledY = new System.Windows.Forms.PictureBox();
             this.ledX = new System.Windows.Forms.PictureBox();
-            this.EnableEfd = new System.Windows.Forms.CheckBox();
             this.GotoHome = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -90,16 +91,26 @@
             this.label7 = new System.Windows.Forms.Label();
             this.ReplacePosition = new System.Windows.Forms.Button();
             this.RefAllHome = new System.Windows.Forms.Button();
-            this.TestValve = new System.Windows.Forms.Button();
+            this.ValveOneClick = new System.Windows.Forms.Button();
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
             this.machStatus = new System.Windows.Forms.Label();
             this.lockCylinder = new System.Windows.Forms.Button();
             this.processLog = new System.Windows.Forms.ListBox();
             this.saveTemplate = new System.Windows.Forms.SaveFileDialog();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.enableLine = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.convertto8bit = new System.Windows.Forms.Button();
+            this.xOffset = new System.Windows.Forms.NumericUpDown();
+            this.yOffset = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Template)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.templateField)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -109,29 +120,32 @@
             ((System.ComponentModel.ISupportInitialize)(this.ledX)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xOffset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yOffset)).BeginInit();
+            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button2
+            // captureImg
             // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(9, 21);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(104, 30);
-            this.button2.TabIndex = 8;
-            this.button2.Text = "Chụp ảnh";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Capture_Click);
+            this.captureImg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.captureImg.Location = new System.Drawing.Point(9, 21);
+            this.captureImg.Name = "captureImg";
+            this.captureImg.Size = new System.Drawing.Size(104, 30);
+            this.captureImg.TabIndex = 8;
+            this.captureImg.Text = "Chụp ảnh";
+            this.captureImg.UseVisualStyleBackColor = true;
+            this.captureImg.Click += new System.EventHandler(this.Capture_Click);
             // 
-            // button1
+            // turnCamera
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(119, 21);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 30);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Bật camera";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Video_Click);
+            this.turnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.turnCamera.Location = new System.Drawing.Point(119, 21);
+            this.turnCamera.Name = "turnCamera";
+            this.turnCamera.Size = new System.Drawing.Size(100, 30);
+            this.turnCamera.TabIndex = 1;
+            this.turnCamera.Text = "Bật camera";
+            this.turnCamera.UseVisualStyleBackColor = true;
+            this.turnCamera.Click += new System.EventHandler(this.Video_Click);
             // 
             // fileToolStripMenuItem
             // 
@@ -259,27 +273,27 @@
             this.pattern_field.TabIndex = 56;
             this.pattern_field.TabStop = false;
             // 
-            // Detect_items
+            // startDetection
             // 
-            this.Detect_items.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Detect_items.Location = new System.Drawing.Point(9, 326);
-            this.Detect_items.Name = "Detect_items";
-            this.Detect_items.Size = new System.Drawing.Size(210, 30);
-            this.Detect_items.TabIndex = 58;
-            this.Detect_items.Text = "Quét ảnh";
-            this.Detect_items.UseVisualStyleBackColor = true;
-            this.Detect_items.Click += new System.EventHandler(this.DetectClick);
+            this.startDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startDetection.Location = new System.Drawing.Point(6, 326);
+            this.startDetection.Name = "startDetection";
+            this.startDetection.Size = new System.Drawing.Size(120, 30);
+            this.startDetection.TabIndex = 58;
+            this.startDetection.Text = "Quét ảnh";
+            this.startDetection.UseVisualStyleBackColor = true;
+            this.startDetection.Click += new System.EventHandler(this.DetectClick);
             // 
-            // Template
+            // templateField
             // 
-            this.Template.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.Template.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Template.Location = new System.Drawing.Point(6, 78);
-            this.Template.Name = "Template";
-            this.Template.Size = new System.Drawing.Size(216, 216);
-            this.Template.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Template.TabIndex = 0;
-            this.Template.TabStop = false;
+            this.templateField.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.templateField.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.templateField.Location = new System.Drawing.Point(6, 78);
+            this.templateField.Name = "templateField";
+            this.templateField.Size = new System.Drawing.Size(216, 216);
+            this.templateField.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.templateField.TabIndex = 0;
+            this.templateField.TabStop = false;
             // 
             // tmp_item_name
             // 
@@ -366,11 +380,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.stopDetection);
             this.groupBox1.Controls.Add(this.Outside);
             this.groupBox1.Controls.Add(this.tableLayoutPanel2);
-            this.groupBox1.Controls.Add(this.Template);
+            this.groupBox1.Controls.Add(this.templateField);
             this.groupBox1.Controls.Add(this.Inside);
-            this.groupBox1.Controls.Add(this.Detect_items);
+            this.groupBox1.Controls.Add(this.startDetection);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(907, 144);
             this.groupBox1.Name = "groupBox1";
@@ -378,6 +393,17 @@
             this.groupBox1.TabIndex = 65;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin mẫu";
+            // 
+            // stopDetection
+            // 
+            this.stopDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stopDetection.Location = new System.Drawing.Point(139, 326);
+            this.stopDetection.Name = "stopDetection";
+            this.stopDetection.Size = new System.Drawing.Size(80, 30);
+            this.stopDetection.TabIndex = 81;
+            this.stopDetection.Text = "Dừng";
+            this.stopDetection.UseVisualStyleBackColor = true;
+            this.stopDetection.Click += new System.EventHandler(this.stopDetection_Click);
             // 
             // Outside
             // 
@@ -425,12 +451,11 @@
             this.Reset.TabIndex = 68;
             this.Reset.Text = "RESET";
             this.Reset.UseVisualStyleBackColor = false;
-            this.Reset.Click += new System.EventHandler(this.ResetClick);
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.button2);
-            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Controls.Add(this.captureImg);
+            this.groupBox3.Controls.Add(this.turnCamera);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(907, 72);
             this.groupBox3.Name = "groupBox3";
@@ -441,9 +466,9 @@
             // 
             // Progress
             // 
-            this.Progress.Location = new System.Drawing.Point(601, 704);
+            this.Progress.Location = new System.Drawing.Point(533, 704);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(280, 22);
+            this.Progress.Size = new System.Drawing.Size(348, 22);
             this.Progress.Step = 1;
             this.Progress.TabIndex = 72;
             // 
@@ -470,10 +495,10 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.ValveSwitching);
             this.groupBox2.Controls.Add(this.ledZ);
             this.groupBox2.Controls.Add(this.ledY);
             this.groupBox2.Controls.Add(this.ledX);
-            this.groupBox2.Controls.Add(this.EnableEfd);
             this.groupBox2.Controls.Add(this.GotoHome);
             this.groupBox2.Controls.Add(this.groupBox7);
             this.groupBox2.Controls.Add(this.groupBox6);
@@ -486,7 +511,7 @@
             this.groupBox2.Controls.Add(this.tableLayoutPanel1);
             this.groupBox2.Controls.Add(this.ReplacePosition);
             this.groupBox2.Controls.Add(this.RefAllHome);
-            this.groupBox2.Controls.Add(this.TestValve);
+            this.groupBox2.Controls.Add(this.ValveOneClick);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(1143, 36);
             this.groupBox2.Name = "groupBox2";
@@ -494,6 +519,20 @@
             this.groupBox2.TabIndex = 72;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Điều khiển bàn máy";
+            // 
+            // ValveSwitching
+            // 
+            this.ValveSwitching.BackColor = System.Drawing.Color.Gold;
+            this.ValveSwitching.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.ValveSwitching.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ValveSwitching.Location = new System.Drawing.Point(9, 440);
+            this.ValveSwitching.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.ValveSwitching.Name = "ValveSwitching";
+            this.ValveSwitching.Size = new System.Drawing.Size(176, 30);
+            this.ValveSwitching.TabIndex = 88;
+            this.ValveSwitching.Text = "Xả liên tục";
+            this.ValveSwitching.UseVisualStyleBackColor = false;
+            this.ValveSwitching.Click += new System.EventHandler(this.ValveSwitching_Click);
             // 
             // ledZ
             // 
@@ -526,18 +565,6 @@
             this.ledX.TabIndex = 79;
             this.ledX.TabStop = false;
             // 
-            // EnableEfd
-            // 
-            this.EnableEfd.AutoSize = true;
-            this.EnableEfd.Checked = true;
-            this.EnableEfd.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.EnableEfd.Location = new System.Drawing.Point(9, 292);
-            this.EnableEfd.Name = "EnableEfd";
-            this.EnableEfd.Size = new System.Drawing.Size(100, 20);
-            this.EnableEfd.TabIndex = 85;
-            this.EnableEfd.Text = "Enable EFD";
-            this.EnableEfd.UseVisualStyleBackColor = true;
-            // 
             // GotoHome
             // 
             this.GotoHome.FlatStyle = System.Windows.Forms.FlatStyle.System;
@@ -553,7 +580,7 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Location = new System.Drawing.Point(9, 471);
+            this.groupBox7.Location = new System.Drawing.Point(9, 483);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(180, 2);
@@ -562,7 +589,7 @@
             // 
             // groupBox6
             // 
-            this.groupBox6.Location = new System.Drawing.Point(9, 392);
+            this.groupBox6.Location = new System.Drawing.Point(9, 361);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(180, 2);
@@ -572,7 +599,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 481);
+            this.label16.Location = new System.Drawing.Point(6, 493);
             this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(102, 16);
@@ -582,7 +609,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 402);
+            this.label15.Location = new System.Drawing.Point(6, 371);
             this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(131, 16);
@@ -598,7 +625,7 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.34078F));
             this.tableLayoutPanel3.Controls.Add(this.feedrateDRO, 0, 0);
             this.tableLayoutPanel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(9, 339);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(9, 308);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -620,7 +647,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 320);
+            this.label14.Location = new System.Drawing.Point(6, 289);
             this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(112, 16);
@@ -632,7 +659,7 @@
             this.TurnPiston.BackColor = System.Drawing.Color.Gold;
             this.TurnPiston.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.TurnPiston.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TurnPiston.Location = new System.Drawing.Point(9, 550);
+            this.TurnPiston.Location = new System.Drawing.Point(9, 562);
             this.TurnPiston.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.TurnPiston.Name = "TurnPiston";
             this.TurnPiston.Size = new System.Drawing.Size(176, 30);
@@ -775,7 +802,7 @@
             this.ReplacePosition.BackColor = System.Drawing.Color.Gold;
             this.ReplacePosition.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.ReplacePosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ReplacePosition.Location = new System.Drawing.Point(9, 507);
+            this.ReplacePosition.Location = new System.Drawing.Point(9, 519);
             this.ReplacePosition.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
             this.ReplacePosition.Name = "ReplacePosition";
             this.ReplacePosition.Size = new System.Drawing.Size(176, 30);
@@ -796,19 +823,19 @@
             this.RefAllHome.UseVisualStyleBackColor = false;
             this.RefAllHome.Click += new System.EventHandler(this.RefAllHome_Click);
             // 
-            // TestValve
+            // ValveOneClick
             // 
-            this.TestValve.BackColor = System.Drawing.Color.Gold;
-            this.TestValve.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.TestValve.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TestValve.Location = new System.Drawing.Point(9, 428);
-            this.TestValve.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-            this.TestValve.Name = "TestValve";
-            this.TestValve.Size = new System.Drawing.Size(176, 30);
-            this.TestValve.TabIndex = 69;
-            this.TestValve.Text = "Xả sơn";
-            this.TestValve.UseVisualStyleBackColor = false;
-            this.TestValve.Click += new System.EventHandler(this.TestValve_Click);
+            this.ValveOneClick.BackColor = System.Drawing.Color.Gold;
+            this.ValveOneClick.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.ValveOneClick.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ValveOneClick.Location = new System.Drawing.Point(9, 397);
+            this.ValveOneClick.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.ValveOneClick.Name = "ValveOneClick";
+            this.ValveOneClick.Size = new System.Drawing.Size(176, 30);
+            this.ValveOneClick.TabIndex = 69;
+            this.ValveOneClick.Text = "Xả giọt";
+            this.ValveOneClick.UseVisualStyleBackColor = false;
+            this.ValveOneClick.Click += new System.EventHandler(this.ValveOneClick_Click);
             // 
             // timerDROupdate
             // 
@@ -818,7 +845,7 @@
             // 
             this.machStatus.AutoSize = true;
             this.machStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.machStatus.Location = new System.Drawing.Point(331, 710);
+            this.machStatus.Location = new System.Drawing.Point(266, 710);
             this.machStatus.Name = "machStatus";
             this.machStatus.Size = new System.Drawing.Size(29, 16);
             this.machStatus.TabIndex = 78;
@@ -834,16 +861,16 @@
             this.lockCylinder.TabIndex = 81;
             this.lockCylinder.Text = "Khóa khay";
             this.lockCylinder.UseVisualStyleBackColor = true;
-            this.lockCylinder.Click += new System.EventHandler(this.lockCylinderClick);
+            this.lockCylinder.Click += new System.EventHandler(this.lockCylinder_Click);
             // 
             // processLog
             // 
             this.processLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.processLog.FormattingEnabled = true;
             this.processLog.ItemHeight = 16;
-            this.processLog.Location = new System.Drawing.Point(907, 514);
+            this.processLog.Location = new System.Drawing.Point(907, 596);
             this.processLog.Name = "processLog";
-            this.processLog.Size = new System.Drawing.Size(230, 148);
+            this.processLog.Size = new System.Drawing.Size(230, 52);
             this.processLog.TabIndex = 82;
             // 
             // backgroundWorker
@@ -851,11 +878,154 @@
             this.backgroundWorker.WorkerReportsProgress = true;
             this.backgroundWorker.WorkerSupportsCancellation = true;
             // 
+            // enableLine
+            // 
+            this.enableLine.AutoSize = true;
+            this.enableLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.enableLine.Location = new System.Drawing.Point(388, 706);
+            this.enableLine.Name = "enableLine";
+            this.enableLine.Size = new System.Drawing.Size(120, 20);
+            this.enableLine.TabIndex = 89;
+            this.enableLine.Text = "Hiện đường kim";
+            this.enableLine.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(209, 710);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(51, 16);
+            this.label2.TabIndex = 90;
+            this.label2.Text = "Mach3:";
+            // 
+            // convertto8bit
+            // 
+            this.convertto8bit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.convertto8bit.Location = new System.Drawing.Point(768, 664);
+            this.convertto8bit.Name = "convertto8bit";
+            this.convertto8bit.Size = new System.Drawing.Size(120, 30);
+            this.convertto8bit.TabIndex = 82;
+            this.convertto8bit.Text = "CONVERT";
+            this.convertto8bit.UseVisualStyleBackColor = true;
+            this.convertto8bit.Click += new System.EventHandler(this.convertto8bit_Click);
+            // 
+            // xOffset
+            // 
+            this.xOffset.DecimalPlaces = 2;
+            this.xOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xOffset.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.xOffset.Location = new System.Drawing.Point(74, 3);
+            this.xOffset.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.xOffset.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.xOffset.Name = "xOffset";
+            this.xOffset.Size = new System.Drawing.Size(153, 22);
+            this.xOffset.TabIndex = 91;
+            // 
+            // yOffset
+            // 
+            this.yOffset.DecimalPlaces = 2;
+            this.yOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.yOffset.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.yOffset.Location = new System.Drawing.Point(74, 31);
+            this.yOffset.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.yOffset.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.yOffset.Name = "yOffset";
+            this.yOffset.Size = new System.Drawing.Size(153, 22);
+            this.yOffset.TabIndex = 92;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(3, 5);
+            this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(54, 16);
+            this.label8.TabIndex = 89;
+            this.label8.Text = "X offset:";
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.86957F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 69.13043F));
+            this.tableLayoutPanel4.Controls.Add(this.label9, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.yOffset, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label8, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.xOffset, 1, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(907, 519);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 2;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(230, 56);
+            this.tableLayoutPanel4.TabIndex = 93;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(3, 33);
+            this.label9.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(55, 16);
+            this.label9.TabIndex = 94;
+            this.label9.Text = "Y offset:";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Location = new System.Drawing.Point(907, 584);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(230, 2);
+            this.groupBox5.TabIndex = 94;
+            this.groupBox5.TabStop = false;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Location = new System.Drawing.Point(907, 660);
+            this.groupBox8.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(230, 2);
+            this.groupBox8.TabIndex = 95;
+            this.groupBox8.TabStop = false;
+            // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.groupBox8);
+            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.tableLayoutPanel4);
+            this.Controls.Add(this.convertto8bit);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.enableLine);
             this.Controls.Add(this.processLog);
             this.Controls.Add(this.lockCylinder);
             this.Controls.Add(this.machStatus);
@@ -869,6 +1039,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pattern_field);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "CVEye";
@@ -880,7 +1051,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Template)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.templateField)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -895,26 +1066,30 @@
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xOffset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yOffset)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button captureImg;
+        private System.Windows.Forms.Button turnCamera;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.Button Detect_items;
+        private System.Windows.Forms.Button startDetection;
         private System.Windows.Forms.ToolStripMenuItem imageProcessingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem paintingPointToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manualToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.PictureBox Template;
+        private System.Windows.Forms.PictureBox templateField;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.ComboBox item_color;
         private System.Windows.Forms.Label label5;
@@ -930,7 +1105,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ToolStripMenuItem paintingConditionToolStripMenuItem;
         private System.Windows.Forms.Button RefAllHome;
-        private System.Windows.Forms.Button TestValve;
+        private System.Windows.Forms.Button ValveOneClick;
         private System.Windows.Forms.Button ReplacePosition;
         private System.Windows.Forms.Button TurnPiston;
         private System.Windows.Forms.Label label4;
@@ -944,7 +1119,6 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button GotoHome;
         public System.Windows.Forms.Label status_label;
-        private System.Windows.Forms.CheckBox EnableEfd;
         public System.Windows.Forms.RadioButton Inside;
         public System.Windows.Forms.RadioButton Outside;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -968,6 +1142,18 @@
         private System.Windows.Forms.SaveFileDialog saveTemplate;
         public System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.ComboBox tmp_item_name;
+        private System.Windows.Forms.Button stopDetection;
+        private System.Windows.Forms.Button ValveSwitching;
+        private System.Windows.Forms.CheckBox enableLine;
+        public System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button convertto8bit;
+        private System.Windows.Forms.NumericUpDown xOffset;
+        private System.Windows.Forms.NumericUpDown yOffset;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox groupBox8;
     }
 }
 
