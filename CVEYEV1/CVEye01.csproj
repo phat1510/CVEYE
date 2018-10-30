@@ -110,18 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="ConfigCameraCalibration.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigCameraCalibration.Designer.cs">
-      <DependentUpon>ConfigCameraCalibration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ConfigPaintingCondition.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigPaintingCondition.Designer.cs">
-      <DependentUpon>ConfigPaintingCondition.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,12 +130,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ConfigCameraCalibration.resx">
-      <DependentUpon>ConfigCameraCalibration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConfigPaintingCondition.resx">
-      <DependentUpon>ConfigPaintingCondition.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
