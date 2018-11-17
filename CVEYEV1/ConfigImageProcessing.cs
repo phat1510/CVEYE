@@ -32,13 +32,14 @@ namespace CVEYEV1
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("MachingCorrection").Attribute("correctionRange").Value = correctionRange.Value.ToString();
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("MachingCorrection").Attribute("ErrConstraint").Value = ErrConstraint.Value.ToString();
 
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("houge_param1").Value = houge_param1.Value.ToString();
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("houge_param2").Value = houge_param2.Value.ToString();
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("min_ra").Value = min_ra.Value.ToString();
-            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Attribute("max_ra").Value = max_ra.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Element("Chess31").Attribute("houge_param1").Value = houge_param1.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Element("Chess31").Attribute("houge_param2").Value = houge_param2.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Element("Chess31").Attribute("min_ra").Value = min_ra.Value.ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("HoughCirclesDetector").Element("Chess31").Attribute("max_ra").Value = max_ra.Value.ToString();
 
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("ImageFiltering").Attribute("gaussian_sig").Value = gaussian_sig.Value.ToString();
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("ImageFiltering").Attribute("G_blur").Value = ((G_blur.CheckState == CheckState.Checked) ? 1 : 0).ToString();
+            CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("ImageFiltering").Attribute("BlockSize").Value = BlockSize.Value.ToString();
 
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge1").Value = cnl1.Value.ToString();
             CVEye.SysData.Element("System").Element("ImageProcessingWindow").Element("PSTTransform").Attribute("edge2").Value = cnl2.Value.ToString();
@@ -58,12 +59,16 @@ namespace CVEYEV1
             cannyThresh.Value       = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("cannyThresh").Value);
             correctionRange.Value   = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("correctionRange").Value);
             ErrConstraint.Value     = decimal.Parse(ImageProcessingWindow.Element("MachingCorrection").Attribute("ErrConstraint").Value);
-            houge_param1.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value);
-            houge_param2.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value);
-            min_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value);
-            max_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value);
+
+            //
+            houge_param1.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31").Attribute("houge_param1").Value);
+            houge_param2.Value      = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31").Attribute("houge_param2").Value);
+            min_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31").Attribute("min_ra").Value);
+            max_ra.Value            = decimal.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31").Attribute("max_ra").Value);
+
             gaussian_sig.Value      = decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("gaussian_sig").Value);
             G_blur.CheckState       = (decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
+            BlockSize.Value = decimal.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("BlockSize").Value);
             cnl1.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge1").Value);
             cnl2.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge2").Value);
             cnl3.Value = decimal.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge3").Value);

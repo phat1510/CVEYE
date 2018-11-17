@@ -62,6 +62,9 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.cnl3 = new System.Windows.Forms.NumericUpDown();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.BlockSize = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.gaussian_sig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.houge_param2)).BeginInit();
@@ -81,6 +84,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.cnl4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cnl2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cnl3)).BeginInit();
+            this.tableLayoutPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BlockSize)).BeginInit();
             this.SuspendLayout();
             // 
             // OK
@@ -88,7 +93,7 @@
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.OK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.OK.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OK.Location = new System.Drawing.Point(318, 281);
+            this.OK.Location = new System.Drawing.Point(318, 291);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 0;
@@ -201,7 +206,7 @@
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Cancel.Location = new System.Drawing.Point(403, 281);
+            this.Cancel.Location = new System.Drawing.Point(403, 291);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 61;
@@ -304,13 +309,14 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.tableLayoutPanel4);
             this.groupBox2.Controls.Add(this.G_blur);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.gaussian_sig);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(250, 170);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(230, 85);
+            this.groupBox2.Size = new System.Drawing.Size(230, 121);
             this.groupBox2.TabIndex = 63;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Image Filtering";
@@ -610,11 +616,60 @@
             0,
             0});
             // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 71F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
+            this.tableLayoutPanel4.Controls.Add(this.BlockSize, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.label13, 0, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(9, 83);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(215, 30);
+            this.tableLayoutPanel4.TabIndex = 61;
+            // 
+            // label13
+            // 
+            this.label13.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(3, 7);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(133, 16);
+            this.label13.TabIndex = 66;
+            this.label13.Text = "AdaptThr Block Size:";
+            // 
+            // BlockSize
+            // 
+            this.BlockSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BlockSize.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.BlockSize.Location = new System.Drawing.Point(155, 3);
+            this.BlockSize.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.BlockSize.Name = "BlockSize";
+            this.BlockSize.Size = new System.Drawing.Size(49, 22);
+            this.BlockSize.TabIndex = 67;
+            this.BlockSize.Value = new decimal(new int[] {
+            71,
+            0,
+            0,
+            0});
+            // 
             // ConfigImageProcessing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 316);
+            this.ClientSize = new System.Drawing.Size(490, 326);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -648,6 +703,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.cnl4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cnl2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cnl3)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BlockSize)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -688,5 +746,8 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         public System.Windows.Forms.NumericUpDown cnl3;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Label label13;
+        public System.Windows.Forms.NumericUpDown BlockSize;
     }
 }

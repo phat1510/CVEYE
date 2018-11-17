@@ -17,6 +17,7 @@ namespace CVEYEV1
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new CVEye());
+            //Application.Run(new ConfigPaintingPoints());
         }
     }
 }

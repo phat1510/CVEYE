@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_00050E9F26184114AF83EF9DD90C6B1E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_00680B661EE243529F6B7B88025AFA15"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -33,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_04E5226B54C64D59A6B508A5FFF7A3A6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_04E92F6F74EE07FFC5E761C4F069833D"
         "OwnerKey" = "8:_9F3C604E155148E8ACA4FD69285FBC66"
         "MsmSig" = "8:_UNDEFINED"
@@ -40,6 +40,42 @@
         "Entry"
         {
         "MsmKey" = "8:_0B4D46FCA5CB4D0EB3FE06DCCE3CF3F1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0D08389338CD434BB482F2C89E18A00E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15F63A5275F64A73985AA46F0EB12758"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1877BB9C1CBA4E16AA648C081D3A6AAC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1AE923AD0CC34479A82B7DB83E122A1F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_20512B222276409984F94121BF4A3962"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_205E06B0499D46F69B37510E92375EBA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -63,6 +99,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_31951A7A90AD457B939ECCD1F9B13456"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3666F08DD4E4451B8555556619E13581"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3F3CF041F4B544CAAAACF1B6AE517638"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -81,19 +129,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_47A4C6EDC9DC4019A251587E9D8EB97A"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_55268F43E0A443F4A2C6F41506A163E8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_5656C3583F7142289EF8135059591A62"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5B575FDB52104828A1B1B1A037A7F2E8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5ED891DFFD7D4BD1AD961F47C32DD910"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -106,6 +160,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6BAD462BB9784D61AE904C55ED135B57"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6DCFF47E0C094C279817FF00A89D2733"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -141,7 +201,31 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7FAF2D28A2DE485EBFF0CA31B45EA9ED"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_86B5533A473A4BE390B0B2E14D2E9A09"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_88A9C0C2A07C4A02B9ACDA534E4FD67C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_89385E2E7BAB468F99647DA2741BB902"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_96C9F18829DF471784986B65077065B2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -159,6 +243,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9E00459F2B67462E9930976CE8226370"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9F3C604E155148E8ACA4FD69285FBC66"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -166,6 +256,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A6B72EB209FA465E8C9F5AADD66480E0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A72ED44A3991450FB33DDF821A13E694"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -183,13 +279,49 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_AC47DFE906B74F6A944B4345F5BFA350"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B0D4DA5825EF48E3A7980967F9B01B49"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_B2210774F10B4F1585769C70557D7530"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B2C7D351B55848EE944047E24B04F51B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B4A52753FDC148B29DAC9912BCB2D6EA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B6EE5329035D473A81A13417A4F1E565"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BC3FF60195254E9F9C1EEC95F0CF95D5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C070026A16E14EC7ABDAA3A754B05623"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -237,13 +369,43 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CF3C84BF8D1F455BA982EBF3D443CA65"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D3089C1F9C6E42BC8407AA97D3F9D448"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_D3EDF54927C34D6FA844AD598124E160"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D5BA54DCB249481B8C180E16E206217B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D723C37052E445CD932B79C9018FDBFF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DE3CF96673084EF59BE90738719FAC87"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E58C62182EDA4232BC669D178D5E2751"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -274,6 +436,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F25AC5D600C34B0F944F127254E92E4A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F4EE86425A2B4A5885F0CBC4377FD4EE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -426,26 +594,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00050E9F26184114AF83EF9DD90C6B1E"
-            {
-            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\02\\ele02.jpg"
-            "TargetName" = "8:ele02.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C2190B5253A040BE920FBE8D049FB14F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_00680B661EE243529F6B7B88025AFA15"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\msvcp140.dll"
@@ -472,6 +620,26 @@
             "TargetName" = "8:cc27.jpg"
             "Tag" = "8:"
             "Folder" = "8:_D3C33A8890624697AB33C7814F205988"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04E5226B54C64D59A6B508A5FFF7A3A6"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc41.jpg"
+            "TargetName" = "8:cc41.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -523,6 +691,126 @@
             "TargetName" = "8:cc25.jpg"
             "Tag" = "8:"
             "Folder" = "8:_C2190B5253A040BE920FBE8D049FB14F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D08389338CD434BB482F2C89E18A00E"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc42.jpg"
+            "TargetName" = "8:cc42.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_15F63A5275F64A73985AA46F0EB12758"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc36.jpg"
+            "TargetName" = "8:cc36.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1877BB9C1CBA4E16AA648C081D3A6AAC"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc41.jpg"
+            "TargetName" = "8:cc41.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1AE923AD0CC34479A82B7DB83E122A1F"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc34.jpg"
+            "TargetName" = "8:cc34.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20512B222276409984F94121BF4A3962"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc44.jpg"
+            "TargetName" = "8:cc44.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_205E06B0499D46F69B37510E92375EBA"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc45.jpg"
+            "TargetName" = "8:cc45.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -597,6 +885,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_31951A7A90AD457B939ECCD1F9B13456"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc34.jpg"
+            "TargetName" = "8:cc34.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3666F08DD4E4451B8555556619E13581"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc44.jpg"
+            "TargetName" = "8:cc44.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F3CF041F4B544CAAAACF1B6AE517638"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\cvextern.dll"
@@ -657,26 +985,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47A4C6EDC9DC4019A251587E9D8EB97A"
-            {
-            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\_database.xml"
-            "TargetName" = "8:_database.xml"
-            "Tag" = "8:"
-            "Folder" = "8:_7602269F809447C8B15735E48CD0C8B7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_55268F43E0A443F4A2C6F41506A163E8"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\01\\cc17.jpg"
@@ -697,12 +1005,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5656C3583F7142289EF8135059591A62"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc45.jpg"
+            "TargetName" = "8:cc45.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5B575FDB52104828A1B1B1A037A7F2E8"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\01\\cc11.jpg"
             "TargetName" = "8:cc11.jpg"
             "Tag" = "8:"
             "Folder" = "8:_F5E9F02E32024A7CA124691A86D397F3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5ED891DFFD7D4BD1AD961F47C32DD910"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc47.jpg"
+            "TargetName" = "8:cc47.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -743,6 +1091,26 @@
             "TargetName" = "8:cc22.jpg"
             "Tag" = "8:"
             "Folder" = "8:_C2190B5253A040BE920FBE8D049FB14F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6DCFF47E0C094C279817FF00A89D2733"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\_chess31database.xml"
+            "TargetName" = "8:_chess31database.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_7602269F809447C8B15735E48CD0C8B7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -857,12 +1225,92 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7FAF2D28A2DE485EBFF0CA31B45EA9ED"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc42.jpg"
+            "TargetName" = "8:cc42.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_86B5533A473A4BE390B0B2E14D2E9A09"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc37.jpg"
+            "TargetName" = "8:cc37.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_88A9C0C2A07C4A02B9ACDA534E4FD67C"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc35.jpg"
+            "TargetName" = "8:cc35.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89385E2E7BAB468F99647DA2741BB902"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\x86\\cvextern.dll"
             "TargetName" = "8:cvextern.dll"
             "Tag" = "8:"
             "Folder" = "8:_26450F1C929D4DF7A0A7BB6AC1E00005"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_96C9F18829DF471784986B65077065B2"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc32.jpg"
+            "TargetName" = "8:cc32.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -917,12 +1365,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E00459F2B67462E9930976CE8226370"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc43.jpg"
+            "TargetName" = "8:cc43.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A6B72EB209FA465E8C9F5AADD66480E0"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\01\\cc12.jpg"
             "TargetName" = "8:cc12.jpg"
             "Tag" = "8:"
             "Folder" = "8:_F5E9F02E32024A7CA124691A86D397F3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A72ED44A3991450FB33DDF821A13E694"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc33.jpg"
+            "TargetName" = "8:cc33.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -977,6 +1465,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AC47DFE906B74F6A944B4345F5BFA350"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc36.jpg"
+            "TargetName" = "8:cc36.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B0D4DA5825EF48E3A7980967F9B01B49"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\02\\cc25.jpg"
@@ -997,12 +1505,112 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2210774F10B4F1585769C70557D7530"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc37.jpg"
+            "TargetName" = "8:cc37.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2C7D351B55848EE944047E24B04F51B"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc32.jpg"
+            "TargetName" = "8:cc32.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4A52753FDC148B29DAC9912BCB2D6EA"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\01\\cc12.jpg"
             "TargetName" = "8:cc12.jpg"
             "Tag" = "8:"
             "Folder" = "8:_71607122C27E4912B353428B20280E48"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B6EE5329035D473A81A13417A4F1E565"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc46.jpg"
+            "TargetName" = "8:cc46.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BC3FF60195254E9F9C1EEC95F0CF95D5"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc47.jpg"
+            "TargetName" = "8:cc47.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C070026A16E14EC7ABDAA3A754B05623"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc31.jpg"
+            "TargetName" = "8:cc31.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1159,6 +1767,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF3C84BF8D1F455BA982EBF3D443CA65"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\04\\cc46.jpg"
+            "TargetName" = "8:cc46.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_B301C0D6860640E2963156CCBAB886DD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D3089C1F9C6E42BC8407AA97D3F9D448"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\_camera.xml"
@@ -1179,12 +1807,92 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D3EDF54927C34D6FA844AD598124E160"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\03\\cc35.jpg"
+            "TargetName" = "8:cc35.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F7D40E41FC154F8E9356E2C94B11B327"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D5BA54DCB249481B8C180E16E206217B"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\04\\cc43.jpg"
+            "TargetName" = "8:cc43.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_D79A19BC17154E45A5D74444CB0046FF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D723C37052E445CD932B79C9018FDBFF"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc31.jpg"
+            "TargetName" = "8:cc31.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DE3CF96673084EF59BE90738719FAC87"
             {
             "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pattern_data\\02\\cc27.jpg"
             "TargetName" = "8:cc27.jpg"
             "Tag" = "8:"
             "Folder" = "8:_C2190B5253A040BE920FBE8D049FB14F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E58C62182EDA4232BC669D178D5E2751"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\pt_data_8bit\\03\\cc33.jpg"
+            "TargetName" = "8:cc33.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_524363EC4B2840DB8E9F23128B50ED94"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1276,6 +1984,26 @@
             "TargetName" = "8:cc15.jpg"
             "Tag" = "8:"
             "Folder" = "8:_71607122C27E4912B353428B20280E48"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4EE86425A2B4A5885F0CBC4377FD4EE"
+            {
+            "SourcePath" = "8:..\\CVEYEV1\\bin\\Debug\\_chess29database.xml"
+            "TargetName" = "8:_chess29database.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_7602269F809447C8B15735E48CD0C8B7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1406,6 +2134,17 @@
                     "Property" = "8:_40CD3BAEF9E24C7F942505A0296B72F5"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_B301C0D6860640E2963156CCBAB886DD"
+                            {
+                            "Name" = "8:04"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_12B4EFC9C0CB48869223D0BCC6783955"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_C2190B5253A040BE920FBE8D049FB14F"
                             {
                             "Name" = "8:02"
@@ -1424,6 +2163,17 @@
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "Property" = "8:_1B82A29441F140CB89AE8585174A7A33"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_F7D40E41FC154F8E9356E2C94B11B327"
+                            {
+                            "Name" = "8:03"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_326A6BB7DAE246B0AA25CE1DBE5D3ECD"
                                 "Folders"
                                 {
                                 }
@@ -1472,6 +2222,17 @@
                     "Property" = "8:_C6A93199476242DB92D997E2B921E006"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_524363EC4B2840DB8E9F23128B50ED94"
+                            {
+                            "Name" = "8:03"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_74FDFCDFC4614FE3BD7DF75CE135970E"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_71607122C27E4912B353428B20280E48"
                             {
                             "Name" = "8:01"
@@ -1490,6 +2251,17 @@
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "Property" = "8:_04E0219DD4F844DD988E1172497B3188"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_D79A19BC17154E45A5D74444CB0046FF"
+                            {
+                            "Name" = "8:04"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_62A226E305814D5FA9CD85A76E048539"
                                 "Folders"
                                 {
                                 }

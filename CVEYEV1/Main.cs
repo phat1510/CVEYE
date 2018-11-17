@@ -32,6 +32,9 @@ namespace CVEYEV1
 
         private IMach4 mach3;
         private IMyScriptObject scriptObject;
+        ushort MacroLineNumber = 0;
+        byte LastItem = 0;
+        bool CombineFlag = true;
 
         #endregion
 
@@ -88,10 +91,18 @@ namespace CVEYEV1
 
         public Mat tmp_raw = new Mat();     
         private PointF[] affine_painting_points;
-        const byte ROIsize = 123;
-        const double phi31Dia_ROIscale = 1.366667;
+        byte RoiSize;
+        const double Chess31_DPR = 1.4; // diameter per roi size
         public static double _accuracy;
 
+        private double _dp;
+        private double _minDist;
+        private double _param01;
+        private double _param02;
+        private int _minRadius;
+        private int _maxRadius;
+
+        private VectorOfPointF corner_set = new VectorOfPointF();
         #endregion
 
         #region IO
@@ -100,21 +111,35 @@ namespace CVEYEV1
         private string mach3Directory;
         private static string macroDirectory;
         public static XDocument SysData;
-        private static TextWriter macro01, macro02;
+        private XDocument DispensingData;
+        private static TextWriter macroData;
         private XElement getItem;
-        private  XDocument dispensingData;
-        private string data_path = "_database.xml";
+
+        // Set data file path
+        private string DataPath;
+        private string Chess_31_DataPath = "_chess31database.xml";
+        private string Chess_29_DataPath = "_chess29database.xml";
+        //... for further data paths
+
+        // System file path
         private static string systemPath = "_system.xml";
 
         #endregion
 
         #region Miscellaneous
 
-        const float in_circle_radius = 12.0f;
+        // Object parameters
+        float InnerCircleChessRadius;// = 12.0f;
+        float OuterCircleChessRadius;
+        float ObjectHeight;
+        float SheetThickness;
+        //float DrippingHeight;
 
         // 
-        private float x_pixel_offset;
-        private float y_pixel_offset;
+        private double xdelta;
+        private double ydelta;
+        private double _xoffset;
+        private double _yoffset;
 
         private bool switchCamera = false;
         private bool initCamera = false;
@@ -128,10 +153,10 @@ namespace CVEYEV1
         private bool machinecoord = true;
         private bool resetBlinking = false;
         private bool first_item = true;
-        //private bool firstpointofitem = false;
         private bool machStart = false;
-        private bool macro02On = false;
-        private bool macro02Used = false;
+        private bool cameraOriginOffset = false;
+        double cameraTempOriX = 0;
+        double cameraTempOriY = 0;
 
         // E-stop toggling
         private bool hightolow = false;
@@ -154,28 +179,28 @@ namespace CVEYEV1
         {
             InitializeComponent();
 
-            InitBackgroundWorker();
+            LoadObjectsSetData();
 
             Init_XML();
 
             Init_Directory();
 
             Init_UI();
+
+            InitBackgroundWorker();
         }
 
-        // Set up the BackgroundWorker object by 
-        // attaching event handlers. 
+        // Set up the BackgroundWorker object by attaching event handlers
         private void InitBackgroundWorker()
         {
             backgroundWorker.DoWork +=
-            new DoWorkEventHandler(backgroundWorker_DoWork);
+                new DoWorkEventHandler(backgroundWorker_DoWork);
 
             backgroundWorker.RunWorkerCompleted +=
                 new RunWorkerCompletedEventHandler(backgroundWorker_RunWorkerCompleted);
 
             backgroundWorker.ProgressChanged +=
-                new ProgressChangedEventHandler(
-            backgroundWorker_ProgressChanged);
+                new ProgressChangedEventHandler(backgroundWorker_ProgressChanged);
         }
 
         private void Init_Directory()
@@ -282,11 +307,23 @@ namespace CVEYEV1
 
                         //
                         preactive = active; // false = low, true = high
+
+                        //
                         if (scriptObject.IsActive(25) != 0) // press E-stop
                         {
+                            //
                             active = true;
                             resetBlinking = true;
                             lockCylinder.Text = "Khóa khay";
+
+                            //
+                            CombineFlag = true;
+
+                            //
+                            EnableButton(true);
+
+                            //
+                            processLog.Items.Clear();
                         }
                         else // release E-stop
                         {
@@ -308,22 +345,6 @@ namespace CVEYEV1
                             resetBlinking = false;
                         }
 
-                        // Check E-stop toggling
-                        //if ((scriptObject.IsActive(25) != 0) || (resetBlinking))
-                        if (scriptObject.IsActive(25) != 0)
-                        {
-                            machStatus.Text = "Chế Độ Khẩn Cấp";
-                            machStatus.Refresh();
-
-                            //
-                            EnableButton(true);
-                        }
-                        else
-                        {
-                            machStatus.Text = "Sẵn Sàng";
-                            machStatus.Refresh();
-                        }
-
                         // Check setting machine zero completed
                         if (!machineZero)
                             CheckMachineZero();
@@ -332,14 +353,21 @@ namespace CVEYEV1
                         if (painting)
                             CheckPaintingCompleted(zDRO.Text);
 
+                        // Checking for macro combination
+                        if (!CombineFlag)
+                            MacroCombination(LastItem, zDRO.Text);
+
                         // Toggle RESET button
                         ResetToggling();
 
-                        // Checking for macro02 running
-                        if (!scriptObject.IsOutputActive(12) && !scriptObject.IsOutputActive(11) && macro02Used)
+                        // Camera original calibration
+                        if (cameraOriginOffset)
                         {
-                            scriptObject.Code("M998");
-                            macro02Used = false;
+                            xdelta = double.Parse(xDRO.Text) - cameraTempOriX;
+                            ydelta = double.Parse(yDRO.Text) - cameraTempOriY;
+
+                            deltaX.Text = xdelta.ToString();
+                            deltaY.Text = ydelta.ToString();
                         }
                     }
                 }
@@ -396,11 +424,13 @@ namespace CVEYEV1
             if ((zSafe == 25.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
             {
                 //status_label.Text = "Painting Completed"; 
-                status_label.Text = "Hoàn Tất Phun Sơn";
+                StatusLabel.Text = "Hoàn Tất Phun Sơn";
 
                 lockCylinder.Text = "Khóa khay";
 
                 EnableButton(true);
+
+                processLog.Items.Clear();
 
                 // disable painting flag
                 painting = false;
@@ -434,8 +464,8 @@ namespace CVEYEV1
         {
             try
             {
-                status_label.Text = "Đang Kết Nối Camera...";
-                status_label.Refresh();
+                StatusLabel.Text = "Đang Kết Nối Camera...";
+                StatusLabel.Refresh();
 
                 if (_capture == null)
                 {
@@ -461,8 +491,8 @@ namespace CVEYEV1
                     if (_capture.IsOpened)
                     {
                         //status_label.Text = "Camera On";
-                        status_label.Text = "Camera Bật";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Camera Bật";
+                        StatusLabel.Refresh();
 
                         // Add handler for getting camera frame
                         Application.Idle += new EventHandler(Frame_Calibration);
@@ -492,6 +522,41 @@ namespace CVEYEV1
             ReadSystemData();
         }
 
+        private void LoadObjectsSetData()
+        {
+            // Select data path file
+            SetSelection(itemsSet.Text);
+
+            // Load data file
+            DispensingData = XDocument.Load(DataPath);
+            XElement SetData = DispensingData.Element("Field").Element("SetData");
+
+            // Load object parameters
+            RoiSize = byte.Parse(SetData.Attribute("RoiSize").Value);
+            OuterCircleChessRadius = float.Parse(SetData.Attribute("ItemOuterDia").Value) / 2;
+            InnerCircleChessRadius = float.Parse(SetData.Attribute("ItemInnnerDia").Value) / 2;
+            ObjectHeight = float.Parse(SetData.Attribute("ItemHeight").Value);
+            SheetThickness = float.Parse(SetData.Attribute("SheetThickness").Value);
+
+
+            //
+            processLog.Items.Clear();
+            processLog.Items.Add("Bán kính mẫu:   " + OuterCircleChessRadius.ToString());
+            processLog.Items.Add("Bán kính vòng trong:   " + InnerCircleChessRadius.ToString());
+            processLog.Items.Add("Chiều cao mẫu:   " + ObjectHeight.ToString());
+
+            // View the previous working template
+            ViewTemplate(itemsSet.Text, tmp_item_name.Text);
+            CheckTmpSize();
+        }
+
+        private void LoadObjectData()
+        {
+            // View the previous working template
+            ViewTemplate(itemsSet.Text, tmp_item_name.Text);
+            CheckTmpSize();
+        }
+
         private void LoadCameraData()
         {
             FileNode fn;
@@ -504,11 +569,13 @@ namespace CVEYEV1
 
         private void ReadSystemData()
         {
+            // Load system xml
             SysData = XDocument.Load(systemPath);
 
             XElement MainWindow = SysData.Element("System").Element("MainWindow");
 
             // Last item info
+            itemsSet.Text = MainWindow.Element("Template").Attribute("LastSet").Value;
             tmp_item_name.Text = MainWindow.Element("Template").Attribute("LastItem").Value;
             item_color.Text = MainWindow.Element("Template").Attribute("LastColor").Value;
 
@@ -518,10 +585,6 @@ namespace CVEYEV1
 
             // Get camera accuracy
             _accuracy = double.Parse(SysData.Element("System").Element("CameraCalibrationWindow").Element("Accuracy").Attribute("Value").Value);
-
-            // Compute camera offset pixel value
-            x_pixel_offset = (float)(float.Parse(MainWindow.Element("CameraOffset").Attribute("X").Value) / _accuracy);
-            y_pixel_offset = (float)(float.Parse(MainWindow.Element("CameraOffset").Attribute("Y").Value) / _accuracy);
 
             //
             valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
@@ -546,23 +609,60 @@ namespace CVEYEV1
                     Offset.Element(Gxx).Attribute("z").Value);
             }
 
-            XElement CalibrationParameter = MainWindow.Element("CalibrationParameter");
             // Load camera calibration data
-            calib_xOffset.Text = CalibrationParameter.Attribute("calib_xOffset").Value;
-            calib_yOffset.Text = CalibrationParameter.Attribute("calib_yOffset").Value;
-            calib_cornerWidth.Text = CalibrationParameter.Attribute("calib_cornerWidth").Value;
+            XElement CalibrationParameter = MainWindow.Element("CalibrationParameter");
+            calib_xOffset.Text      = CalibrationParameter.Attribute("calib_xOffset").Value;
+            calib_yOffset.Text      = CalibrationParameter.Attribute("calib_yOffset").Value;
+            calib_cornerWidth.Text  = CalibrationParameter.Attribute("calib_cornerWidth").Value;
             calib_cornerHeight.Text = CalibrationParameter.Attribute("calib_cornerHeight").Value;
-            calib_noOfSample.Text = CalibrationParameter.Attribute("calib_noOfSample").Value;
-            calib_squareSize.Text = CalibrationParameter.Attribute("calib_squareSize").Value;
+            calib_noOfSample.Text   = CalibrationParameter.Attribute("calib_noOfSample").Value;
+            calib_squareSize.Text   = CalibrationParameter.Attribute("calib_squareSize").Value;
             camID.Text = SysData.Element("System").Element("CameraCalibrationWindow").Element("CameraID").Attribute("ID").Value;
 
-            // View the previous working template
-            ViewTemplate(tmp_item_name.Text);
-            CheckTmpSize();
+            // Load image processing data
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+            
+
+            cannyThresh.Value       = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("cannyThresh").Value);
+            correctionRange.Value   = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("correctionRange").Value);
+            ErrConstraint.Value     = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("ErrConstraint").Value);
+
+            ReadHoughData(itemsSet.Text);
+
+            gaussian_sig.Value  = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("gaussian_sig").Value);
+            G_blur.CheckState   = (decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
+            BlockSize.Value     = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("BlockSize").Value);
+            cnl1.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge1").Value);
+            cnl2.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge2").Value);
+            cnl3.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge3").Value);
+            cnl4.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge4").Value);
 
             // View template image
             templateField.Image = tmpBgr.Bitmap;
             templateField.Refresh();
+        }
+
+        private void ReadHoughData(string set)
+        {
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+            XElement SetHoughData = ImageProcessing;
+
+            switch (set)
+            {
+                case "Cờ 31":
+                    SetHoughData = ImageProcessing.Element("HoughCirclesDetector").Element("Chess31");
+                    break;
+                case "Cờ 29":
+                    SetHoughData = ImageProcessing.Element("HoughCirclesDetector").Element("Chess29");
+                    break;
+            }
+
+            houge_dp.Value = decimal.Parse(SetHoughData.Attribute("dp").Value);
+            houge_minDist.Value = decimal.Parse(SetHoughData.Attribute("minDist").Value);
+            houge_param1.Value = decimal.Parse(SetHoughData.Attribute("houge_param1").Value);
+            houge_param2.Value = decimal.Parse(SetHoughData.Attribute("houge_param2").Value);
+            min_ra.Value = decimal.Parse(SetHoughData.Attribute("min_ra").Value);
+            max_ra.Value = decimal.Parse(SetHoughData.Attribute("max_ra").Value);
         }
 
         private void WriteSystemData()
@@ -602,6 +702,7 @@ namespace CVEYEV1
             // Update data of main window
             XElement MainWindow = SysData.Element("System").Element("MainWindow");
 
+            MainWindow.Element("Template").Attribute("LastSet").Value = itemsSet.Text;
             MainWindow.Element("Template").Attribute("LastItem").Value = tmp_item_name.Text;
             MainWindow.Element("Template").Attribute("LastColor").Value = item_color.Text;
             MainWindow.Element("CameraOffset").Attribute("X").Value = calib_xOffset.Text;
@@ -661,8 +762,8 @@ namespace CVEYEV1
                                     currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
                                 }
 
-                                status_label.Text = "Frame: " + frame_buffer_savepoint.ToString() + "/" + frame_array_buffer.Length.ToString();
-                                status_label.Refresh();
+                                StatusLabel.Text = "Frame: " + frame_buffer_savepoint.ToString() + "/" + frame_array_buffer.Length.ToString();
+                                StatusLabel.Refresh();
                             }
 
                             // Draw the found corners
@@ -695,8 +796,8 @@ namespace CVEYEV1
                     if (currentMode == Mode.Caluculating_Intrinsics)
                     {                        
                         // Update status
-                        status_label.Text = "Caluculating Intrinsics...";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Caluculating Intrinsics...";
+                        StatusLabel.Refresh();
 
                         //
                         Size pt_size = new Size(pt_width, pt_height);
@@ -723,12 +824,12 @@ namespace CVEYEV1
                             corners_object_list[k] = object_list.ToArray();
                             corners_point_list[k] = corners_point_vector[k].ToArray();
 
-                            status_label.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
-                            status_label.Refresh();
+                            StatusLabel.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
+                            StatusLabel.Refresh();
                         }
                         
-                        status_label.Text = "Getting Camera Matrices";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Getting Camera Matrices";
+                        StatusLabel.Refresh();
 
                         double error = CvInvoke.CalibrateCamera(
                             corners_object_list,
@@ -743,16 +844,16 @@ namespace CVEYEV1
                         currentMode = Mode.Calibrated;
 
                         // Save Camera Calibration Matrices
-                        status_label.Text = "Saving Data";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Saving Data";
+                        StatusLabel.Refresh();
                         Thread.Sleep(1000);
 
                         FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
                         fs.Write(cameraMat, "Camera_Matrix");
                         fs.Write(distCoeffsMat, "Distortion_Coefficients");
 
-                        status_label.Text = "Calibration Completed";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Calibration Completed";
+                        StatusLabel.Refresh();
                     }
 
                     if (currentMode == Mode.Calibrated)
@@ -828,9 +929,9 @@ namespace CVEYEV1
             {
                 // Rotation and translation of painting points set
                 affine_painting_points[point_num].X =
-                    (float)((double.Parse(element.Attribute("X").Value) - ROIsize / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - ROIsize / 2) * Math.Sin(angle))) + objectCenter.X;
+                    (float)((double.Parse(element.Attribute("X").Value) - RoiSize / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - RoiSize / 2) * Math.Sin(angle))) + objectCenter.X;
                 affine_painting_points[point_num].Y =
-                    (float)((double.Parse(element.Attribute("X").Value) - ROIsize / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - ROIsize / 2) * Math.Cos(angle))) + objectCenter.Y;
+                    (float)((double.Parse(element.Attribute("X").Value) - RoiSize / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - RoiSize / 2) * Math.Cos(angle))) + objectCenter.Y;
 
                 // For checking
                 draw_image_bgr.Draw(new Cross2DF(affine_painting_points[point_num], 2, 2), new Bgr(Color.Red), 1);
@@ -840,7 +941,7 @@ namespace CVEYEV1
                 affine_painting_points[point_num].Y = (float)yCompensate(affine_painting_points[point_num]);
 
                 // Matching camera coordinate with machine coordinate
-                affine_painting_points[point_num] = RotateFOV(affine_painting_points[point_num], 0.5);
+                affine_painting_points[point_num] = RotateFOV(affine_painting_points[point_num], 0.8);
 
                 point_num++;
             }
@@ -974,7 +1075,7 @@ namespace CVEYEV1
                             255,
                             AdaptiveThresholdType.GaussianC,
                             ThresholdType.Binary,
-                            95,
+                            int.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("BlockSize").Value),
                             1.5);
                     }
                     else
@@ -989,13 +1090,13 @@ namespace CVEYEV1
                         CvInvoke.EqualizeHist(mat_gray, img_hist);
 
                         // Applies an adaptive threshold to the image
-                        CvInvoke.AdaptiveThreshold(img_hist,
+                        CvInvoke.AdaptiveThreshold(mat_gray,
                             img_threshold,
                             255,
                             AdaptiveThresholdType.GaussianC,
                             ThresholdType.Binary,
-                            95,
-                            1);
+                            int.Parse(ImageProcessingWindow.Element("ImageFiltering").Attribute("BlockSize").Value),
+                            1.5);
                     }
 
                     return mat_gray;
@@ -1003,16 +1104,53 @@ namespace CVEYEV1
             }
         }
 
+        private void SetSelection(string value)
+        {
+            switch (value)
+            {
+                case "Cờ 31":
+                    DataPath = Chess_31_DataPath;
+                    StatusLabel.Text = "Đã tải bộ cờ 31.";
+                    break;
+                case "Cờ 29":
+                    DataPath = Chess_29_DataPath;
+                    StatusLabel.Text = "Đã tải bộ cờ 29.";
+                    break;
+            }
+        }
+
+        private void LoadImageProcessingData(string value)
+        {
+            // Call ImageProcessingWindow node
+            XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
+            XElement SetHoughData = ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31");
+
+            switch (value)
+            {
+                case "Cờ 31":
+                    SetHoughData = ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess31");
+                    break;
+                case "Cờ 29":
+                    SetHoughData = ImageProcessingWindow.Element("HoughCirclesDetector").Element("Chess29");
+                    break;
+            }
+
+            // Assigment
+            _dp          = double.Parse(SetHoughData.Attribute("dp").Value);
+            _minDist     = double.Parse(SetHoughData.Attribute("minDist").Value);
+            _param01     = double.Parse(SetHoughData.Attribute("houge_param1").Value);
+            _param02     = double.Parse(SetHoughData.Attribute("houge_param2").Value);
+            _minRadius   = int.Parse(SetHoughData.Attribute("min_ra").Value);
+            _maxRadius   = int.Parse(SetHoughData.Attribute("max_ra").Value);
+        }
+
         public void DetectClone()
         {
             //
-            detectionWatch = Stopwatch.StartNew();
-
-            // Load database
-            dispensingData = XDocument.Load(data_path);
+            detectionWatch = Stopwatch.StartNew();            
 
             // Call ImageProcessingWindow node
-            XElement ImageProcessingWindow = SysData.Element("System").Element("ImageProcessingWindow");
+            LoadImageProcessingData(itemsSet.Text);
 
             // Update progress bar
             Progress.Value = 3;
@@ -1024,15 +1162,8 @@ namespace CVEYEV1
                 Progress.Value = 5;
 
                 // Circle Hough Transform
-                CircleF[] img_circles = CvInvoke.HoughCircles(
-                    img_gray, // Array of circles data
-                    HoughType.Gradient,
-                    1.7,
-                    100,
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param1").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("houge_param2").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("min_ra").Value),
-                    int.Parse(ImageProcessingWindow.Element("HoughCirclesDetector").Attribute("max_ra").Value));
+                CircleF[] img_circles = CvInvoke.HoughCircles(img_gray, HoughType.Gradient, _dp, _minDist,
+                    _param01, _param02, _minRadius, _maxRadius);
 
                 if (img_circles.Length != 0)
                 {
@@ -1094,16 +1225,16 @@ namespace CVEYEV1
                     if (true)
                     {
                         // Cal ROI location
-                        Point roi_location = new Point((int)Math.Round(circle.Center.X) - ROIsize / 2,
-                                        (int)Math.Round(circle.Center.Y) - ROIsize / 2);
+                        Point roi_location = new Point((int)Math.Round(circle.Center.X) - RoiSize / 2,
+                                        (int)Math.Round(circle.Center.Y) - RoiSize / 2);
 
                         Mat getMat = new Mat();
 
                         // Data allocation
-                        byte[] roiData = new byte[ROIsize * ROIsize];
+                        byte[] roiData = new byte[RoiSize * RoiSize];
                         GCHandle handle = GCHandle.Alloc(roiData, GCHandleType.Pinned);
                         using (Image<Gray, byte> src = img_threshold.ToImage<Gray, byte>())
-                        using (Image<Gray, byte> roi_getting_img = GetSourceROI(src, roi_location, ROIsize))
+                        using (Image<Gray, byte> roi_getting_img = GetSourceROI(src, roi_location, RoiSize))
                         {
                             CvInvoke.BitwiseNot(roi_getting_img, roi_getting_img);
 
@@ -1127,7 +1258,7 @@ namespace CVEYEV1
                         // 2D Rotation matrix
                         Matrix<double> tmp_dst = new Matrix<double>(3, 3);
 
-                        int numOfpixels = ROIsize * ROIsize;
+                        int numOfpixels = RoiSize * RoiSize;
 
                         // Find maching angle
                         for (int cnt = 0; cnt < 360; cnt = cnt + 2)
@@ -1140,14 +1271,14 @@ namespace CVEYEV1
                             {
                                 //
 
-                                CvInvoke.GetRotationMatrix2D(new PointF(ROIsize / 2, ROIsize / 2), cnt, 1, tmp_dst);
+                                CvInvoke.GetRotationMatrix2D(new PointF(RoiSize / 2, RoiSize / 2), cnt, 1, tmp_dst);
                                 CvInvoke.WarpAffine(tmp_raw, tmp_rot, tmp_dst, tmp_raw.Size); // ~100 ms => it takes almost scanning time, we should improve
 
                                 //
                                 using (Image<Gray, byte> tmp_rot_img = tmp_rot.ToImage<Gray, byte>())
                                 using (Mat _tmp_rot = tmp_rot_img.Mat)
                                 {
-                                    byte[] tmpData = new byte[ROIsize * ROIsize];
+                                    byte[] tmpData = new byte[RoiSize * RoiSize];
                                     GCHandle _handle = GCHandle.Alloc(tmpData, GCHandleType.Pinned);
                                     CvInvoke.BitwiseNot(_tmp_rot, _tmp_rot);
                                     using (Mat tempMat = new Mat(_tmp_rot.Size, DepthType.Cv8U, 1, _handle.AddrOfPinnedObject(), tmp_rot.Width))
@@ -1207,23 +1338,22 @@ namespace CVEYEV1
         {
             try
             {
-                if (true)
-                {
-                    // Add object data to their lists
-                    _angleList.Add(get_angle);
-                    _centerList.Add(get_circle.Center);
+                // Add object data to their lists
+                _angleList.Add(get_angle);
+                _centerList.Add(get_circle.Center);
 
-                    // Show detected items
-                    Draw_Matching(img_items, get_circle, get_angle);
-                    //processLog.Items.Add(get_circle.Radius);
-                }
+                // Show detected items
+                Draw_Matching(img_items, get_circle, get_angle);
+
+                // Show object radius
+                processLog.Items.Add(get_circle.Radius);
+
 
                 // Update progess bar
                 Progress.Value = e.ProgressPercentage;
 
                 //
                 templateField.Refresh();
-
             }
             catch (Exception ex)
             {
@@ -1244,13 +1374,21 @@ namespace CVEYEV1
             }
         }
 
+        private void LoadOriginal()
+        {
+            XElement MainWindow = SysData.Element("System").Element("MainWindow");
+
+            _xoffset = double.Parse(MainWindow.Element("Offset").Element("G54").Attribute("x").Value);
+            _yoffset = -double.Parse(MainWindow.Element("Offset").Element("G54").Attribute("y").Value);
+        }
+
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // Load database
             XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
 
             // Get current item painting points
-            getItem = dispensingData.Element("Field")
+            getItem = DispensingData.Element("Field")
                 .Elements("Item")
                 .Where(x => x.Element("Name").Value == tmp_item_name.Text)
                 .Single();
@@ -1261,66 +1399,80 @@ namespace CVEYEV1
             // Item sorting
             _centerList = SortByDistance(_centerList, _angleList);
 
-            using (macro01)
-            using (macro02)
+            // Reset macro combination position
+            LastItem = 0;
+            MacroLineNumber = 0;
+            ushort MaxLine = 18000;
+
+            // Reload the camera original offset
+            LoadOriginal();
+
+            using (macroData)
             {
                 #region Painting macro building
 
-                TextWriter lastmacro = macro01;
-
-                for (int pointidx = 0; pointidx < _centerList.Count; pointidx++)
+                for (byte pointidx = 0; pointidx < _centerList.Count; pointidx++)
                 {
-                    // Machine coordinate (G54, G55)
-                    //^ Y axis
-                    //|
-                    //|
-                    //L---------> X axis
-                    //O
-
-                    // Calculate center coordinate
-                    double cen_X = xCompensate(_centerList[pointidx]) + x_pixel_offset;
-                    double cen_Y = yCompensate(_centerList[pointidx]) + y_pixel_offset;
-                    PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-                    // Global painting points rotation
-                    double dirCom = 0.5;
-                    cenPoint = RotateFOV(cenPoint, dirCom);
-
-                    cen_X = Math.Round(cenPoint.X * _accuracy, 3);
-                    cen_Y = Math.Round(cenPoint.Y * _accuracy, 3);
-
-                    // Invert y axis direction
-                    cen_Y = -cen_Y;
-
-                    // Points set affine transformation
-                    Real_PointsWarpAffine(point_list, _centerList[pointidx], angleListSort[pointidx], img_items);
-
-                    // Build running procedure
-                    if (pointidx < 200)
-                        CompletedPaintingProcess(affine_painting_points, (float)cen_X, (float)cen_Y, PaintingCondition, macro01);
-                    else
-                    {   
-                        // Write to next macro                     
-                        //if (pointidx == 80)
-                        //{
-                        //    macro02On = true;
-                        //    macro02Used = true;
-                        //    macro02.WriteLine("DeactivateSignal(OUTPUT5)");
-                        //    macro02.WriteLine("DeactivateSignal(OUTPUT6)");
-                        //}
-                        //CompletedPaintingProcess(affine_painting_points, (float)cen_X, (float)cen_Y, PaintingCondition, macro02);
-                        //lastmacro = macro02;
-                    }
-
-                    // Draw the object tracking line
-                    if (enableLine.CheckState == CheckState.Checked)
+                    if (MacroLineNumber <= MaxLine)
                     {
-                        if (pointidx > 0)
-                            // Draw point to point
-                            img_items.Draw(new LineSegment2DF(_centerList[pointidx - 1], _centerList[pointidx]), new Bgr(Color.Red), 2);
-                        else
-                            // Draw the start point
-                            img_items.Draw(new CircleF(_centerList[pointidx], 10), new Bgr(Color.Red), 2);
+                        // Machine coordinate (G54, G55)
+                        //^ Y axis
+                        //|  <Image area>
+                        //|  <Image area>
+                        //L---------> X axis
+                        //O
+
+                        // Calculate center coordinate
+                        double cen_X = xCompensate(_centerList[pointidx]);
+                        double cen_Y = yCompensate(_centerList[pointidx]);
+                        PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
+
+                        // Global painting points rotation
+                        double dirCom = 0.8;
+                        cenPoint = RotateFOV(cenPoint, dirCom);
+
+                        cen_X = Math.Round(cenPoint.X * _accuracy, 2) + _xoffset;
+                        cen_Y = Math.Round(cenPoint.Y * _accuracy, 2) + _yoffset;
+
+                        // Invert y axis direction
+                        cen_Y = -cen_Y;
+
+                        // Points set affine transformation
+                        Real_PointsWarpAffine(point_list, _centerList[pointidx], angleListSort[pointidx], img_items);
+
+                        // Building painting procedure
+                        CompletedPaintingProcess(affine_painting_points, (float)cen_X, (float)cen_Y, PaintingCondition, macroData);
+
+                        // Draw the object tracking line
+                        if (enableLine.CheckState == CheckState.Checked)
+                        {
+                            if (pointidx > 0)
+                                // Draw point to point
+                                img_items.Draw(new LineSegment2DF(_centerList[pointidx - 1], _centerList[pointidx]), new Bgr(Color.Red), 2);
+                            else
+                                // Draw the start point
+                                img_items.Draw(new CircleF(_centerList[pointidx], 10), new Bgr(Color.Red), 2);
+                        }
+                    }
+                    else
+                    {
+                        //
+                        LastItem = pointidx;
+
+                        // Disable selection piston
+                        macroData.WriteLine("' Macro combination condition");
+                        macroData.WriteLine("DeactivateSignal(OUTPUT6)");
+
+                        // Return to z macro combination point
+                        macroData.WriteLine("Code \"G00 Z" + 13.4 + "\"");
+                        Wait(50, macroData);
+
+                        //processLog.Items.Add("Checking combination condition...");
+
+                        MacroLineNumber = (ushort)(MacroLineNumber + 3);
+
+                        // Terminating loop
+                        break;
                     }
                 }
 
@@ -1328,42 +1480,50 @@ namespace CVEYEV1
 
                 #region Complete Painting Process
 
-                // Return to z safe
-                lastmacro.WriteLine("Code \"G00 Z" + PaintingCondition.Attribute("zSafe").Value + "\"");
-                Wait(50, lastmacro);
+                // Do not finish the process if number of macro lines exceed maximum value
+                if (LastItem == 0)
+                {
+                    // Return to z safe
+                    macroData.WriteLine("Code \"G00 Z" + PaintingCondition.Attribute("zSafe").Value + "\"");
+                    Wait(50, macroData);
 
-                // Disable dispensing valve channel
-                lastmacro.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
+                    // Disable dispensing valve channel
+                    macroData.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
 
-                // Disable selection piston
-                lastmacro.WriteLine("' Disable level piston");
-                lastmacro.WriteLine("DeactivateSignal(OUTPUT6)");
+                    // Disable selection piston
+                    macroData.WriteLine("' Disable level piston");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT6)");
 
-                // Disable frame holding piston
-                lastmacro.WriteLine("' Disable clamping piston");
-                lastmacro.WriteLine("DeactivateSignal(OUTPUT8)");
+                    // Disable frame holding piston
+                    macroData.WriteLine("' Disable clamping piston");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT8)");
 
-                //  Return home
-                lastmacro.WriteLine("' Return home");
-                lastmacro.WriteLine("Code \"G90 G54 G00 X-90 Y-400\"");
-                lastmacro.Close();
-                macro01.Close();
-                macro02.Close();
+                    //  Return home
+                    macroData.WriteLine("' Return home");
+                    macroData.WriteLine("Code \"G90 G54 G00 X-90 Y-400\"");
+
+                    MacroLineNumber = (ushort)(MacroLineNumber + 8);
+
+                    //processLog.Items.Add("No need to combine macro.");
+                }
+
+                // Close all macros
+                macroData.Close();
 
                 #endregion
             }
 
             // Save detected items result
             CvInvoke.Imwrite("result/dots.jpg", img_items);
-            CvInvoke.Imwrite("result/dots.jpg", img_threshold);
+            //CvInvoke.Imwrite("result/dots.jpg", img_threshold);
 
             // View result
             pattern_field.Image = img_items.Bitmap;
             pattern_field.Refresh();
             
             // Update working status
-            status_label.Text = "Hoàn tất quét ảnh";
-            status_label.Refresh();
+            StatusLabel.Text = "Hoàn tất quét ảnh";
+            StatusLabel.Refresh();
 
             // Detection status
             detected = true;
@@ -1379,9 +1539,133 @@ namespace CVEYEV1
 
             // Show processing times
             //processLog.Items.Add(detectionWatch.ElapsedMilliseconds);
+            //processLog.Items.Add("Số dòng lệnh: " + MacroLineNumber);
+            //processLog.Items.Add("Chuyển tại mẫu: " + LastItem);
 
             //
             Progress.Visible = false;
+        }
+
+        private void MacroCombination(byte lastitem, string value)
+        {
+            double zSafe;
+            zSafe = Math.Round(double.Parse(value), 1);
+
+            if ((zSafe == 13.4) && (!scriptObject.IsOutputActive(12)))
+            {
+                //processLog.Items.Add("Building combined macro...");
+
+                // Reset combination flag
+                CombineFlag = true;
+
+                // Load database
+                XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
+
+                // List painting points to list
+                List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();                
+
+                // Init new mach3 macro file
+                if (macroData != null)
+                    macroData.Close();
+                macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
+
+                //
+                using (macroData)
+                {
+                    #region Painting macro building
+
+                    macroData.WriteLine("ActivateSignal(OUTPUT6)");
+
+                    for (byte pointidx = LastItem; pointidx < _centerList.Count; pointidx++)
+                    {
+                        // Machine coordinate (G54, G55)
+                        //^ Y axis
+                        //|  <Image area>
+                        //|  <Image area>
+                        //L---------> X axis
+                        //O
+
+                        // Calculate center coordinate
+                        double cen_X = xCompensate(_centerList[pointidx]);
+                        double cen_Y = yCompensate(_centerList[pointidx]);
+                        PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
+
+                        // Global painting points rotation
+                        double dirCom = 0.8;
+                        cenPoint = RotateFOV(cenPoint, dirCom);
+
+                        cen_X = Math.Round(cenPoint.X * _accuracy, 3) + _xoffset;
+                        cen_Y = Math.Round(cenPoint.Y * _accuracy, 3) + _yoffset;
+
+                        // Invert y axis direction
+                        cen_Y = -cen_Y;
+
+                        // Points set affine transformation
+                        Real_PointsWarpAffine(point_list, _centerList[pointidx], angleListSort[pointidx], img_items);
+
+                        // Building painting procedure
+                        CompletedPaintingProcess(affine_painting_points, (float)cen_X, (float)cen_Y, PaintingCondition, macroData);
+
+                        // Draw the object tracking line
+                        if (enableLine.CheckState == CheckState.Checked)
+                        {
+                            if (pointidx > 0)
+                                // Draw point to point
+                                img_items.Draw(new LineSegment2DF(_centerList[pointidx - 1], _centerList[pointidx]), new Bgr(Color.Red), 2);
+                            else
+                                // Draw the start point
+                                img_items.Draw(new CircleF(_centerList[pointidx], 10), new Bgr(Color.Red), 2);
+                        }
+                    }
+
+                    #endregion
+
+                    #region Complete Painting Process
+
+                    // Return to z safe
+                    macroData.WriteLine("Code \"G00 Z" + PaintingCondition.Attribute("zSafe").Value + "\"");
+                    Wait(50, macroData);
+
+                    // Disable dispensing valve channel
+                    macroData.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
+
+                    // Disable selection piston
+                    macroData.WriteLine("' Disable level piston");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT6)");
+
+                    // Disable frame holding piston
+                    macroData.WriteLine("' Disable clamping piston");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT8)");
+
+                    //  Return home
+                    macroData.WriteLine("' Return home");
+                    macroData.WriteLine("Code \"G90 G54 G00 X-90 Y-400\"");
+
+                    // Close all macros
+                    macroData.Close();
+
+                    // Update no. of macro lines
+                    MacroLineNumber = (ushort)(MacroLineNumber + 8);
+
+                    #endregion
+                }
+
+                Thread.Sleep(100);
+
+                GetMach3Instance();
+
+                if (scriptObject != null)
+                {
+                    // Run painting macro
+                    scriptObject.Code("M999");
+                }
+
+                //processLog.Items.Add("Macro is combined successfully.");
+
+                // Reset macro combination position
+                LastItem = 0;
+                MacroLineNumber = 0;
+            }
         }
 
         private List<PointF> sortedList(List<PointF> pointList)
@@ -1422,12 +1706,12 @@ namespace CVEYEV1
             return pointList2;
         }
 
-        private Image<Gray, byte> GetSourceROI(Image<Gray, byte> src, Point ROILocation, int ROISize)
+        private Image<Gray, byte> GetSourceROI(Image<Gray, byte> src, Point ROILocation, int RoiSize)
         {
             using (src)
             {
                 // Set ROI to image
-                Rectangle roi_rec = new Rectangle(ROILocation, new Size(ROISize, ROISize));
+                Rectangle roi_rec = new Rectangle(ROILocation, new Size(RoiSize, RoiSize));
                 CvInvoke.cvSetImageROI(src.Ptr, roi_rec);
                 src.ROI = CvInvoke.cvGetImageROI(src.Ptr);
 
@@ -1437,7 +1721,7 @@ namespace CVEYEV1
                     Mat roi_getting = new Mat();
                     roi_background.SetValue(255);
                     roi_background.Draw(
-                        new CircleF(new Point(roi_background.Rows / 2, roi_background.Cols / 2), ROISize / 2),
+                        new CircleF(new Point(roi_background.Rows / 2, roi_background.Cols / 2), RoiSize / 2),
                         new Bgr(Color.Black),
                         -1); // Line width, input negative value to fill the circle
 
@@ -1453,20 +1737,6 @@ namespace CVEYEV1
                     return roi_getting_img;
                 }
             }
-        }
-
-        public void TemplateGraph(Mat template)
-        {
-            dispensingData = XDocument.Load(data_path);
-
-            getItem = dispensingData.Element("Field")
-                .Elements("Item")
-                .Where(x => x.Element("Name").Value == tmp_item_name.Text)
-                .Single();
-
-            getItem.Element("PixelsPosition").RemoveAll();
-
-            dispensingData.Save(data_path);
         }
 
         private List<PointF> HelixSort(List<PointF> pointList)
@@ -1593,7 +1863,6 @@ namespace CVEYEV1
         public static double xCompensate(PointF point)
         {
             double value = 0;
-
             if (CheckInside(point))
             {
                 XElement dataX;
@@ -1673,14 +1942,18 @@ namespace CVEYEV1
             // Read corner size
             pt_width = byte.Parse(CalibrationParameter.Attribute("calib_cornerWidth").Value);
             pt_height = byte.Parse(CalibrationParameter.Attribute("calib_cornerHeight").Value);
-
-            VectorOfPointF corner_set = new VectorOfPointF();
+                        
             Mat sample_frame = new Mat();
             
             //
             Size sample_size = new Size(pt_width, pt_height);
 
-            int cornerPosOri = pt_width * pt_height / 2 - pt_width / 2;
+            CameraData.Items.Clear();
+
+            // int cornerPosOri = pt_width * pt_height / 2 - pt_width / 2; using if pt is even
+            int cornerPosOri = pt_width * (pt_height / 2 + 1) - (pt_width / 2 + 1);
+            CameraData.Items.Add("Camera Original:  " + cornerPosOri.ToString());
+            CornerPos.Text = cornerPosOri.ToString();
 
             // Convert BGR to GRAY image
             CvInvoke.CvtColor(sample, sample_frame, ColorConversion.Bgr2Gray);
@@ -1695,11 +1968,15 @@ namespace CVEYEV1
                 PointF[] com_point = new PointF[2]; // compensation point
                 double slope, intercept;
 
-
+                // Calculate system accuracy
                 float squareSize = ((corner_set[cornerPosOri + 1].X - corner_set[cornerPosOri].X) +
-                    (corner_set[cornerPosOri + 1 - 48].X - corner_set[cornerPosOri - 48].X) +
-                    (corner_set[cornerPosOri + 1 - 96].X - corner_set[cornerPosOri - 96].X)) / 3;
+                    (corner_set[cornerPosOri - pt_width + 1].X - corner_set[cornerPosOri - pt_width].X) +
+                    (corner_set[cornerPosOri + pt_width + 1].X - corner_set[cornerPosOri + pt_width].X)) / 3;
                 _accuracy = 10 / squareSize;
+
+                sample.Draw(new CircleF(corner_set[cornerPosOri], 25), new Bgr(Color.Blue), 5);
+                //sample.Draw(new CircleF(corner_set[cornerPosOri + pt_width], 15), new Bgr(Color.GreenYellow), 5);
+                //sample.Draw(new CircleF(corner_set[cornerPosOri - pt_width], 15), new Bgr(Color.GreenYellow), 5);
 
                 //SysData.Element("System").Element("CameraCalibrationWindow").Add(new XElement("Accuracy", new XAttribute("Value", _accuracy)));
                 SysData.Element("System").Element("CameraCalibrationWindow").Element("Accuracy").Attribute("Value").Value = _accuracy.ToString();
@@ -1710,21 +1987,19 @@ namespace CVEYEV1
 
                 using (StreamWriter logStream = new StreamWriter("history.txt"))
                 {
-
                     //
                     section = SysData.Element("System").Element("CameraCalibrationWindow").Element("yCompensation");
-
-                    // Center of corner array
-                    
+                  
                     float xsegEnd = 0;
 
                     // Y axis compensation data
-                    for (int col = 0; col < pt_width; col++) // column scan                
+                    for (int col = 0; col < pt_width; col++) // column scan from 0 to col width -1                
                     {
                         // Add new column segment
                         section.Add(new XElement("Column", new XElement("Num", col)));
 
-                        byte rowSegNum = (byte)(pt_height / 2 - 1);
+                        //byte rowSegNum = (byte)(pt_height / 2 - 1); //when pt_height is even
+                        byte rowSegNum = (byte)(pt_height / 2); //when pt_height is odd
                         byte colSegNum = (byte)(pt_width / 2);
 
                         // Segment value
@@ -1786,12 +2061,12 @@ namespace CVEYEV1
 
                             // Draw something
                             sample.Draw(new Cross2DF(corner_set[cornerPos], 10, 10), new Bgr(Color.Red), 2);
-                            //sample.Draw(cornerPos.ToString(),
-                            //    new Point((int)corner_set[cornerPos].X - 10, (int)corner_set[cornerPos].Y - 10),
-                            //    FontFace.HersheyPlain,
-                            //    1.2,
-                            //    new Bgr(Color.GreenYellow),
-                            //    1);
+                            sample.Draw(cornerPos.ToString(),
+                                new Point((int)corner_set[cornerPos].X - 10, (int)corner_set[cornerPos].Y - 10),
+                                FontFace.HersheyPlain,
+                                1.2,
+                                new Bgr(Color.Red),
+                                1);
                             rowIndex++;
                         }
                         // Reset var
@@ -1867,45 +2142,16 @@ namespace CVEYEV1
                         colComPoint = new PointF[2];
                     }
 
-                    SysData.Save(systemPath);
-                    SysData = XDocument.Load(systemPath);
-
-                    using (macro01 = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
+                    if (EnableSaveCompsData.CheckState == CheckState.Checked)
                     {
-
-                        for (int cornerPos = cornerPosOri; cornerPos < cornerPosOri + 1; cornerPos++)
-                        //for (int row = 0; row < pt_height; row++)
-                        {
-                            //for (int col = 0; col < pt_width; col++)
-                            {
-                                //int cornerPos = pt_width * row + col;
-                                double xCom = xCompensate(corner_set[cornerPos]);
-                                double yCom = yCompensate(corner_set[cornerPos]);
-                                sample.Draw(new CircleF(new PointF((float)xCom, (float)yCom), 10), new Bgr(Color.GreenYellow), 3);
-
-                                // For G54 calibration
-
-                                // Calculate center coordinate
-                                double cen_X = xCompensate(corner_set[cornerPos]) + x_pixel_offset;
-                                double cen_Y = yCompensate(corner_set[cornerPos]) + y_pixel_offset;
-
-                                PointF cenPoint = new PointF((float)cen_X, (float)cen_Y);
-
-                                // Global painting points rotation
-                                cenPoint = RotateFOV(cenPoint, 0.5);
-
-                                cen_X = Math.Round(cenPoint.X * _accuracy, 3);
-                                cen_Y = Math.Round(cenPoint.Y * _accuracy, 3);
-
-                                // Invert y axis direction
-                                cen_Y = -cen_Y;
-
-                                macro01.WriteLine("Code \"G90 G54 G01 X" + cen_X + " Y" + cen_Y + " F5000\"");
-                            }
-                        }
-
-                        macro01.Close();
+                        SysData.Save(systemPath);
+                        SysData = XDocument.Load(systemPath);
                     }
+
+                    double xCom = xCompensate(corner_set[cornerPosOri]);
+                    double yCom = yCompensate(corner_set[cornerPosOri]);
+
+                    sample.Draw(new CircleF(new PointF((float)xCom, (float)yCom), 15), new Bgr(Color.GreenYellow), 5);
                 }
 
                 //
@@ -1921,31 +2167,34 @@ namespace CVEYEV1
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="Points"> The vector of global painting points </param>
-        /// <param name="cenX"> X object center </param>
-        /// <param name="cenY"> Y object center</param>
-        /// <param name="Parameters"> Painting conditions data </param>
+        /// <param name="Points">The vector of global painting points</param>
+        /// <param name="cenX">X object center</param>
+        /// <param name="cenY">Y object center</param>
+        /// <param name="Parameters">Painting conditions data</param>
+        /// <param name="macro"> Output macro</param>
         private void CompletedPaintingProcess(PointF[] Points, float cenX, float cenY, XElement Parameters, TextWriter macro)
         {
             double X, Y; //mm
-            float startpoint_X = cenX - in_circle_radius; //mm
+            float startpoint_X = cenX - InnerCircleChessRadius; //mm
             float startpoint_Y = cenY; //mm
-
-            // Get painting points from XML
-            getItem = dispensingData.Element("Field")
-                            .Elements("Item")
-                            .Where(x => x.Element("Name").Value == tmp_item_name.Text)
-                            .Single();
 
             List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();
 
+            // Get painting condition
+            float ZReturnValue      = SheetThickness + ObjectHeight + float.Parse(Parameters.Attribute("zReturn").Value);
+            float ZOffset           = float.Parse(Parameters.Attribute("offset").Value);
+            int CirclePaintingSpeed = int.Parse(Parameters.Attribute("circleSpeed").Value);
+            int NormalPaintingSpeed = int.Parse(Parameters.Attribute("xySpeed").Value);
+
             int j = 0;
 
-            foreach (XElement element in point_list)
+            foreach (XElement point in point_list)
             {
                 // Convert pixel to mm
-                X =  Math.Round((Points[j].X + x_pixel_offset) * _accuracy, 3); //
-                Y = -Math.Round((Points[j].Y + y_pixel_offset) * _accuracy, 3); //
+                X = Math.Round(Points[j].X * _accuracy + _xoffset, 2);
+                Y = -Math.Round(Points[j].Y * _accuracy + _yoffset, 2);
+
+                byte pointMode = byte.Parse(point.Attribute("T").Value);
 
                 //--------------------- Build macro01-------------------
 
@@ -1956,107 +2205,105 @@ namespace CVEYEV1
                     if (first_item)
                     {
                         // macro01 initialization
-                        macro.WriteLine("' Initialization");
+                        //macro.WriteLine("' Initialization");
                         macro.WriteLine("Code \"G90 " + GetValveHome(item_color.Text) + " G00" + "\"");
+                        MacroLineNumber++;
 
                         // Select valve position
-                        macro.WriteLine("' Select valve");
+                        //macro.WriteLine("' Select valve");
                         macro.WriteLine("ActivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
+                        MacroLineNumber++;
 
                         // Move to the first point of inner circle
-                        macro.WriteLine("' Circle starting point");
+                        //macro.WriteLine("' Circle starting point");
                         macro.WriteLine("Code \"G00 X" + startpoint_X + " Y" + startpoint_Y + "\"");
+                        MacroLineNumber++;
                         Wait(2000, macro);
 
                         // Turn on 15mm piston
-                        macro.WriteLine("' Turning on level piston");
+                        //macro.WriteLine("' Turning on level piston");
                         macro.WriteLine("ActivateSignal(OUTPUT6)");
+                        MacroLineNumber++;
 
                         // Select painting mode 03
                         JettingModeSelectingMacro(3, macro);
 
                         // Dispense paint
-                        macro.WriteLine("' Starting dispensing");
-                        Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value), macro);
+                        //macro.WriteLine("' Starting dispensing");
+                        Paint_Drip(ZOffset, macro);
 
                         // Circular interpolation
-                        macro.WriteLine("' Circular interpolation");
-                        CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4, int.Parse(Parameters.Attribute("circleSpeed").Value), macro);
+                        //macro.WriteLine("' Circular interpolation");
+                        CircleDivider(new PointF(cenX, cenY), InnerCircleChessRadius, 4, CirclePaintingSpeed, macro);
                         Wait(50, macro);
 
                         // Select painting mode 01
-                        JettingModeSelectingMacro(1, macro);
+                        JettingModeSelectingMacro(pointMode, macro);
 
                         // Go to z return
-                        macro.WriteLine("' Moving to z return");
-                        macro01.WriteLine("Code \"G00 Z" + Parameters.Attribute("zReturn").Value + "\"");
+                        //macro.WriteLine("' Moving to z return");
+                        macroData.WriteLine("Code \"G00 Z" + ZReturnValue + "\"");
+                        MacroLineNumber++;
 
                         // Move to the first point of inner circle
-                        macro.WriteLine("' Moving to painting point of pattern");
-                        macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                        //macro.WriteLine("' Moving to painting point of pattern");
+                        macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + NormalPaintingSpeed + "\"");
+                        MacroLineNumber++;
                         Wait(50, macro);
                     }
                     else
                     {
                         // Move to the first point of inner circle
-                        macro.WriteLine("' Circle starting point");
+                        //macro.WriteLine("' Circle starting point");
                         macro.WriteLine("Code \"G00 X" + startpoint_X + " Y" + startpoint_Y + "\"");
+                        MacroLineNumber++;
                         Wait(500, macro);
-
-                        if (macro02On)
-                        {
-                            macro.WriteLine("ActivateSignal(OUTPUT6)");
-                            macro.WriteLine("ActivateSignal(OUTPUT5)");
-                            macro02On = false;
-                        }
 
                         // Select painting mode 03
                         JettingModeSelectingMacro(3, macro);
 
                         // Dispense paint
-                        macro.WriteLine("' Starting dispensing");
-                        Paint_Drip(decimal.Parse(Parameters.Attribute("offset").Value), macro);
+                        //macro.WriteLine("' Starting dispensing");
+                        Paint_Drip(ZOffset, macro);
 
                         // Circular interpolation
-                        macro.WriteLine("' Circular interpolation");
-                        CircleDivider(new PointF(cenX, cenY), in_circle_radius, 4, int.Parse(Parameters.Attribute("circleSpeed").Value), macro);
+                        //macro.WriteLine("' Circular interpolation");
+                        CircleDivider(new PointF(cenX, cenY), InnerCircleChessRadius, 4, CirclePaintingSpeed, macro);
                         Wait(50, macro);
 
                         // Select painting mode 01
-                        JettingModeSelectingMacro(1, macro);
+                        JettingModeSelectingMacro(pointMode, macro);
 
                         // Go to z return
-                        macro.WriteLine("' Moving to z return");
-                        macro.WriteLine("Code \"G00 Z" + Parameters.Attribute("zReturn").Value + "\"");
+                        //macro.WriteLine("' Moving to z return");
+                        macro.WriteLine("Code \"G00 Z" + ZReturnValue + "\"");
+                        MacroLineNumber++;
 
                         // First point of non-first item
-                        macro.WriteLine("' Moving to painting point of pattern");
-                        macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                        //macro.WriteLine("' Moving to painting point of pattern");
+                        macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + NormalPaintingSpeed + "\"");
+                        MacroLineNumber++;
                         Wait(50, macro);
                     }
-
-                    //firstpointofitem = true;
                 }
                 else
                 {
-                    // Exception of "Ngựa 02"
-                    if (tmp_item_name.Text == "Ngựa 02" && j == 15)
-                        JettingModeSelectingMacro(2, macro);
+                    JettingModeSelectingMacro(pointMode, macro);
 
                     // Go to painting point of template
-                    macro.WriteLine("' Moving to painting point of pattern");
-                    macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + Parameters.Attribute("xySpeed").Value + "\"");
+                    //macro.WriteLine("' Moving to painting point of pattern");
+                    macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + NormalPaintingSpeed + "\"");
+                    MacroLineNumber++;
                     //Wait(50);
-
-                    //firstpointofitem = false;
                 }
 
                 // Dispense paint
                 Paint_Drip(0, macro);
 
                 // Rapid moving to Z return
-                macro.WriteLine("' Moving to z return");
-                macro.WriteLine("Code \"Z" + Parameters.Attribute("zReturn").Value + "\"");
+                //macro.WriteLine("' Moving to z return");
+                macro.WriteLine("Code \"Z" + ZReturnValue + "\"");
+                MacroLineNumber++;
 
                 // Disable the first item flag
                 first_item = false;
@@ -2065,6 +2312,14 @@ namespace CVEYEV1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        /// <param name="factor"></param>
+        /// <param name="speed"></param>
+        /// <param name="macro"></param>
         private void CircleDivider(PointF center, float radius, byte factor, int speed, TextWriter macro)
         {
             // Start point of the circle
@@ -2079,6 +2334,7 @@ namespace CVEYEV1
 
                 // Command macro01                
                 macro.WriteLine("Code \"G03 X" + endPoint.X + " Y" + endPoint.Y + " I" + (center.X - startPoint.X) + " J" + (center.Y - startPoint.Y) + ((i == 0) ? " F" + speed.ToString() : "") + "\"");
+                MacroLineNumber++;
 
                 // Update start point of the arc
                 startPoint.X = endPoint.X;
@@ -2086,16 +2342,20 @@ namespace CVEYEV1
             }
         }
 
-        private void Paint_Drip(decimal offset, TextWriter macro)
+        private void Paint_Drip(float offset, TextWriter macro)
         {
             XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
 
-            // Moving to Z injecting deep with specific speed
-            if (!first_item)
-                macro.WriteLine("Code \"G00 Z" + (decimal.Parse(PaintingCondition.Attribute("zDrip").Value) + offset) + "\"");
-            else
-                macro.WriteLine("Code \"Z" + (decimal.Parse(PaintingCondition.Attribute("zDrip").Value) + offset) + "\"");
+            float z_value = SheetThickness + ObjectHeight + float.Parse(PaintingCondition.Attribute("zDrip").Value) + offset;
 
+            // Moving to Z injecting height with specific speed
+            if (!first_item)
+                macro.WriteLine("Code \"G00 Z" + z_value + "\"");
+            else
+                macro.WriteLine("Code \"Z" + z_value + "\"");
+
+            //
+            MacroLineNumber++;
 
             // Waiting for moving completed
             //Wait(firstpointofitem ? 100 : 50);
@@ -2105,7 +2365,7 @@ namespace CVEYEV1
             macro.WriteLine("ActivateSignal(OUTPUT7" + ")");
             macro.WriteLine("Sleep(100)");
             macro.WriteLine("DeactivateSignal(OUTPUT7" + ")");
-
+            MacroLineNumber = (ushort)(MacroLineNumber + 3);
         }
 
         private void JettingModeSelectingMacro(byte mode, TextWriter macro)
@@ -2116,21 +2376,25 @@ namespace CVEYEV1
                     macro.WriteLine("' Painting mode 01");
                     macro.WriteLine("DeactivateSignal(OUTPUT1" + ")");
                     macro.WriteLine("DeactivateSignal(OUTPUT2" + ")");
+                    MacroLineNumber = (ushort)(MacroLineNumber + 3);
                     break;
                 case 2: // 0 1
                     macro.WriteLine("' Painting mode 02");
                     macro.WriteLine("DeactivateSignal(OUTPUT1" + ")");
                     macro.WriteLine("ActivateSignal(OUTPUT2" + ")");
+                    MacroLineNumber = (ushort)(MacroLineNumber + 3);
                     break;
                 case 3: // 1 0
                     macro.WriteLine("' Painting mode 03");
                     macro.WriteLine("ActivateSignal(OUTPUT1" + ")");
                     macro.WriteLine("DeactivateSignal(OUTPUT2" + ")");
+                    MacroLineNumber = (ushort)(MacroLineNumber + 3);
                     break;
                 case 4: // 1 1
                     macro.WriteLine("' Painting mode 04");
                     macro.WriteLine("ActivateSignal(OUTPUT1" + ")");
                     macro.WriteLine("ActivateSignal(OUTPUT2" + ")");
+                    MacroLineNumber = (ushort)(MacroLineNumber + 3);
                     break;
             }
         }
@@ -2164,6 +2428,7 @@ namespace CVEYEV1
             macro.WriteLine("While (IsMoving())");
             macro.WriteLine("Sleep(" + time.ToString() + ")");
             macro.WriteLine("Wend");
+            MacroLineNumber = (ushort)(MacroLineNumber + 3);
         }
 
         private byte GetValveNum(string colorName)
@@ -2267,7 +2532,7 @@ namespace CVEYEV1
         
             #region Click events
 
-        private void Browse_Click(object sender, EventArgs e)
+        private void BrowseAFile()
         {
             // Open source image
             using (OpenFileDialog s_file = new OpenFileDialog())
@@ -2286,6 +2551,13 @@ namespace CVEYEV1
             {
                 Progress.Visible = true;
 
+                // View captured image
+                pattern_field.Image = img_capture_undist.Bitmap;
+                pattern_field.Refresh();
+
+                // Clear listbox
+                processLog.Items.Clear();
+
                 // Disable timer
                 timerDROupdate.Enabled = false;
 
@@ -2295,33 +2567,25 @@ namespace CVEYEV1
                 turnCamera.Enabled = false;
                 captureImg.Enabled = false;
 
-                // reset first item flag
+                // Reset first item flag
                 first_item = true;
 
-                // View captured image
-                pattern_field.Image = img_capture_undist.Bitmap;
-                pattern_field.Refresh();
-
-                // Clear listbox
-                processLog.Items.Clear();
+                // Reset macro combine flag
+                CombineFlag = false;
 
                 // Init new mach3 macro01
-                if (macro01 != null)
-                    macro01.Close();
-                macro01 = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
-
-                // Init new mach3 macro01
-                if (macro02 != null)
-                    macro02.Close();
-                macro02 = new StreamWriter(Path.Combine(macroDirectory, @"M998.m1s"));
+                if (macroData != null)
+                    macroData.Close();
+                macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s"));
 
                 // Reload XML
                 SysData = XDocument.Load(systemPath);
+                DispensingData = XDocument.Load(DataPath);
 
                 // Update working status
-                status_label.Text = "Đang quét ảnh...";
+                StatusLabel.Text = "Đang quét ảnh...";
                 pattern_field.Refresh(); // to remove the old text on camera window
-                status_label.Refresh();
+                StatusLabel.Refresh();
 
                 // Start detecting
                 DetectClone();
@@ -2367,8 +2631,8 @@ namespace CVEYEV1
 
                         // Update working status
                         //status_label.Text = "Camera On";
-                        status_label.Text = "Camera Bật";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Camera Bật";
+                        StatusLabel.Refresh();
 
                         switchCamera = true;
                     }
@@ -2414,8 +2678,8 @@ namespace CVEYEV1
                             }
 
                             // Update working status
-                            status_label.Text = "Đã Chụp Ảnh";
-                            status_label.Refresh();
+                            StatusLabel.Text = "Đã Chụp Ảnh";
+                            StatusLabel.Refresh();
 
                             // 
                             switchCamera = false;
@@ -2425,8 +2689,8 @@ namespace CVEYEV1
                     else
                     {
                         //status_label.Text = "No Camera Data";
-                        status_label.Text = "Không Có Ảnh";
-                        status_label.Refresh();
+                        StatusLabel.Text = "Không Có Ảnh";
+                        StatusLabel.Refresh();
                     }
                 }
                 else
@@ -2467,6 +2731,10 @@ namespace CVEYEV1
 
         private void GotoHome_Click(object sender, EventArgs e)
         {
+            //
+            CombineFlag = true;
+
+            //
             DialogResult dialog = MessageBox.Show("Bạn muốn đến vị trí làm việc?", "CVEye",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -2544,8 +2812,8 @@ namespace CVEYEV1
                             // Run painting macro
                             scriptObject.Code("M999");
 
-                            status_label.Text = "Đang sơn...";
-                            status_label.Refresh();
+                            StatusLabel.Text = "Đang sơn...";
+                            StatusLabel.Refresh();
                         }
                     }
                     else MessageBox.Show("Vui lòng thiết lập gốc máy.", "CVEye");
@@ -2581,22 +2849,22 @@ namespace CVEYEV1
             if (scriptObject != null)
             {
                 // Build dot-on-demand macro
-                using (macro01 = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
                 {
-                    macro01.WriteLine("DeactivateSignal(OUTPUT4)");
-                    macro01.WriteLine("DeactivateSignal(OUTPUT5)");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT4)");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT5)");
 
                     // Select jetting mode
-                    JettingModeSelectingMacro(1, macro01);
+                    JettingModeSelectingMacro(1, macroData);
 
                     // Select channels
                     short channel = (short)(GetValveNum(item_color.Text));
-                    macro01.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
-                    macro01.WriteLine("ActivateSignal(OUTPUT7)");
-                    macro01.WriteLine("Sleep 100");
-                    macro01.WriteLine("DeactivateSignal(OUTPUT7)");
+                    macroData.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
+                    macroData.WriteLine("ActivateSignal(OUTPUT7)");
+                    macroData.WriteLine("Sleep 100");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT7)");
 
-                    macro01.Close();
+                    macroData.Close();
                 }
 
                 scriptObject.Code("M92");
@@ -2610,23 +2878,23 @@ namespace CVEYEV1
             if (scriptObject != null)
             {
                 // Build dot-on-demand macro
-                using (macro01 = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
                 {
-                    macro01.WriteLine("DeactivateSignal(OUTPUT4)");
-                    macro01.WriteLine("DeactivateSignal(OUTPUT5)");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT4)");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT5)");
 
                     // Select jetting mode
-                    JettingModeSelectingMacro(4, macro01);
+                    JettingModeSelectingMacro(4, macroData);
                     ValveSwitching.Text = (ValveSwitching.Text == "Xả liên tục (Ctrl+V)") ? "Dừng xả (Ctrl+V)" : "Xả liên tục (Ctrl+V)";
 
                     // Select channels
                     short channel = (short)(GetValveNum(item_color.Text));
-                    macro01.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
-                    macro01.WriteLine("ActivateSignal(OUTPUT7)");
-                    macro01.WriteLine("Sleep 100");
-                    macro01.WriteLine("DeactivateSignal(OUTPUT7)");
+                    macroData.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
+                    macroData.WriteLine("ActivateSignal(OUTPUT7)");
+                    macroData.WriteLine("Sleep 100");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT7)");
 
-                    macro01.Close();
+                    macroData.Close();
                 }
 
                 scriptObject.Code("M92");
@@ -2658,29 +2926,52 @@ namespace CVEYEV1
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
+            
         }
 
         private void paintingPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void ExitMainForm()
+        {
+            Close();
+        }
+
+        private void OpenPaintingPointWindow()
+        {
             ConfigPaintingPoints Con_Painting_Point = new ConfigPaintingPoints();
             Con_Painting_Point.ShowDialog();
         }
+        #endregion
 
-        private void imageProcessingToolStripMenuItem_Click(object sender, EventArgs e)
+        #region Other events
+
+        private void Set_Changed(object sender, EventArgs e)
         {
-            ConfigImageProcessing Con_Image_Processing = new ConfigImageProcessing();
-            Con_Image_Processing.ShowDialog();
-        }
-            #endregion
+            // Reload hough transform parameters
+            ReadHoughData(itemsSet.Text);
 
-            #region Other events
+            // Reload objects set data
+            LoadObjectsSetData();
+
+            // View template image
+            templateField.Image = tmpBgr.Bitmap;
+            templateField.Refresh();
+        }
 
         private void Name_Changed(object sender, EventArgs e)
         {
-            // Preview current template
-            ViewTemplate(tmp_item_name.Text);
-            CheckTmpSize();
+            // Reload object data
+            LoadObjectData();
+            StatusLabel.Text = "Đã tải bộ điểm sơn " + tmp_item_name.Text + " bộ " + itemsSet.Text + ".";
+
+            // Reload painting points from Xml
+            getItem = DispensingData.Element("Field")
+                .Elements("Item")
+                .Where(x => x.Element("Name").Value == tmp_item_name.Text)
+                .Single();
 
             // View template image
             templateField.Image = tmpBgr.Bitmap;
@@ -2717,14 +3008,13 @@ namespace CVEYEV1
             //
             if (e.KeyCode == Keys.Down)
             {
-                ValveOneClick.PerformClick();
+                //ValveOneClick.PerformClick();
             }
-
 
             //
             if (e.Control == true && e.KeyCode == Keys.V)
             {
-                ValveSwitching.PerformClick();
+                //ValveSwitching.PerformClick();
             }
         }
 
@@ -2814,43 +3104,68 @@ namespace CVEYEV1
             }
         }
 
-        private void buildTemplate2()
+        /// <summary>
+        /// Find object (chess) in sample image and extract to raw template
+        /// </summary>
+        private void ExtractChess()
         {
             try
             {
-                Mat imgGray = Frame_Analyze();
+                using (Image<Bgr, byte> SampleImage = img_capture_undist.Clone())
+                {
+                    //
+                    Mat imgGray = Frame_Analyze();
 
-                // Circle Hough Transform
-                CircleF[] img_circles = CvInvoke.HoughCircles(
-                    imgGray, // Array of circles data
-                    HoughType.Gradient,
-                    1.7,
-                    100,
-                    60,
-                    45,
-                    350,
-                    450);
+                    // ROI radius
+                    int RawRoiRa = (int)RawROISize.Value;
+                    CircleF RawCircle;
 
-                Rectangle roi_rec = new Rectangle(new Point((int)img_circles[0].Center.X - 266, (int)img_circles[0].Center.Y - 266), new Size(532, 532));
-                CvInvoke.cvSetImageROI(img_capture_undist.Ptr, roi_rec);
+                    // Circle Hough Transform
+                    CircleF[] img_circles = CvInvoke.HoughCircles(
+                        imgGray, // Array of circles data
+                        HoughType.Gradient,
+                        1.7,
+                        100,
+                        60,
+                        45,
+                        (int)TmpMinRa.Value,
+                        (int)TmpMaxRa.Value);
 
-                img_capture_undist.ROI = CvInvoke.cvGetImageROI(img_capture_undist.Ptr);
-                CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(430, 430));
+                    RawCircle = img_circles[0];
 
-                CvInvoke.Imwrite("result/tmp" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
-                CvInvoke.cvResetImageROI(img_capture_undist.Ptr);
-                img_capture_undist = img_threshold.ToImage<Bgr, byte>();
-                CvInvoke.cvSetImageROI(img_capture_undist.Ptr, roi_rec);
-                img_capture_undist.ROI = CvInvoke.cvGetImageROI(img_capture_undist.Ptr);
-                CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(ROIsize, ROIsize));
+                    SampleImage.Draw(RawCircle, new Bgr(Color.GreenYellow), 3);
+                    SampleImage.Draw(new Rectangle(
+                        new Point((int)RawCircle.Center.X - RawRoiRa, (int)RawCircle.Center.Y - RawRoiRa),
+                        new Size(2 * RawRoiRa, 2 * RawRoiRa)), new Bgr(Color.Blue), 3);
 
-                CvInvoke.Imwrite("result/bintmp" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
-                CvInvoke.cvResetImageROI(img_capture_undist.Ptr);
+                    pattern_field.Image = SampleImage.Bitmap;
+                    pattern_field.Refresh();
+
+                    // Get raw roi from image
+                    Rectangle roi_rec = new Rectangle(
+                        new Point((int)RawCircle.Center.X - RawRoiRa, (int)RawCircle.Center.Y - RawRoiRa),
+                        new Size(2 * RawRoiRa, 2 * RawRoiRa));
+                    CvInvoke.cvSetImageROI(img_capture_undist.Ptr, roi_rec);
+                    img_capture_undist.ROI = CvInvoke.cvGetImageROI(img_capture_undist.Ptr);
+
+                    // Resize roi to roi standard size and save to drive
+                    CvInvoke.Resize(img_capture_undist, img_capture_undist, new Size(430, 430));
+                    CvInvoke.Imwrite("data/tmp_" + RawRoiRa.ToString() + "_" + RawCircle.Radius.ToString()
+                        + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
+                    CvInvoke.cvResetImageROI(img_capture_undist.Ptr);
+
+                    imgGray.Dispose();
+                }
             }
             catch (Exception exp)
             {
                 MessageBox.Show(exp.Message);
             }
+        }
+
+        private void buildTemplate_Click(object sender, EventArgs e)
+        {
+            ExtractChess();
         }
 
         private void ConvertBgr28Bit()
@@ -2869,17 +3184,10 @@ namespace CVEYEV1
                             255,
                             AdaptiveThresholdType.GaussianC,
                             ThresholdType.Binary,
-                            95,
-                            1.5);
+                            159,
+                            4.5);
 
-                        using (SaveFileDialog _dst = new SaveFileDialog())
-                        {
-                            if (_dst.ShowDialog() == DialogResult.OK)
-                            {
-                                CvInvoke.Imwrite(_dst.FileName + "8bit.jpg", srcTmp);
-                            }
-                        }
-
+                        CvInvoke.Imwrite("result/bin" + DateTime.Now.ToFileTime() + ".jpg", srcTmp);
                     }
                 }
             }
@@ -2986,13 +3294,13 @@ namespace CVEYEV1
             XElement MainWindow = SysData.Element("System").Element("MainWindow");
 
             // Load Painting Conditions
-            xySpeed.Text = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
-            zSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
-            zSafe.Text = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
-            zReturn.Text = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
-            zDrip.Text = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
-            deepOffset.Text = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
-            circleSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
+            xySpeed.Text        = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
+            zSpeed.Text         = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
+            zSafe.Text          = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
+            zReturn.Text        = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
+            zDrip.Text          = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
+            deepOffset.Text     = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
+            circleSpeed.Text    = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
 
             // Load Offset values
             XElement Offset = MainWindow.Element("Offset");
@@ -3025,76 +3333,300 @@ namespace CVEYEV1
 
         }
 
+        private void ImgProcSave_Click(object sender, EventArgs e)
+        {
+            SysData = XDocument.Load(systemPath);
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+
+            //
+            ImageProcessing.Element("MachingCorrection").Attribute("cannyThresh").Value = cannyThresh.Value.ToString();
+            ImageProcessing.Element("MachingCorrection").Attribute("correctionRange").Value = correctionRange.Value.ToString();
+            ImageProcessing.Element("MachingCorrection").Attribute("ErrConstraint").Value = ErrConstraint.Value.ToString();
+
+            //
+            SaveHoughParameters(itemsSet.Text);
+
+            //
+            ImageProcessing.Element("ImageFiltering").Attribute("gaussian_sig").Value = gaussian_sig.Value.ToString();
+            ImageProcessing.Element("ImageFiltering").Attribute("G_blur").Value = ((G_blur.CheckState == CheckState.Checked) ? 1 : 0).ToString();
+            ImageProcessing.Element("ImageFiltering").Attribute("BlockSize").Value = BlockSize.Value.ToString();
+
+            //
+            ImageProcessing.Element("PSTTransform").Attribute("edge1").Value = cnl1.Value.ToString();
+            ImageProcessing.Element("PSTTransform").Attribute("edge2").Value = cnl2.Value.ToString();
+            ImageProcessing.Element("PSTTransform").Attribute("edge3").Value = cnl3.Value.ToString();
+            ImageProcessing.Element("PSTTransform").Attribute("edge4").Value = cnl4.Value.ToString();
+
+            // Save document
+            SysData.Save("_system.xml");
+            SysData = XDocument.Load(systemPath);
+        }
+
+        private void SaveHoughParameters(string value)
+        {
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+
+            XElement SetHoughData = ImageProcessing;
+
+            switch (value)
+            {
+                case "Cờ 31":
+                    SetHoughData = ImageProcessing.Element("HoughCirclesDetector").Element("Chess31");
+                    break;
+                case "Cờ 29":
+                    SetHoughData = ImageProcessing.Element("HoughCirclesDetector").Element("Chess29");
+                    break;
+            }
+
+            SetHoughData.Attribute("dp").Value              = houge_dp.Value.ToString();
+            SetHoughData.Attribute("minDist").Value         = houge_minDist.Value.ToString();
+            SetHoughData.Attribute("houge_param1").Value    = houge_param1.Value.ToString();
+            SetHoughData.Attribute("houge_param2").Value    = houge_param2.Value.ToString();
+            SetHoughData.Attribute("min_ra").Value          = min_ra.Value.ToString();
+            SetHoughData.Attribute("max_ra").Value          = max_ra.Value.ToString();
+        }
+
         // Check the template size and ROI size to resize the template
         private void CheckTmpSize()
         {
-            if (tmp_raw.Width > ROIsize)
+            if (tmp_raw.Width > RoiSize)
             {
                 // Resize template image to match the ROI size
-                CvInvoke.Resize(tmp_raw, tmp_raw, new Size(ROIsize, ROIsize));
+                CvInvoke.Resize(tmp_raw, tmp_raw, new Size(RoiSize, RoiSize));
             }
         }
 
-        // Reload template
-        private void ViewTemplate(string value)
+        private void ZDripEqualReturn_CheckStateChanged(object sender, EventArgs e)
         {
-            switch (value)
+            if (ZDripEqualReturn.CheckState == CheckState.Checked)
+                zDrip.Text = zReturn.Text;
+        }
+
+        private void zReturn_TextChanged(object sender, EventArgs e)
+        {
+            if (ZDripEqualReturn.CheckState == CheckState.Checked)
+                zDrip.Text = zReturn.Text;
+        }
+
+        private void getOriginal_Click(object sender, EventArgs e)
+        {
+            cameraOriginOffset = false;
+
+            SysData = XDocument.Load(systemPath);
+            XElement MainWindow = SysData.Element("System").Element("MainWindow");
+
+            MainWindow.Element("Offset").Element("G54").Attribute("x").Value = xdelta.ToString();
+            MainWindow.Element("Offset").Element("G54").Attribute("y").Value = ydelta.ToString();
+
+            // Save document
+            SysData.Save(systemPath);
+
+            using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
             {
-                case "Tướng 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc11.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc11.jpg");
+                // Build temporary camera original
+                macroData.WriteLine("Code \"G90 G54 G01 X" + (cameraTempOriX + xdelta) + " Y" + (cameraTempOriY + ydelta) + " F5000\"");
+                CameraData.Items.Add("Exact original is exported.");
+
+                macroData.Close();
+            }
+
+
+        }
+
+        private void GotoOriginal_Click(object sender, EventArgs e)
+        {
+            SysData = XDocument.Load(systemPath);
+
+            double alpha = double.Parse(SysData.Element("System").Element("CameraCalibrationWindow").
+                Element("FOVRotationAngle").Attribute("alpha").Value);
+
+            // Create a macro to get Camera original
+            using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
+            {
+                //-------------On the camera frame-------------
+
+                int _position = int.Parse(CornerPos.Text);
+
+                double xCom = corner_set[_position].X;
+                double yCom = corner_set[_position].Y;
+
+                xCom = xCompensate(corner_set[_position]);
+                yCom = yCompensate(corner_set[_position]);
+
+                // Global painting points rotation
+                PointF RotatedPoint = new PointF((float)xCom, (float)yCom);
+                RotatedPoint = RotateFOV(RotatedPoint, alpha);
+
+                //-------------On the machine frame-------------
+                double cen_X = Math.Round(RotatedPoint.X * _accuracy, 2);
+                double cen_Y = Math.Round(-RotatedPoint.Y * _accuracy, 2);
+
+                //
+                XElement MainWindow = SysData.Element("System").Element("MainWindow");
+
+                // Start original setting
+                cameraOriginOffset = true;
+
+                cameraTempOriX = cen_X;
+                cameraTempOriY = cen_Y;
+
+                LoadOriginal();
+                cameraTempOriX = cen_X + _xoffset;
+                cameraTempOriY = cen_Y - _yoffset;
+
+                // Build temporary camera original
+                macroData.WriteLine("Code \"G90 G54 G01 X" + cameraTempOriX + " Y" + cameraTempOriY + " F5000\"");
+                macroData.WriteLine("Code \"Z12.1\"");
+
+                CameraData.Items.Add("Temporary center of grid is exported.");
+
+                macroData.Close();
+            }
+
+            GetMach3Instance();
+
+            if (scriptObject != null)
+            {
+                scriptObject.Code("M999");
+            }
+        }
+
+        private void OpenImage_Click(object sender, EventArgs e)
+        {
+            BrowseAFile();
+        }
+
+        private void PaintingPointIcon_Click(object sender, EventArgs e)
+        {
+            OpenPaintingPointWindow();
+        }
+
+        // Reload template
+        private void ViewTemplate(string set, string value)
+        {
+            switch (set)
+            {
+                case "Cờ 31":
+                    switch (value)
+                    {
+                        case "Tướng 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc11.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc11.jpg");
+                            break;
+                        case "Sĩ 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc12.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc12.jpg");
+                            break;
+                        case "Tượng 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc13.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc13.jpg");
+                            break;
+                        case "Xe 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc14.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc14.jpg");
+                            break;
+                        case "Pháo 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc15.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc15.jpg");
+                            break;
+                        case "Ngựa 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc16.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc16.jpg");
+                            break;
+                        case "Chốt 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc17.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc17.jpg");
+                            break;
+                        case "Tướng 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc21.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc21.jpg");
+                            break;
+                        case "Sĩ 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc22.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc22.jpg");
+                            break;
+                        case "Tượng 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc23.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc23.jpg");
+                            break;
+                        case "Xe 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc24.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc24.jpg");
+                            break;
+                        case "Pháo 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc25.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc25.jpg");
+                            break;
+                        case "Ngựa 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc26.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc26.jpg");
+                            break;
+                        case "Chốt 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc27.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc27.jpg");
+                            break;
+                    }
                     break;
-                case "Sĩ 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc12.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc12.jpg");
-                    break;
-                case "Tượng 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc13.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc13.jpg");
-                    break;
-                case "Xe 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc14.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc14.jpg");
-                    break;
-                case "Pháo 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc15.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc15.jpg");
-                    break;
-                case "Ngựa 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc16.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc16.jpg");
-                    break;
-                case "Chốt 01":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/01/cc17.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/01/cc17.jpg");
-                    break;
-                case "Tướng 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc21.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc21.jpg");
-                    break;
-                case "Sĩ 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc22.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc22.jpg");
-                    break;
-                case "Tượng 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc23.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc23.jpg");
-                    break;
-                case "Xe 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc24.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc24.jpg");
-                    break;
-                case "Pháo 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc25.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc25.jpg");
-                    break;
-                case "Ngựa 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc26.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc26.jpg");
-                    break;
-                case "Chốt 02":
-                    tmp_raw = CvInvoke.Imread("pt_data_8bit/02/cc27.jpg");
-                    tmpBgr = new Image<Bgr, byte>("pattern_data/02/cc27.jpg");
+                case "Cờ 29":
+                    switch (value)
+                    {
+                        case "Tướng 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc31.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc31.jpg");
+                            break;
+                        case "Sĩ 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc32.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc32.jpg");
+                            break;
+                        case "Tượng 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc33.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc33.jpg");
+                            break;
+                        case "Xe 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc34.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc34.jpg");
+                            break;
+                        case "Pháo 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc35.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc35.jpg");
+                            break;
+                        case "Ngựa 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc36.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc36.jpg");
+                            break;
+                        case "Chốt 01":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/03/cc37.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/03/cc37.jpg");
+                            break;
+                        case "Tướng 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc41.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc41.jpg");
+                            break;
+                        case "Sĩ 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc42.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc42.jpg");
+                            break;
+                        case "Tượng 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc43.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc43.jpg");
+                            break;
+                        case "Xe 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc44.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc44.jpg");
+                            break;
+                        case "Pháo 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc45.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc45.jpg");
+                            break;
+                        case "Ngựa 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc46.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc46.jpg");
+                            break;
+                        case "Chốt 02":
+                            tmp_raw = CvInvoke.Imread("pt_data_8bit/04/cc47.jpg");
+                            tmpBgr = new Image<Bgr, byte>("pattern_data/04/cc47.jpg");
+                            break;
+                    }
                     break;
             }
         }
