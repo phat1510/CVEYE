@@ -37,11 +37,18 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.Data_Grid = new System.Windows.Forms.DataGridView();
+            this.PointNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colC = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colT = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.patternColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label7 = new System.Windows.Forms.Label();
             this.SetName = new System.Windows.Forms.ComboBox();
+            this.jettingMode = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.fastMoving = new System.Windows.Forms.CheckBox();
@@ -61,20 +68,13 @@
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddRow = new System.Windows.Forms.Button();
             this.DeleteRow = new System.Windows.Forms.Button();
-            this.PointNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colC = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colT = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.patternColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.jettingMode = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.TmpImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Data_Grid)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).BeginInit();
             this.SuspendLayout();
             // 
             // TmpImageBox
@@ -194,7 +194,49 @@
             this.Data_Grid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.Data_Grid.Size = new System.Drawing.Size(400, 580);
             this.Data_Grid.TabIndex = 77;
+            this.Data_Grid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Data_Grid_CellClick);
             this.Data_Grid.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Data_Grid_CellEnter);
+            // 
+            // PointNum
+            // 
+            this.PointNum.HeaderText = "";
+            this.PointNum.Name = "PointNum";
+            this.PointNum.Width = 25;
+            // 
+            // colX
+            // 
+            this.colX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colX.FillWeight = 120F;
+            this.colX.HeaderText = "X";
+            this.colX.Name = "colX";
+            this.colX.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // colY
+            // 
+            this.colY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colY.FillWeight = 120F;
+            this.colY.HeaderText = "Y";
+            this.colY.Name = "colY";
+            // 
+            // colC
+            // 
+            this.colC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colC.FillWeight = 120F;
+            this.colC.HeaderText = "Z";
+            this.colC.Name = "colC";
+            // 
+            // colT
+            // 
+            this.colT.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colT.FillWeight = 120F;
+            this.colT.HeaderText = "Mode";
+            this.colT.Name = "colT";
+            // 
+            // patternColor
+            // 
+            this.patternColor.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.patternColor.HeaderText = "Color";
+            this.patternColor.Name = "patternColor";
             // 
             // label2
             // 
@@ -266,6 +308,28 @@
             this.SetName.TabIndex = 88;
             this.SetName.Text = "Cờ 31";
             this.SetName.TextChanged += new System.EventHandler(this.SetName_TextChanged);
+            // 
+            // jettingMode
+            // 
+            this.jettingMode.Location = new System.Drawing.Point(103, 93);
+            this.jettingMode.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.jettingMode.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.jettingMode.Name = "jettingMode";
+            this.jettingMode.Size = new System.Drawing.Size(134, 22);
+            this.jettingMode.TabIndex = 89;
+            this.jettingMode.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // groupBox1
             // 
@@ -463,69 +527,6 @@
             this.DeleteRow.UseVisualStyleBackColor = true;
             this.DeleteRow.Click += new System.EventHandler(this.DeleteRow_Click);
             // 
-            // PointNum
-            // 
-            this.PointNum.HeaderText = "";
-            this.PointNum.Name = "PointNum";
-            this.PointNum.Width = 25;
-            // 
-            // colX
-            // 
-            this.colX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colX.FillWeight = 120F;
-            this.colX.HeaderText = "X";
-            this.colX.Name = "colX";
-            this.colX.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // colY
-            // 
-            this.colY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colY.FillWeight = 120F;
-            this.colY.HeaderText = "Y";
-            this.colY.Name = "colY";
-            // 
-            // colC
-            // 
-            this.colC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colC.FillWeight = 120F;
-            this.colC.HeaderText = "Z";
-            this.colC.Name = "colC";
-            // 
-            // colT
-            // 
-            this.colT.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colT.FillWeight = 120F;
-            this.colT.HeaderText = "Mode";
-            this.colT.Name = "colT";
-            // 
-            // patternColor
-            // 
-            this.patternColor.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.patternColor.HeaderText = "Color";
-            this.patternColor.Name = "patternColor";
-            // 
-            // jettingMode
-            // 
-            this.jettingMode.Location = new System.Drawing.Point(103, 93);
-            this.jettingMode.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.jettingMode.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.jettingMode.Name = "jettingMode";
-            this.jettingMode.Size = new System.Drawing.Size(134, 22);
-            this.jettingMode.TabIndex = 89;
-            this.jettingMode.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // ConfigPaintingPoints
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -559,12 +560,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.Data_Grid)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

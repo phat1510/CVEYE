@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Mach3Interfacing.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -183,7 +184,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CVEye.ico" />
     <Content Include="Icon_design.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

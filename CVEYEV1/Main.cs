@@ -30,6 +30,13 @@ namespace CVEYEV1
     {
         #region Mach3
 
+        // Macro name and function:
+        // M90: set machine home
+        // M91: set speed mode
+        // M92: valve testing
+        // M93: go to working position
+        // M999: general purpose
+
         private IMach4 mach3;
         private IMyScriptObject scriptObject;
         ushort MacroLineNumber = 0;
@@ -89,9 +96,11 @@ namespace CVEYEV1
         private Image<Bgr, byte> img_items;
         private Image<Bgr, byte> tmpBgr;
 
-        public Mat tmp_raw = new Mat();     
+        public Mat tmp_raw = new Mat();
         private PointF[] affine_painting_points;
-        byte RoiSize;
+        ushort RoiSize;
+        private double RawTmpSize = 430;
+        private double PaintingPointScale = 0;
         const double Chess31_DPR = 1.4; // diameter per roi size
         public static double _accuracy;
 
@@ -167,7 +176,7 @@ namespace CVEYEV1
         // Template localization
         List<double> angleListSort = new List<double>();
         List<double> _angleList;
-        List<PointF> _centerList;       
+        List<PointF> _centerList;
         double get_angle = 0;
         CircleF get_circle = new CircleF();
 
@@ -179,7 +188,7 @@ namespace CVEYEV1
         {
             InitializeComponent();
 
-            LoadObjectsSetData();
+            LoadSetData();
 
             Init_XML();
 
@@ -251,7 +260,7 @@ namespace CVEYEV1
                     // Wait mach3 starting completed
                     Thread.Sleep(500);
                 }
-                
+
                 // Link to CVEye directory
                 Directory.SetCurrentDirectory(mainDirectory);
 
@@ -284,6 +293,20 @@ namespace CVEYEV1
 
             if (scriptObject != null)
                 scriptObject.Code(macroName);
+        }
+
+        private void CheckOutputStatus()
+        {
+
+            OutputLed1.BackColor = scriptObject.IsOutputActive(7) ? Color.Lime : Color.LightGray;
+            OutputLed2.BackColor = scriptObject.IsOutputActive(8) ? Color.Lime : Color.LightGray;
+            OutputLed3.BackColor = scriptObject.IsOutputActive(9) ? Color.Lime : Color.LightGray;
+            OutputLed4.BackColor = scriptObject.IsOutputActive(10) ? Color.Lime : Color.LightGray;
+            OutputLed5.BackColor = scriptObject.IsOutputActive(11) ? Color.Lime : Color.LightGray;
+            OutputLed6.BackColor = scriptObject.IsOutputActive(12) ? Color.Lime : Color.LightGray;
+            OutputLed7.BackColor = scriptObject.IsOutputActive(13) ? Color.Lime : Color.LightGray;
+            OutputLed8.BackColor = scriptObject.IsOutputActive(14) ? Color.Lime : Color.LightGray;
+
         }
 
         // 10 Hz Update DRO and some other task
@@ -360,7 +383,7 @@ namespace CVEYEV1
                         // Toggle RESET button
                         ResetToggling();
 
-                        // Camera original calibration
+                        // Camera origin offset calibration
                         if (cameraOriginOffset)
                         {
                             xdelta = double.Parse(xDRO.Text) - cameraTempOriX;
@@ -369,6 +392,8 @@ namespace CVEYEV1
                             deltaX.Text = xdelta.ToString();
                             deltaY.Text = ydelta.ToString();
                         }
+
+                        CheckOutputStatus();
                     }
                 }
             }
@@ -421,7 +446,7 @@ namespace CVEYEV1
             double zSafe;
             zSafe = Math.Round(double.Parse(value), 1);
 
-            if ((zSafe == 25.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
+            if ((zSafe == 30.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
             {
                 //status_label.Text = "Painting Completed"; 
                 StatusLabel.Text = "Hoàn Tất Phun Sơn";
@@ -436,17 +461,60 @@ namespace CVEYEV1
                 painting = false;
             }
         }
+
+        /// <summary>
+        /// x, y ~20000mm/min or 2000rpm
+        /// z ~12000mm/min or 2400rpm
+        /// </summary>
         public void HighSpeedMode()
         {
-            // x, y ~20000mm/min
-            // z ~15000mm/min
+            // Build Set speed macro
+            using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M91.m1s")))
+            {
+                macroData.WriteLine("SetParam(\"VelocitiesX\", 340)");
+                macroData.WriteLine("SetParam(\"VelocitiesY\", 340)");
+                macroData.WriteLine("SetParam(\"VelocitiesZ\", 200)");
+
+                macroData.Close();
+            }
             scriptObject.Code("M91");
             lowSpeed = false;
         }
 
+        /// <summary>
+        /// x,y ~ 1000mm/min
+        /// z ~ 500 mm/min
+        /// </summary>
         private void LowSpeedMode()
         {
-            scriptObject.Code("M94");
+            // Build Set speed macro
+            using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M91.m1s")))
+            {
+                macroData.WriteLine("SetParam(\"VelocitiesX\", 17)");
+                macroData.WriteLine("SetParam(\"VelocitiesY\", 17)");
+                macroData.WriteLine("SetParam(\"VelocitiesZ\", 9)");
+
+                macroData.Close();
+            }
+            scriptObject.Code("M91");
+            lowSpeed = true;
+        }
+
+        /// <summary>
+        /// x, y, z ~ 50 mm/min
+        /// </summary>
+        private void SuperLowSpeedMode()
+        {
+            // Build Set speed macro
+            using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M91.m1s")))
+            {
+                macroData.WriteLine("SetParam(\"VelocitiesX\", 0.8)");
+                macroData.WriteLine("SetParam(\"VelocitiesY\", 0.8)");
+                macroData.WriteLine("SetParam(\"VelocitiesZ\", 0.8)");
+
+                macroData.Close();
+            }
+            scriptObject.Code("M91");
             lowSpeed = true;
         }
 
@@ -491,7 +559,7 @@ namespace CVEYEV1
                     if (_capture.IsOpened)
                     {
                         //status_label.Text = "Camera On";
-                        StatusLabel.Text = "Camera Bật";
+                        StatusLabel.Text = "Đã kết nối camera";
                         StatusLabel.Refresh();
 
                         // Add handler for getting camera frame
@@ -522,8 +590,11 @@ namespace CVEYEV1
             ReadSystemData();
         }
 
-        private void LoadObjectsSetData()
+        private void LoadSetData()
         {
+            //
+            processLog.Items.Clear();
+
             // Select data path file
             SetSelection(itemsSet.Text);
 
@@ -532,22 +603,21 @@ namespace CVEYEV1
             XElement SetData = DispensingData.Element("Field").Element("SetData");
 
             // Load object parameters
-            RoiSize = byte.Parse(SetData.Attribute("RoiSize").Value);
+            RoiSize = ushort.Parse(SetData.Attribute("RoiSize").Value);
             OuterCircleChessRadius = float.Parse(SetData.Attribute("ItemOuterDia").Value) / 2;
             InnerCircleChessRadius = float.Parse(SetData.Attribute("ItemInnnerDia").Value) / 2;
             ObjectHeight = float.Parse(SetData.Attribute("ItemHeight").Value);
             SheetThickness = float.Parse(SetData.Attribute("SheetThickness").Value);
 
-
             //
-            processLog.Items.Clear();
+            PaintingPointScale = RoiSize / RawTmpSize;
+
+            //            
             processLog.Items.Add("Bán kính mẫu:   " + OuterCircleChessRadius.ToString());
             processLog.Items.Add("Bán kính vòng trong:   " + InnerCircleChessRadius.ToString());
             processLog.Items.Add("Chiều cao mẫu:   " + ObjectHeight.ToString());
 
-            // View the previous working template
-            ViewTemplate(itemsSet.Text, tmp_item_name.Text);
-            CheckTmpSize();
+            LoadObjectData();
         }
 
         private void LoadObjectData()
@@ -565,6 +635,27 @@ namespace CVEYEV1
             fn.ReadMat(cameraMat);
             fn = fs.GetNode("Distortion_Coefficients");
             fn.ReadMat(distCoeffsMat);
+        }
+
+        private void LoadOriginal(string value)
+        {
+            XElement MainWindow = SysData.Element("System").Element("MainWindow");
+            XElement _offset = MainWindow;
+
+            switch (value)
+            {
+                case "Đỏ":
+                    _offset = MainWindow.Element("Offset").Element("G54");
+                    processLog.Items.Add("Đã tải lại gốc camera G54");
+                    break;
+                case "Đen":
+                    _offset = MainWindow.Element("Offset").Element("G55");
+                    processLog.Items.Add("Đã tải lại gốc camera G55");
+                    break;
+
+            }
+            _xoffset = double.Parse(_offset.Attribute("x").Value);
+            _yoffset = -double.Parse(_offset.Attribute("y").Value);
         }
 
         private void ReadSystemData()
@@ -611,31 +702,32 @@ namespace CVEYEV1
 
             // Load camera calibration data
             XElement CalibrationParameter = MainWindow.Element("CalibrationParameter");
-            calib_xOffset.Text      = CalibrationParameter.Attribute("calib_xOffset").Value;
-            calib_yOffset.Text      = CalibrationParameter.Attribute("calib_yOffset").Value;
-            calib_cornerWidth.Text  = CalibrationParameter.Attribute("calib_cornerWidth").Value;
+            calib_xOffset.Text = CalibrationParameter.Attribute("calib_xOffset").Value;
+            calib_yOffset.Text = CalibrationParameter.Attribute("calib_yOffset").Value;
+            calib_cornerWidth.Text = CalibrationParameter.Attribute("calib_cornerWidth").Value;
             calib_cornerHeight.Text = CalibrationParameter.Attribute("calib_cornerHeight").Value;
-            calib_noOfSample.Text   = CalibrationParameter.Attribute("calib_noOfSample").Value;
-            calib_squareSize.Text   = CalibrationParameter.Attribute("calib_squareSize").Value;
+            calib_noOfSample.Text = CalibrationParameter.Attribute("calib_noOfSample").Value;
+            calib_squareSize.Text = CalibrationParameter.Attribute("calib_squareSize").Value;
             camID.Text = SysData.Element("System").Element("CameraCalibrationWindow").Element("CameraID").Attribute("ID").Value;
 
             // Load image processing data
             XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
-            
 
-            cannyThresh.Value       = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("cannyThresh").Value);
-            correctionRange.Value   = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("correctionRange").Value);
-            ErrConstraint.Value     = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("ErrConstraint").Value);
+            // Load center correction data
+            cannyThresh.Value = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("cannyThresh").Value);
+            correctionRange.Value = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("correctionRange").Value);
+            ErrConstraint.Value = decimal.Parse(ImageProcessing.Element("MachingCorrection").Attribute("ErrConstraint").Value);
 
+            // Load Hough transform data 
             ReadHoughData(itemsSet.Text);
 
-            gaussian_sig.Value  = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("gaussian_sig").Value);
-            G_blur.CheckState   = (decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
-            BlockSize.Value     = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("BlockSize").Value);
-            cnl1.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge1").Value);
-            cnl2.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge2").Value);
-            cnl3.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge3").Value);
-            cnl4.Value          = decimal.Parse(ImageProcessing.Element("PSTTransform").Attribute("edge4").Value);
+            // Load Gaussian filter data
+            gaussian_sig.Value = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("gaussian_sig").Value);
+            G_blur.CheckState = (decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("G_blur").Value) == 1) ? CheckState.Checked : CheckState.Unchecked;
+            BlockSize.Value = decimal.Parse(ImageProcessing.Element("ImageFiltering").Attribute("BlockSize").Value);
+
+            // Load perspective transform data
+            ReadPersData(itemsSet.Text);
 
             // View template image
             templateField.Image = tmpBgr.Bitmap;
@@ -663,6 +755,27 @@ namespace CVEYEV1
             houge_param2.Value = decimal.Parse(SetHoughData.Attribute("houge_param2").Value);
             min_ra.Value = decimal.Parse(SetHoughData.Attribute("min_ra").Value);
             max_ra.Value = decimal.Parse(SetHoughData.Attribute("max_ra").Value);
+        }
+
+        private void ReadPersData(string set)
+        {
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+            XElement SetPersData = ImageProcessing;
+
+            switch (set)
+            {
+                case "Cờ 31":
+                    SetPersData = ImageProcessing.Element("PSTTransform").Element("Chess31");
+                    break;
+                case "Cờ 29":
+                    SetPersData = ImageProcessing.Element("PSTTransform").Element("Chess29");
+                    break;
+            }
+
+            cnl1.Value = decimal.Parse(SetPersData.Attribute("edge1").Value);
+            cnl2.Value = decimal.Parse(SetPersData.Attribute("edge2").Value);
+            cnl3.Value = decimal.Parse(SetPersData.Attribute("edge3").Value);
+            cnl4.Value = decimal.Parse(SetPersData.Attribute("edge4").Value);
         }
 
         private void WriteSystemData()
@@ -794,7 +907,7 @@ namespace CVEYEV1
                     }
 
                     if (currentMode == Mode.Caluculating_Intrinsics)
-                    {                        
+                    {
                         // Update status
                         StatusLabel.Text = "Caluculating Intrinsics...";
                         StatusLabel.Refresh();
@@ -827,7 +940,7 @@ namespace CVEYEV1
                             StatusLabel.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
                             StatusLabel.Refresh();
                         }
-                        
+
                         StatusLabel.Text = "Getting Camera Matrices";
                         StatusLabel.Refresh();
 
@@ -895,7 +1008,7 @@ namespace CVEYEV1
             pt_height = byte.Parse(CalibrationParameter.Attribute("calib_cornerHeight").Value);
 
             // Load number of samples
-            byte byteNum =  byte.Parse(CalibrationParameter.Attribute("calib_noOfSample").Value);
+            byte byteNum = byte.Parse(CalibrationParameter.Attribute("calib_noOfSample").Value);
             frame_array_buffer = new Mat[byteNum];
 
             // Load square size in mm
@@ -905,7 +1018,7 @@ namespace CVEYEV1
             corners_object_list = new MCvPoint3D32f[frame_array_buffer.Length][];
             corners_point_list = new PointF[frame_array_buffer.Length][];
             corners_point_vector = new VectorOfPointF[frame_array_buffer.Length];
-            
+
             //
             start_calib = true;
 
@@ -929,9 +1042,13 @@ namespace CVEYEV1
             {
                 // Rotation and translation of painting points set
                 affine_painting_points[point_num].X =
-                    (float)((double.Parse(element.Attribute("X").Value) - RoiSize / 2) * Math.Cos(angle)) - (float)(((double.Parse(element.Attribute("Y").Value) - RoiSize / 2) * Math.Sin(angle))) + objectCenter.X;
+                    (float)((double.Parse(element.Attribute("X").Value) * PaintingPointScale - RoiSize / 2) * Math.Cos(angle)) -
+                    (float)(((double.Parse(element.Attribute("Y").Value) * PaintingPointScale - RoiSize / 2) * Math.Sin(angle))) +
+                    objectCenter.X;
                 affine_painting_points[point_num].Y =
-                    (float)((double.Parse(element.Attribute("X").Value) - RoiSize / 2) * Math.Sin(angle)) + (float)(((double.Parse(element.Attribute("Y").Value) - RoiSize / 2) * Math.Cos(angle))) + objectCenter.Y;
+                    (float)((double.Parse(element.Attribute("X").Value) * PaintingPointScale - RoiSize / 2) * Math.Sin(angle)) +
+                    (float)(((double.Parse(element.Attribute("Y").Value) * PaintingPointScale - RoiSize / 2) * Math.Cos(angle))) +
+                    objectCenter.Y;
 
                 // For checking
                 draw_image_bgr.Draw(new Cross2DF(affine_painting_points[point_num], 2, 2), new Bgr(Color.Red), 1);
@@ -1110,11 +1227,11 @@ namespace CVEYEV1
             {
                 case "Cờ 31":
                     DataPath = Chess_31_DataPath;
-                    StatusLabel.Text = "Đã tải bộ cờ 31.";
+                    processLog.Items.Add("Đã tải bộ cờ 31.");
                     break;
                 case "Cờ 29":
                     DataPath = Chess_29_DataPath;
-                    StatusLabel.Text = "Đã tải bộ cờ 29.";
+                    processLog.Items.Add("Đã tải bộ cờ 29.");
                     break;
             }
         }
@@ -1136,18 +1253,18 @@ namespace CVEYEV1
             }
 
             // Assigment
-            _dp          = double.Parse(SetHoughData.Attribute("dp").Value);
-            _minDist     = double.Parse(SetHoughData.Attribute("minDist").Value);
-            _param01     = double.Parse(SetHoughData.Attribute("houge_param1").Value);
-            _param02     = double.Parse(SetHoughData.Attribute("houge_param2").Value);
-            _minRadius   = int.Parse(SetHoughData.Attribute("min_ra").Value);
-            _maxRadius   = int.Parse(SetHoughData.Attribute("max_ra").Value);
+            _dp = double.Parse(SetHoughData.Attribute("dp").Value);
+            _minDist = double.Parse(SetHoughData.Attribute("minDist").Value);
+            _param01 = double.Parse(SetHoughData.Attribute("houge_param1").Value);
+            _param02 = double.Parse(SetHoughData.Attribute("houge_param2").Value);
+            _minRadius = int.Parse(SetHoughData.Attribute("min_ra").Value);
+            _maxRadius = int.Parse(SetHoughData.Attribute("max_ra").Value);
         }
 
         public void DetectClone()
         {
             //
-            detectionWatch = Stopwatch.StartNew();            
+            detectionWatch = Stopwatch.StartNew();
 
             // Call ImageProcessingWindow node
             LoadImageProcessingData(itemsSet.Text);
@@ -1265,7 +1382,7 @@ namespace CVEYEV1
                         {
                             // Sum of pixels value, update each cycle
                             int pixel_sum = 0;
-                            
+
                             // Template rotation 
                             using (Mat tmp_rot = new Mat())
                             {
@@ -1320,7 +1437,7 @@ namespace CVEYEV1
 
                     // Call ProcessChange Event
                     worker.ReportProgress(10 + ((circle_num + 1) * 100 / img_circles.Length) * 90 / 100);
-                }                
+                }
             }
         }
 
@@ -1348,7 +1465,6 @@ namespace CVEYEV1
                 // Show object radius
                 processLog.Items.Add(get_circle.Radius);
 
-
                 // Update progess bar
                 Progress.Value = e.ProgressPercentage;
 
@@ -1374,14 +1490,6 @@ namespace CVEYEV1
             }
         }
 
-        private void LoadOriginal()
-        {
-            XElement MainWindow = SysData.Element("System").Element("MainWindow");
-
-            _xoffset = double.Parse(MainWindow.Element("Offset").Element("G54").Attribute("x").Value);
-            _yoffset = -double.Parse(MainWindow.Element("Offset").Element("G54").Attribute("y").Value);
-        }
-
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // Load database
@@ -1404,9 +1512,7 @@ namespace CVEYEV1
             MacroLineNumber = 0;
             ushort MaxLine = 18000;
 
-            // Reload the camera original offset
-            LoadOriginal();
-
+            //
             using (macroData)
             {
                 #region Painting macro building
@@ -1952,7 +2058,7 @@ namespace CVEYEV1
 
             // int cornerPosOri = pt_width * pt_height / 2 - pt_width / 2; using if pt is even
             int cornerPosOri = pt_width * (pt_height / 2 + 1) - (pt_width / 2 + 1);
-            CameraData.Items.Add("Camera Original:  " + cornerPosOri.ToString());
+            CameraData.Items.Add("Camera Origin No.:  " + cornerPosOri.ToString());
             CornerPos.Text = cornerPosOri.ToString();
 
             // Convert BGR to GRAY image
@@ -2664,7 +2770,7 @@ namespace CVEYEV1
                             Application.Idle -= new EventHandler(Frame_Calibration);
 
                             // Save image to disk
-                            CvInvoke.Imwrite("pattern_field.jpg", img_capture_undist);
+                            CvInvoke.Imwrite("result/pattern_field.jpg", img_capture_undist);
 
                             // Save image to image lib
                             CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
@@ -2779,7 +2885,18 @@ namespace CVEYEV1
                         if (lowSpeed)
                             HighSpeedMode();
 
-                        scriptObject.Code("M666");
+                        using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
+                        {
+                            // Load changing prosition coordinate
+                            string x = SysData.Element("System").Element("MainWindow").Element("MaintanancePosition").Attribute("x").Value.ToString();
+                            string y = SysData.Element("System").Element("MainWindow").Element("MaintanancePosition").Attribute("y").Value.ToString();
+                            string z = SysData.Element("System").Element("MainWindow").Element("MaintanancePosition").Attribute("z").Value.ToString();
+                            string speed = "5000";
+                            macroData.WriteLine("Code \"G90 G54 G01 Z" + z + " F" + speed + "\"");
+                            macroData.WriteLine("Code \"X" + x + " Y" + y + "\"");
+                            macroData.Close();
+                        }
+                        scriptObject.Code("M999");
                     }
                 }
                 else MessageBox.Show("Vui lòng thiết lập gốc máy.", "CVEye");
@@ -2842,63 +2959,77 @@ namespace CVEYEV1
             }
         }
 
-        private void ValveOneClick_Click(object sender, EventArgs e)
+        private void RadioOneDrop_CheckedChanged(object sender, EventArgs e)
         {
-            GetMach3Instance();
-
-            if (scriptObject != null)
+            if (RadioOneDrop.Checked)
             {
-                // Build dot-on-demand macro
-                using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                ValveOneClick.Text = "Xả sơn";
+
+                GetMach3Instance();
+
+                if (scriptObject != null)
                 {
-                    macroData.WriteLine("DeactivateSignal(OUTPUT4)");
-                    macroData.WriteLine("DeactivateSignal(OUTPUT5)");
+                    using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                    {
+                        // Select jetting mode
+                        JettingModeSelectingMacro(1, macroData);
+                        macroData.WriteLine("Sleep 100");
 
-                    // Select jetting mode
-                    JettingModeSelectingMacro(1, macroData);
-
-                    // Select channels
-                    short channel = (short)(GetValveNum(item_color.Text));
-                    macroData.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
-                    macroData.WriteLine("ActivateSignal(OUTPUT7)");
-                    macroData.WriteLine("Sleep 100");
-                    macroData.WriteLine("DeactivateSignal(OUTPUT7)");
-
-                    macroData.Close();
+                        macroData.Close();
+                    }
+                    scriptObject.Code("M92");
                 }
-
-                scriptObject.Code("M92");
             }
         }
 
-        private void ValveSwitching_Click(object sender, EventArgs e)
+        private void RadioContDrop_CheckedChanged(object sender, EventArgs e)
         {
-            GetMach3Instance();
-
-            if (scriptObject != null)
+            if (RadioContDrop.Checked)
             {
-                // Build dot-on-demand macro
-                using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                GetMach3Instance();
+
+                if (scriptObject != null)
                 {
-                    macroData.WriteLine("DeactivateSignal(OUTPUT4)");
-                    macroData.WriteLine("DeactivateSignal(OUTPUT5)");
+                    using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                    {
+                        // Select jetting mode
+                        JettingModeSelectingMacro(4, macroData);
+                        macroData.WriteLine("Sleep 100");
 
-                    // Select jetting mode
-                    JettingModeSelectingMacro(4, macroData);
-                    ValveSwitching.Text = (ValveSwitching.Text == "Xả liên tục (Ctrl+V)") ? "Dừng xả (Ctrl+V)" : "Xả liên tục (Ctrl+V)";
-
-                    // Select channels
-                    short channel = (short)(GetValveNum(item_color.Text));
-                    macroData.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
-                    macroData.WriteLine("ActivateSignal(OUTPUT7)");
-                    macroData.WriteLine("Sleep 100");
-                    macroData.WriteLine("DeactivateSignal(OUTPUT7)");
-
-                    macroData.Close();
+                        macroData.Close();
+                    }
+                    scriptObject.Code("M92");
                 }
+            }
+        }
 
-                scriptObject.Code("M92");
+        private void ValveOneClick_Click(object sender, EventArgs e)
+        {
+            if (RadioContDrop.Checked || RadioOneDrop.Checked)
+            {
+                GetMach3Instance();
 
+                if (scriptObject != null)
+                {
+                    // Build dot-on-demand macro
+                    using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M92.m1s")))
+                    {
+                        // Select channels
+                        short channel = (short)(GetValveNum(item_color.Text));
+                        macroData.WriteLine("DeactivateSignal(OUTPUT4)");
+                        macroData.WriteLine("DeactivateSignal(OUTPUT5)");
+                        macroData.WriteLine("ActivateSignal(OUTPUT" + channel.ToString() + ")");
+                        macroData.WriteLine("ActivateSignal(OUTPUT7)");
+                        macroData.WriteLine("Sleep 100");
+                        macroData.WriteLine("DeactivateSignal(OUTPUT7)");
+
+                        macroData.Close();
+                    }
+                    scriptObject.Code("M92");
+
+                    if (RadioContDrop.Checked)
+                        ValveOneClick.Text = (ValveOneClick.Text == "Xả sơn") ? "Dừng xả" : "Xả sơn";
+                }
             }
         }
 
@@ -2950,37 +3081,86 @@ namespace CVEYEV1
 
         private void Set_Changed(object sender, EventArgs e)
         {
-            // Reload hough transform parameters
-            ReadHoughData(itemsSet.Text);
+            try
+            {
+                // Reload objects set data
+                LoadSetData();
 
-            // Reload objects set data
-            LoadObjectsSetData();
+                // Read Hough transform data
+                ReadHoughData(itemsSet.Text);
 
-            // View template image
-            templateField.Image = tmpBgr.Bitmap;
-            templateField.Refresh();
+                // Read Pers transform data
+                ReadPersData(itemsSet.Text);
+
+                // View template image
+                templateField.Image = tmpBgr.Bitmap;
+                templateField.Refresh();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Name_Changed(object sender, EventArgs e)
         {
-            // Reload object data
-            LoadObjectData();
-            StatusLabel.Text = "Đã tải bộ điểm sơn " + tmp_item_name.Text + " bộ " + itemsSet.Text + ".";
+            try
+            {
+                // Reload object data
+                LoadObjectData();
 
-            // Reload painting points from Xml
-            getItem = DispensingData.Element("Field")
-                .Elements("Item")
-                .Where(x => x.Element("Name").Value == tmp_item_name.Text)
-                .Single();
+                // Reload painting points from Xml
+                getItem = DispensingData.Element("Field")
+                    .Elements("Item")
+                    .Where(x => x.Element("Name").Value == tmp_item_name.Text)
+                    .Single();
 
-            // View template image
-            templateField.Image = tmpBgr.Bitmap;
-            templateField.Refresh();
+                // View template image
+                templateField.Image = tmpBgr.Bitmap;
+                templateField.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ColorChanged(object sender, EventArgs e)
         {
-            valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
+            try
+            {
+                // Reload camera origin offset
+                LoadOriginal(item_color.Text);
+
+                // Reload selecting valve piston macro
+                ResetSelectingPiston();
+
+                // Update valve number
+                valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ResetSelectingPiston()
+        {
+            GetMach3Instance();
+
+            if (scriptObject != null)
+            {
+                using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
+                {
+                    // Select jetting mode
+                    macroData.WriteLine("DeactivateSignal(OUTPUT4)");
+                    macroData.WriteLine("DeactivateSignal(OUTPUT5)");
+
+                    macroData.Close();
+                }
+                scriptObject.Code("M999");
+            }
         }
 
         private void CVEye_Shown(object sender, EventArgs e)
@@ -3030,7 +3210,7 @@ namespace CVEYEV1
                 GetMach3Instance();
 
                 if (scriptObject != null)
-                    scriptObject.Code("M94");
+                    LowSpeedMode();
                 Thread.Sleep(100);
 
                 // Close Mach3
@@ -3266,13 +3446,13 @@ namespace CVEYEV1
 
             // Painting Condition node
             XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
-            PaintingCondition.Attribute("xySpeed").Value = xySpeed.Text;
-            PaintingCondition.Attribute("zSpeed").Value = zSpeed.Text;
-            PaintingCondition.Attribute("zSafe").Value = zSafe.Text;
-            PaintingCondition.Attribute("zReturn").Value = zReturn.Text;
-            PaintingCondition.Attribute("zDrip").Value = zDrip.Text;
-            PaintingCondition.Attribute("offset").Value = deepOffset.Text;
-            PaintingCondition.Attribute("circleSpeed").Value = circleSpeed.Text;
+            PaintingCondition.Attribute("xySpeed").Value        = xySpeed.Text;
+            PaintingCondition.Attribute("zSpeed").Value         = zSpeed.Text;
+            PaintingCondition.Attribute("zSafe").Value          = zSafe.Text;
+            PaintingCondition.Attribute("zReturn").Value        = zReturn.Text;
+            PaintingCondition.Attribute("zDrip").Value          = zDrip.Text;
+            PaintingCondition.Attribute("offset").Value         = deepOffset.Text;
+            PaintingCondition.Attribute("circleSpeed").Value    = circleSpeed.Text;
 
             // Offset node
             XElement _Offset = SysData.Element("System").Element("MainWindow").Element("Offset");
@@ -3352,10 +3532,7 @@ namespace CVEYEV1
             ImageProcessing.Element("ImageFiltering").Attribute("BlockSize").Value = BlockSize.Value.ToString();
 
             //
-            ImageProcessing.Element("PSTTransform").Attribute("edge1").Value = cnl1.Value.ToString();
-            ImageProcessing.Element("PSTTransform").Attribute("edge2").Value = cnl2.Value.ToString();
-            ImageProcessing.Element("PSTTransform").Attribute("edge3").Value = cnl3.Value.ToString();
-            ImageProcessing.Element("PSTTransform").Attribute("edge4").Value = cnl4.Value.ToString();
+            SavePersParameters(itemsSet.Text);
 
             // Save document
             SysData.Save("_system.xml");
@@ -3386,6 +3563,28 @@ namespace CVEYEV1
             SetHoughData.Attribute("max_ra").Value          = max_ra.Value.ToString();
         }
 
+        private void SavePersParameters(string value)
+        {
+            XElement ImageProcessing = SysData.Element("System").Element("ImageProcessingWindow");
+
+            XElement SetPersData = ImageProcessing;
+
+            switch (value)
+            {
+                case "Cờ 31":
+                    SetPersData = ImageProcessing.Element("PSTTransform").Element("Chess31");
+                    break;
+                case "Cờ 29":
+                    SetPersData = ImageProcessing.Element("PSTTransform").Element("Chess29");
+                    break;
+            }
+
+            SetPersData.Attribute("edge1").Value = cnl1.Value.ToString();
+            SetPersData.Attribute("edge2").Value = cnl2.Value.ToString();
+            SetPersData.Attribute("edge3").Value = cnl3.Value.ToString();
+            SetPersData.Attribute("edge4").Value = cnl4.Value.ToString();
+        }
+
         // Check the template size and ROI size to resize the template
         private void CheckTmpSize()
         {
@@ -3405,7 +3604,7 @@ namespace CVEYEV1
         private void zReturn_TextChanged(object sender, EventArgs e)
         {
             if (ZDripEqualReturn.CheckState == CheckState.Checked)
-                zDrip.Text = zReturn.Text;
+                zDrip.Value = zReturn.Value;
         }
 
         private void getOriginal_Click(object sender, EventArgs e)
@@ -3423,9 +3622,9 @@ namespace CVEYEV1
 
             using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
             {
-                // Build temporary camera original
+                // Build temporary camera origin
                 macroData.WriteLine("Code \"G90 G54 G01 X" + (cameraTempOriX + xdelta) + " Y" + (cameraTempOriY + ydelta) + " F5000\"");
-                CameraData.Items.Add("Exact original is exported.");
+                CameraData.Items.Add("Exact origin is exported.");
 
                 macroData.Close();
             }
@@ -3440,7 +3639,7 @@ namespace CVEYEV1
             double alpha = double.Parse(SysData.Element("System").Element("CameraCalibrationWindow").
                 Element("FOVRotationAngle").Attribute("alpha").Value);
 
-            // Create a macro to get Camera original
+            // Create a macro to get Camera origin
             using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M999.m1s")))
             {
                 //-------------On the camera frame-------------
@@ -3464,17 +3663,17 @@ namespace CVEYEV1
                 //
                 XElement MainWindow = SysData.Element("System").Element("MainWindow");
 
-                // Start original setting
+                // Start origin setting
                 cameraOriginOffset = true;
 
                 cameraTempOriX = cen_X;
                 cameraTempOriY = cen_Y;
 
-                LoadOriginal();
+                LoadOriginal(item_color.Text);
                 cameraTempOriX = cen_X + _xoffset;
                 cameraTempOriY = cen_Y - _yoffset;
 
-                // Build temporary camera original
+                // Build temporary camera origin
                 macroData.WriteLine("Code \"G90 G54 G01 X" + cameraTempOriX + " Y" + cameraTempOriY + " F5000\"");
                 macroData.WriteLine("Code \"Z12.1\"");
 

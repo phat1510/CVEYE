@@ -44,32 +44,30 @@
             this.StatusLabel = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.ValveSwitching = new System.Windows.Forms.Button();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.valveNum = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.zDRO = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.yDRO = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.xDRO = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.ledZ = new System.Windows.Forms.PictureBox();
-            this.ledY = new System.Windows.Forms.PictureBox();
-            this.ledX = new System.Windows.Forms.PictureBox();
             this.GotoHome = new System.Windows.Forms.Button();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.feedrateDRO = new System.Windows.Forms.Label();
+            this.ledY = new System.Windows.Forms.PictureBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.processLog = new System.Windows.Forms.ListBox();
+            this.ledX = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.valveNum = new System.Windows.Forms.Label();
-            this.zDRO = new System.Windows.Forms.Label();
-            this.yDRO = new System.Windows.Forms.Label();
-            this.xDRO = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.ReplacePosition = new System.Windows.Forms.Button();
             this.RefAllHome = new System.Windows.Forms.Button();
             this.ValveOneClick = new System.Windows.Forms.Button();
             this.TurnPiston = new System.Windows.Forms.Button();
             this.timerDROupdate = new System.Windows.Forms.Timer(this.components);
-            this.processLog = new System.Windows.Forms.ListBox();
             this.saveTemplate = new System.Windows.Forms.SaveFileDialog();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.enableLine = new System.Windows.Forms.CheckBox();
@@ -78,6 +76,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.RadioOneDrop = new System.Windows.Forms.RadioButton();
+            this.RadioContDrop = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.ZDripEqualReturn = new System.Windows.Forms.CheckBox();
             this.SavePCData = new System.Windows.Forms.Button();
@@ -90,19 +91,19 @@
             this.zOffset = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.circleSpeed = new System.Windows.Forms.TextBox();
-            this.zSpeed = new System.Windows.Forms.TextBox();
-            this.xySpeed = new System.Windows.Forms.TextBox();
+            this.circleSpeed = new System.Windows.Forms.NumericUpDown();
+            this.zSpeed = new System.Windows.Forms.NumericUpDown();
+            this.xySpeed = new System.Windows.Forms.NumericUpDown();
             this.label23 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.deepOffset = new System.Windows.Forms.TextBox();
-            this.zDrip = new System.Windows.Forms.TextBox();
-            this.zReturn = new System.Windows.Forms.TextBox();
-            this.zSafe = new System.Windows.Forms.TextBox();
+            this.deepOffset = new System.Windows.Forms.NumericUpDown();
+            this.zSafe = new System.Windows.Forms.NumericUpDown();
+            this.zDrip = new System.Windows.Forms.NumericUpDown();
             this.label19 = new System.Windows.Forms.Label();
+            this.zReturn = new System.Windows.Forms.NumericUpDown();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
@@ -117,6 +118,7 @@
             this.GotoOriginal = new System.Windows.Forms.Button();
             this.getOriginal = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.EnableSaveCompsData = new System.Windows.Forms.CheckBox();
             this.enableCamUndist = new System.Windows.Forms.CheckBox();
             this.CompensateCamData = new System.Windows.Forms.Button();
             this.CalibrateCamData = new System.Windows.Forms.Button();
@@ -193,25 +195,41 @@
             this.item_color = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.PaintingPointIcon = new System.Windows.Forms.ToolStripButton();
-            this.EnableSaveCompsData = new System.Windows.Forms.CheckBox();
+            this.OutputLed1 = new System.Windows.Forms.PictureBox();
+            this.OutputLed2 = new System.Windows.Forms.PictureBox();
+            this.OutputLed3 = new System.Windows.Forms.PictureBox();
+            this.OutputLed4 = new System.Windows.Forms.PictureBox();
+            this.OutputLed5 = new System.Windows.Forms.PictureBox();
+            this.OutputLed6 = new System.Windows.Forms.PictureBox();
+            this.OutputLed7 = new System.Windows.Forms.PictureBox();
+            this.OutputLed8 = new System.Windows.Forms.PictureBox();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.templateField)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).BeginInit();
+            this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ledX)).BeginInit();
-            this.tableLayoutPanel3.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox17.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.OffsetCoor)).BeginInit();
             this.groupBox13.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.circleSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xySpeed)).BeginInit();
             this.groupBox12.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.deepOffset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zSafe)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zDrip)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zReturn)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.tableLayoutPanel8.SuspendLayout();
@@ -247,12 +265,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.correctionRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresh)).BeginInit();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed8)).BeginInit();
             this.SuspendLayout();
             // 
             // captureImg
             // 
-            this.captureImg.BackColor = System.Drawing.Color.Gold;
-            this.captureImg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.captureImg.BackColor = System.Drawing.Color.LightSeaGreen;
+            this.captureImg.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.captureImg.ForeColor = System.Drawing.Color.White;
             this.captureImg.Location = new System.Drawing.Point(6, 113);
             this.captureImg.Name = "captureImg";
             this.captureImg.Size = new System.Drawing.Size(188, 40);
@@ -263,8 +290,9 @@
             // 
             // turnCamera
             // 
-            this.turnCamera.BackColor = System.Drawing.Color.Coral;
-            this.turnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.turnCamera.BackColor = System.Drawing.Color.Crimson;
+            this.turnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.turnCamera.ForeColor = System.Drawing.Color.White;
             this.turnCamera.Location = new System.Drawing.Point(6, 67);
             this.turnCamera.Name = "turnCamera";
             this.turnCamera.Size = new System.Drawing.Size(188, 40);
@@ -286,11 +314,11 @@
             // 
             // startDetection
             // 
-            this.startDetection.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.startDetection.BackColor = System.Drawing.Color.Cyan;
             this.startDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startDetection.Location = new System.Drawing.Point(6, 379);
             this.startDetection.Name = "startDetection";
-            this.startDetection.Size = new System.Drawing.Size(130, 35);
+            this.startDetection.Size = new System.Drawing.Size(130, 45);
             this.startDetection.TabIndex = 58;
             this.startDetection.Text = "Quét ảnh";
             this.startDetection.UseVisualStyleBackColor = false;
@@ -312,7 +340,7 @@
             this.stopDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stopDetection.Location = new System.Drawing.Point(141, 379);
             this.stopDetection.Name = "stopDetection";
-            this.stopDetection.Size = new System.Drawing.Size(65, 35);
+            this.stopDetection.Size = new System.Drawing.Size(65, 45);
             this.stopDetection.TabIndex = 81;
             this.stopDetection.Text = "Dừng";
             this.stopDetection.UseVisualStyleBackColor = true;
@@ -325,7 +353,7 @@
             this.run.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.run.Location = new System.Drawing.Point(6, 605);
             this.run.Name = "run";
-            this.run.Size = new System.Drawing.Size(239, 50);
+            this.run.Size = new System.Drawing.Size(278, 50);
             this.run.TabIndex = 67;
             this.run.Text = "RUN";
             this.run.UseVisualStyleBackColor = false;
@@ -337,11 +365,10 @@
             this.Reset.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.Reset.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Reset.ForeColor = System.Drawing.Color.White;
-            this.Reset.Location = new System.Drawing.Point(251, 605);
+            this.Reset.Location = new System.Drawing.Point(290, 605);
             this.Reset.Name = "Reset";
-            this.Reset.Size = new System.Drawing.Size(164, 50);
+            this.Reset.Size = new System.Drawing.Size(125, 50);
             this.Reset.TabIndex = 68;
-            this.Reset.Text = "RESET";
             this.Reset.UseVisualStyleBackColor = false;
             // 
             // groupBox3
@@ -359,8 +386,9 @@
             // 
             // lockCylinder
             // 
-            this.lockCylinder.BackColor = System.Drawing.Color.LimeGreen;
-            this.lockCylinder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lockCylinder.BackColor = System.Drawing.Color.ForestGreen;
+            this.lockCylinder.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lockCylinder.ForeColor = System.Drawing.Color.White;
             this.lockCylinder.Location = new System.Drawing.Point(6, 21);
             this.lockCylinder.Name = "lockCylinder";
             this.lockCylinder.Size = new System.Drawing.Size(188, 40);
@@ -371,7 +399,7 @@
             // 
             // Progress
             // 
-            this.Progress.Location = new System.Drawing.Point(419, 704);
+            this.Progress.Location = new System.Drawing.Point(592, 709);
             this.Progress.Name = "Progress";
             this.Progress.Size = new System.Drawing.Size(300, 22);
             this.Progress.Step = 1;
@@ -384,7 +412,7 @@
             this.StatusLabel.BackColor = System.Drawing.SystemColors.Control;
             this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StatusLabel.ForeColor = System.Drawing.Color.Black;
-            this.StatusLabel.Location = new System.Drawing.Point(12, 711);
+            this.StatusLabel.Location = new System.Drawing.Point(8, 711);
             this.StatusLabel.Margin = new System.Windows.Forms.Padding(3);
             this.StatusLabel.Name = "StatusLabel";
             this.StatusLabel.Size = new System.Drawing.Size(37, 20);
@@ -401,20 +429,18 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.ValveSwitching);
+            this.groupBox2.Controls.Add(this.tableLayoutPanel4);
+            this.groupBox2.Controls.Add(this.groupBox15);
             this.groupBox2.Controls.Add(this.ledZ);
-            this.groupBox2.Controls.Add(this.ledY);
-            this.groupBox2.Controls.Add(this.ledX);
             this.groupBox2.Controls.Add(this.GotoHome);
-            this.groupBox2.Controls.Add(this.label16);
-            this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
+            this.groupBox2.Controls.Add(this.ledY);
             this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.processLog);
+            this.groupBox2.Controls.Add(this.ledX);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.tableLayoutPanel1);
             this.groupBox2.Controls.Add(this.ReplacePosition);
             this.groupBox2.Controls.Add(this.RefAllHome);
-            this.groupBox2.Controls.Add(this.ValveOneClick);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(220, 6);
             this.groupBox2.Name = "groupBox2";
@@ -423,83 +449,153 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Điều khiển bàn máy";
             // 
-            // ValveSwitching
+            // tableLayoutPanel4
             // 
-            this.ValveSwitching.BackColor = System.Drawing.Color.Gold;
-            this.ValveSwitching.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ValveSwitching.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ValveSwitching.Location = new System.Drawing.Point(6, 430);
-            this.ValveSwitching.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
-            this.ValveSwitching.Name = "ValveSwitching";
-            this.ValveSwitching.Size = new System.Drawing.Size(183, 40);
-            this.ValveSwitching.TabIndex = 88;
-            this.ValveSwitching.Text = "Xả liên tục";
-            this.ValveSwitching.UseVisualStyleBackColor = false;
-            this.ValveSwitching.Click += new System.EventHandler(this.ValveSwitching_Click);
+            this.tableLayoutPanel4.BackColor = System.Drawing.Color.LightGray;
+            this.tableLayoutPanel4.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.66434F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.33566F));
+            this.tableLayoutPanel4.Controls.Add(this.valveNum, 1, 3);
+            this.tableLayoutPanel4.Controls.Add(this.label1, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.zDRO, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.label3, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.yDRO, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label12, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.xDRO, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.label7, 0, 3);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(6, 225);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 4;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(143, 120);
+            this.tableLayoutPanel4.TabIndex = 98;
+            // 
+            // valveNum
+            // 
+            this.valveNum.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.valveNum.AutoSize = true;
+            this.valveNum.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.valveNum.Location = new System.Drawing.Point(119, 91);
+            this.valveNum.Name = "valveNum";
+            this.valveNum.Size = new System.Drawing.Size(20, 24);
+            this.valveNum.TabIndex = 80;
+            this.valveNum.Text = "0";
+            this.valveNum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(4, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 24);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "X:";
+            // 
+            // zDRO
+            // 
+            this.zDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.zDRO.AutoSize = true;
+            this.zDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.zDRO.Location = new System.Drawing.Point(84, 61);
+            this.zDRO.Name = "zDRO";
+            this.zDRO.Size = new System.Drawing.Size(55, 24);
+            this.zDRO.TabIndex = 79;
+            this.zDRO.Text = "0.000";
+            this.zDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(4, 32);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(27, 24);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Y:";
+            // 
+            // yDRO
+            // 
+            this.yDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.yDRO.AutoSize = true;
+            this.yDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.yDRO.Location = new System.Drawing.Point(84, 32);
+            this.yDRO.Name = "yDRO";
+            this.yDRO.Size = new System.Drawing.Size(55, 24);
+            this.yDRO.TabIndex = 78;
+            this.yDRO.Text = "0.000";
+            this.yDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label12
+            // 
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(4, 61);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(27, 24);
+            this.label12.TabIndex = 76;
+            this.label12.Text = "Z:";
+            // 
+            // xDRO
+            // 
+            this.xDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.xDRO.AutoSize = true;
+            this.xDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xDRO.Location = new System.Drawing.Point(84, 3);
+            this.xDRO.Name = "xDRO";
+            this.xDRO.Size = new System.Drawing.Size(55, 24);
+            this.xDRO.TabIndex = 77;
+            this.xDRO.Text = "0.000";
+            this.xDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(4, 91);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(28, 24);
+            this.label7.TabIndex = 77;
+            this.label7.Text = "V:";
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Location = new System.Drawing.Point(7, 418);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(183, 2);
+            this.groupBox15.TabIndex = 98;
+            this.groupBox15.TabStop = false;
             // 
             // ledZ
             // 
             this.ledZ.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.ledZ.Location = new System.Drawing.Point(5, 206);
+            this.ledZ.Location = new System.Drawing.Point(156, 287);
             this.ledZ.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.ledZ.Name = "ledZ";
-            this.ledZ.Size = new System.Drawing.Size(20, 40);
+            this.ledZ.Size = new System.Drawing.Size(30, 30);
             this.ledZ.TabIndex = 87;
             this.ledZ.TabStop = false;
             // 
-            // ledY
-            // 
-            this.ledY.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.ledY.Location = new System.Drawing.Point(5, 166);
-            this.ledY.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.ledY.Name = "ledY";
-            this.ledY.Size = new System.Drawing.Size(20, 40);
-            this.ledY.TabIndex = 86;
-            this.ledY.TabStop = false;
-            // 
-            // ledX
-            // 
-            this.ledX.BackColor = System.Drawing.SystemColors.Control;
-            this.ledX.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.ledX.Location = new System.Drawing.Point(5, 126);
-            this.ledX.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.ledX.Name = "ledX";
-            this.ledX.Size = new System.Drawing.Size(20, 40);
-            this.ledX.TabIndex = 79;
-            this.ledX.TabStop = false;
-            // 
             // GotoHome
             // 
-            this.GotoHome.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.GotoHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GotoHome.Location = new System.Drawing.Point(6, 64);
+            this.GotoHome.BackColor = System.Drawing.Color.SandyBrown;
+            this.GotoHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GotoHome.Location = new System.Drawing.Point(6, 79);
             this.GotoHome.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.GotoHome.Name = "GotoHome";
-            this.GotoHome.Size = new System.Drawing.Size(183, 35);
+            this.GotoHome.Size = new System.Drawing.Size(183, 50);
             this.GotoHome.TabIndex = 84;
             this.GotoHome.Text = "Vị trí làm việc";
             this.GotoHome.UseVisualStyleBackColor = false;
             this.GotoHome.Click += new System.EventHandler(this.GotoHome_Click);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 478);
-            this.label16.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(105, 16);
-            this.label16.TabIndex = 81;
-            this.label16.Text = "Điều khiển khác:";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(6, 361);
-            this.label15.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(131, 16);
-            this.label15.TabIndex = 80;
-            this.label15.Text = "Điều khiển đầu phun:";
             // 
             // tableLayoutPanel3
             // 
@@ -510,173 +606,86 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.34078F));
             this.tableLayoutPanel3.Controls.Add(this.feedrateDRO, 0, 0);
             this.tableLayoutPanel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(9, 313);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(6, 382);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(180, 40);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(180, 30);
             this.tableLayoutPanel3.TabIndex = 78;
             // 
             // feedrateDRO
             // 
             this.feedrateDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.feedrateDRO.AutoSize = true;
-            this.feedrateDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.feedrateDRO.Location = new System.Drawing.Point(150, 5);
+            this.feedrateDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.feedrateDRO.Location = new System.Drawing.Point(156, 3);
             this.feedrateDRO.Name = "feedrateDRO";
-            this.feedrateDRO.Size = new System.Drawing.Size(26, 29);
+            this.feedrateDRO.Size = new System.Drawing.Size(20, 24);
             this.feedrateDRO.TabIndex = 77;
             this.feedrateDRO.Text = "0";
             this.feedrateDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // ledY
+            // 
+            this.ledY.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.ledY.Location = new System.Drawing.Point(156, 257);
+            this.ledY.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.ledY.Name = "ledY";
+            this.ledY.Size = new System.Drawing.Size(30, 30);
+            this.ledY.TabIndex = 86;
+            this.ledY.TabStop = false;
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(6, 294);
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(3, 357);
             this.label14.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(112, 16);
+            this.label14.Size = new System.Drawing.Size(130, 20);
             this.label14.TabIndex = 79;
             this.label14.Text = "Tốc độ (mm/min):";
+            // 
+            // processLog
+            // 
+            this.processLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.processLog.FormattingEnabled = true;
+            this.processLog.ItemHeight = 16;
+            this.processLog.Location = new System.Drawing.Point(6, 431);
+            this.processLog.Name = "processLog";
+            this.processLog.Size = new System.Drawing.Size(184, 148);
+            this.processLog.TabIndex = 82;
+            // 
+            // ledX
+            // 
+            this.ledX.BackColor = System.Drawing.SystemColors.Control;
+            this.ledX.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.ledX.Location = new System.Drawing.Point(156, 225);
+            this.ledX.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.ledX.Name = "ledX";
+            this.ledX.Size = new System.Drawing.Size(30, 30);
+            this.ledX.TabIndex = 79;
+            this.ledX.TabStop = false;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 107);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(3, 199);
             this.label4.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(69, 16);
+            this.label4.Size = new System.Drawing.Size(84, 20);
             this.label4.TabIndex = 78;
             this.label4.Text = "Vị trí (mm):";
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.75F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.25F));
-            this.tableLayoutPanel1.Controls.Add(this.valveNum, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.zDRO, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.yDRO, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.xDRO, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label12, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 3);
-            this.tableLayoutPanel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(28, 126);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(161, 160);
-            this.tableLayoutPanel1.TabIndex = 77;
-            // 
-            // valveNum
-            // 
-            this.valveNum.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.valveNum.AutoSize = true;
-            this.valveNum.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.valveNum.Location = new System.Drawing.Point(131, 124);
-            this.valveNum.Name = "valveNum";
-            this.valveNum.Size = new System.Drawing.Size(26, 29);
-            this.valveNum.TabIndex = 80;
-            this.valveNum.Text = "0";
-            this.valveNum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // zDRO
-            // 
-            this.zDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.zDRO.AutoSize = true;
-            this.zDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.zDRO.Location = new System.Drawing.Point(86, 83);
-            this.zDRO.Name = "zDRO";
-            this.zDRO.Size = new System.Drawing.Size(71, 29);
-            this.zDRO.TabIndex = 79;
-            this.zDRO.Text = "0.000";
-            this.zDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // yDRO
-            // 
-            this.yDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.yDRO.AutoSize = true;
-            this.yDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yDRO.Location = new System.Drawing.Point(86, 44);
-            this.yDRO.Name = "yDRO";
-            this.yDRO.Size = new System.Drawing.Size(71, 29);
-            this.yDRO.TabIndex = 78;
-            this.yDRO.Text = "0.000";
-            this.yDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // xDRO
-            // 
-            this.xDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.xDRO.AutoSize = true;
-            this.xDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xDRO.Location = new System.Drawing.Point(86, 5);
-            this.xDRO.Name = "xDRO";
-            this.xDRO.Size = new System.Drawing.Size(71, 29);
-            this.xDRO.TabIndex = 77;
-            this.xDRO.Text = "0.000";
-            this.xDRO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label12
-            // 
-            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(4, 83);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(33, 29);
-            this.label12.TabIndex = 76;
-            this.label12.Text = "Z:";
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(4, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(36, 29);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "X:";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 44);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 29);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Y:";
-            // 
-            // label7
-            // 
-            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(4, 118);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(54, 41);
-            this.label7.TabIndex = 77;
-            this.label7.Text = "Van:";
-            // 
             // ReplacePosition
             // 
-            this.ReplacePosition.BackColor = System.Drawing.Color.Gold;
-            this.ReplacePosition.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ReplacePosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ReplacePosition.Location = new System.Drawing.Point(6, 499);
+            this.ReplacePosition.BackColor = System.Drawing.Color.CadetBlue;
+            this.ReplacePosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ReplacePosition.Location = new System.Drawing.Point(6, 137);
             this.ReplacePosition.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.ReplacePosition.Name = "ReplacePosition";
-            this.ReplacePosition.Size = new System.Drawing.Size(183, 88);
+            this.ReplacePosition.Size = new System.Drawing.Size(183, 50);
             this.ReplacePosition.TabIndex = 71;
             this.ReplacePosition.Text = "Vị trí bảo dưỡng";
             this.ReplacePosition.UseVisualStyleBackColor = false;
@@ -684,11 +693,11 @@
             // 
             // RefAllHome
             // 
-            this.RefAllHome.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.RefAllHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RefAllHome.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.RefAllHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RefAllHome.Location = new System.Drawing.Point(6, 21);
             this.RefAllHome.Name = "RefAllHome";
-            this.RefAllHome.Size = new System.Drawing.Size(183, 35);
+            this.RefAllHome.Size = new System.Drawing.Size(183, 50);
             this.RefAllHome.TabIndex = 70;
             this.RefAllHome.Text = "Thiết lập gốc máy";
             this.RefAllHome.UseVisualStyleBackColor = false;
@@ -696,15 +705,14 @@
             // 
             // ValveOneClick
             // 
-            this.ValveOneClick.BackColor = System.Drawing.Color.Gold;
-            this.ValveOneClick.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.ValveOneClick.BackColor = System.Drawing.Color.Tomato;
             this.ValveOneClick.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ValveOneClick.Location = new System.Drawing.Point(6, 382);
+            this.ValveOneClick.Location = new System.Drawing.Point(6, 23);
             this.ValveOneClick.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.ValveOneClick.Name = "ValveOneClick";
-            this.ValveOneClick.Size = new System.Drawing.Size(183, 40);
+            this.ValveOneClick.Size = new System.Drawing.Size(188, 50);
             this.ValveOneClick.TabIndex = 69;
-            this.ValveOneClick.Text = "Xả giọt";
+            this.ValveOneClick.Text = "Xả sơn";
             this.ValveOneClick.UseVisualStyleBackColor = false;
             this.ValveOneClick.Click += new System.EventHandler(this.ValveOneClick_Click);
             // 
@@ -724,17 +732,8 @@
             // 
             // timerDROupdate
             // 
+            this.timerDROupdate.Interval = 200;
             this.timerDROupdate.Tick += new System.EventHandler(this.TimerDROupdate_Tick);
-            // 
-            // processLog
-            // 
-            this.processLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.processLog.FormattingEnabled = true;
-            this.processLog.ItemHeight = 16;
-            this.processLog.Location = new System.Drawing.Point(6, 419);
-            this.processLog.Name = "processLog";
-            this.processLog.Size = new System.Drawing.Size(200, 180);
-            this.processLog.TabIndex = 82;
             // 
             // backgroundWorker
             // 
@@ -800,14 +799,14 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox17);
             this.tabPage1.Controls.Add(this.stopDetection);
             this.tabPage1.Controls.Add(this.startDetection);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.templateField);
-            this.tabPage1.Controls.Add(this.processLog);
-            this.tabPage1.Controls.Add(this.Reset);
             this.tabPage1.Controls.Add(this.run);
+            this.tabPage1.Controls.Add(this.Reset);
             this.tabPage1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -816,6 +815,43 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Vận Hành";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.ValveOneClick);
+            this.groupBox17.Controls.Add(this.RadioOneDrop);
+            this.groupBox17.Controls.Add(this.RadioContDrop);
+            this.groupBox17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox17.Location = new System.Drawing.Point(6, 430);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(200, 169);
+            this.groupBox17.TabIndex = 98;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "Điều khiển đầu phun";
+            // 
+            // RadioOneDrop
+            // 
+            this.RadioOneDrop.AutoSize = true;
+            this.RadioOneDrop.Checked = true;
+            this.RadioOneDrop.Location = new System.Drawing.Point(6, 79);
+            this.RadioOneDrop.Name = "RadioOneDrop";
+            this.RadioOneDrop.Size = new System.Drawing.Size(95, 20);
+            this.RadioOneDrop.TabIndex = 89;
+            this.RadioOneDrop.TabStop = true;
+            this.RadioOneDrop.Text = "Xả từng giọt";
+            this.RadioOneDrop.UseVisualStyleBackColor = true;
+            this.RadioOneDrop.CheckedChanged += new System.EventHandler(this.RadioOneDrop_CheckedChanged);
+            // 
+            // RadioContDrop
+            // 
+            this.RadioContDrop.AutoSize = true;
+            this.RadioContDrop.Location = new System.Drawing.Point(108, 79);
+            this.RadioContDrop.Name = "RadioContDrop";
+            this.RadioContDrop.Size = new System.Drawing.Size(86, 20);
+            this.RadioContDrop.TabIndex = 90;
+            this.RadioContDrop.Text = "Xả liên tục";
+            this.RadioContDrop.UseVisualStyleBackColor = true;
+            this.RadioContDrop.CheckedChanged += new System.EventHandler(this.RadioContDrop_CheckedChanged);
             // 
             // tabPage2
             // 
@@ -888,7 +924,7 @@
             this.zOffset});
             this.OffsetCoor.Location = new System.Drawing.Point(6, 21);
             this.OffsetCoor.Name = "OffsetCoor";
-            this.OffsetCoor.Size = new System.Drawing.Size(398, 428);
+            this.OffsetCoor.Size = new System.Drawing.Size(398, 384);
             this.OffsetCoor.TabIndex = 0;
             // 
             // Gxx
@@ -947,23 +983,68 @@
             // circleSpeed
             // 
             this.circleSpeed.Location = new System.Drawing.Point(107, 63);
+            this.circleSpeed.Maximum = new decimal(new int[] {
+            15000,
+            0,
+            0,
+            0});
+            this.circleSpeed.Minimum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             this.circleSpeed.Name = "circleSpeed";
-            this.circleSpeed.Size = new System.Drawing.Size(95, 22);
-            this.circleSpeed.TabIndex = 99;
+            this.circleSpeed.Size = new System.Drawing.Size(96, 22);
+            this.circleSpeed.TabIndex = 104;
+            this.circleSpeed.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             // 
             // zSpeed
             // 
             this.zSpeed.Location = new System.Drawing.Point(107, 33);
+            this.zSpeed.Maximum = new decimal(new int[] {
+            15000,
+            0,
+            0,
+            0});
+            this.zSpeed.Minimum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             this.zSpeed.Name = "zSpeed";
-            this.zSpeed.Size = new System.Drawing.Size(95, 22);
-            this.zSpeed.TabIndex = 98;
+            this.zSpeed.Size = new System.Drawing.Size(96, 22);
+            this.zSpeed.TabIndex = 103;
+            this.zSpeed.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             // 
             // xySpeed
             // 
             this.xySpeed.Location = new System.Drawing.Point(107, 3);
+            this.xySpeed.Maximum = new decimal(new int[] {
+            15000,
+            0,
+            0,
+            0});
+            this.xySpeed.Minimum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             this.xySpeed.Name = "xySpeed";
-            this.xySpeed.Size = new System.Drawing.Size(95, 22);
-            this.xySpeed.TabIndex = 97;
+            this.xySpeed.Size = new System.Drawing.Size(96, 22);
+            this.xySpeed.TabIndex = 102;
+            this.xySpeed.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
             // 
             // label23
             // 
@@ -1012,10 +1093,10 @@
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 58.92857F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.07143F));
             this.tableLayoutPanel6.Controls.Add(this.deepOffset, 1, 3);
-            this.tableLayoutPanel6.Controls.Add(this.zDrip, 1, 2);
-            this.tableLayoutPanel6.Controls.Add(this.zReturn, 1, 1);
             this.tableLayoutPanel6.Controls.Add(this.zSafe, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.zDrip, 1, 2);
             this.tableLayoutPanel6.Controls.Add(this.label19, 0, 3);
+            this.tableLayoutPanel6.Controls.Add(this.zReturn, 1, 1);
             this.tableLayoutPanel6.Controls.Add(this.label20, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.label21, 0, 1);
             this.tableLayoutPanel6.Controls.Add(this.label22, 0, 2);
@@ -1033,32 +1114,82 @@
             // 
             // deepOffset
             // 
+            this.deepOffset.DecimalPlaces = 1;
+            this.deepOffset.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
             this.deepOffset.Location = new System.Drawing.Point(101, 93);
+            this.deepOffset.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.deepOffset.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            -2147483648});
             this.deepOffset.Name = "deepOffset";
             this.deepOffset.Size = new System.Drawing.Size(64, 22);
             this.deepOffset.TabIndex = 101;
-            // 
-            // zDrip
-            // 
-            this.zDrip.Location = new System.Drawing.Point(101, 63);
-            this.zDrip.Name = "zDrip";
-            this.zDrip.Size = new System.Drawing.Size(64, 22);
-            this.zDrip.TabIndex = 100;
-            // 
-            // zReturn
-            // 
-            this.zReturn.Location = new System.Drawing.Point(101, 33);
-            this.zReturn.Name = "zReturn";
-            this.zReturn.Size = new System.Drawing.Size(64, 22);
-            this.zReturn.TabIndex = 99;
-            this.zReturn.TextChanged += new System.EventHandler(this.zReturn_TextChanged);
+            this.deepOffset.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             // 
             // zSafe
             // 
+            this.zSafe.DecimalPlaces = 1;
+            this.zSafe.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
             this.zSafe.Location = new System.Drawing.Point(101, 3);
+            this.zSafe.Maximum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.zSafe.Minimum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
             this.zSafe.Name = "zSafe";
             this.zSafe.Size = new System.Drawing.Size(64, 22);
             this.zSafe.TabIndex = 98;
+            this.zSafe.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            // 
+            // zDrip
+            // 
+            this.zDrip.DecimalPlaces = 1;
+            this.zDrip.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.zDrip.Location = new System.Drawing.Point(101, 63);
+            this.zDrip.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.zDrip.Name = "zDrip";
+            this.zDrip.Size = new System.Drawing.Size(64, 22);
+            this.zDrip.TabIndex = 100;
+            this.zDrip.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
             // label19
             // 
@@ -1068,7 +1199,31 @@
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(82, 16);
             this.label19.TabIndex = 84;
-            this.label19.Text = "Deep Offset:";
+            this.label19.Text = "Circle Offset:";
+            // 
+            // zReturn
+            // 
+            this.zReturn.DecimalPlaces = 1;
+            this.zReturn.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.zReturn.Location = new System.Drawing.Point(101, 33);
+            this.zReturn.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.zReturn.Name = "zReturn";
+            this.zReturn.Size = new System.Drawing.Size(64, 22);
+            this.zReturn.TabIndex = 99;
+            this.zReturn.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.zReturn.ValueChanged += new System.EventHandler(this.zReturn_TextChanged);
             // 
             // label20
             // 
@@ -1096,9 +1251,9 @@
             this.label22.AutoSize = true;
             this.label22.Location = new System.Drawing.Point(3, 67);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(77, 16);
+            this.label22.Size = new System.Drawing.Size(57, 16);
             this.label22.TabIndex = 81;
-            this.label22.Text = "Jetting gap:";
+            this.label22.Text = "Z jetting:";
             // 
             // tabPage3
             // 
@@ -1225,6 +1380,16 @@
             this.groupBox5.TabIndex = 97;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Control";
+            // 
+            // EnableSaveCompsData
+            // 
+            this.EnableSaveCompsData.AutoSize = true;
+            this.EnableSaveCompsData.Location = new System.Drawing.Point(216, 55);
+            this.EnableSaveCompsData.Name = "EnableSaveCompsData";
+            this.EnableSaveCompsData.Size = new System.Drawing.Size(140, 20);
+            this.EnableSaveCompsData.TabIndex = 99;
+            this.EnableSaveCompsData.Text = "Save Comps Data ";
+            this.EnableSaveCompsData.UseVisualStyleBackColor = true;
             // 
             // enableCamUndist
             // 
@@ -2208,6 +2373,7 @@
             "Chốt 02"});
             this.tmp_item_name.Name = "tmp_item_name";
             this.tmp_item_name.Size = new System.Drawing.Size(121, 37);
+            this.tmp_item_name.Text = "Tướng 01";
             this.tmp_item_name.TextChanged += new System.EventHandler(this.Name_Changed);
             // 
             // toolStripLabel3
@@ -2225,6 +2391,7 @@
             "Đen"});
             this.item_color.Name = "item_color";
             this.item_color.Size = new System.Drawing.Size(80, 37);
+            this.item_color.Text = "-";
             this.item_color.TextChanged += new System.EventHandler(this.ColorChanged);
             // 
             // toolStripSeparator2
@@ -2242,21 +2409,94 @@
             this.PaintingPointIcon.Text = "Painting Points Setting";
             this.PaintingPointIcon.Click += new System.EventHandler(this.PaintingPointIcon_Click);
             // 
-            // EnableSaveCompsData
+            // OutputLed1
             // 
-            this.EnableSaveCompsData.AutoSize = true;
-            this.EnableSaveCompsData.Location = new System.Drawing.Point(216, 55);
-            this.EnableSaveCompsData.Name = "EnableSaveCompsData";
-            this.EnableSaveCompsData.Size = new System.Drawing.Size(140, 20);
-            this.EnableSaveCompsData.TabIndex = 99;
-            this.EnableSaveCompsData.Text = "Save Comps Data ";
-            this.EnableSaveCompsData.UseVisualStyleBackColor = true;
+            this.OutputLed1.Location = new System.Drawing.Point(295, 709);
+            this.OutputLed1.Name = "OutputLed1";
+            this.OutputLed1.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed1.TabIndex = 98;
+            this.OutputLed1.TabStop = false;
+            // 
+            // OutputLed2
+            // 
+            this.OutputLed2.Location = new System.Drawing.Point(323, 709);
+            this.OutputLed2.Name = "OutputLed2";
+            this.OutputLed2.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed2.TabIndex = 99;
+            this.OutputLed2.TabStop = false;
+            // 
+            // OutputLed3
+            // 
+            this.OutputLed3.Location = new System.Drawing.Point(351, 709);
+            this.OutputLed3.Name = "OutputLed3";
+            this.OutputLed3.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed3.TabIndex = 100;
+            this.OutputLed3.TabStop = false;
+            // 
+            // OutputLed4
+            // 
+            this.OutputLed4.Location = new System.Drawing.Point(379, 709);
+            this.OutputLed4.Name = "OutputLed4";
+            this.OutputLed4.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed4.TabIndex = 101;
+            this.OutputLed4.TabStop = false;
+            // 
+            // OutputLed5
+            // 
+            this.OutputLed5.Location = new System.Drawing.Point(407, 709);
+            this.OutputLed5.Name = "OutputLed5";
+            this.OutputLed5.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed5.TabIndex = 102;
+            this.OutputLed5.TabStop = false;
+            // 
+            // OutputLed6
+            // 
+            this.OutputLed6.Location = new System.Drawing.Point(435, 709);
+            this.OutputLed6.Name = "OutputLed6";
+            this.OutputLed6.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed6.TabIndex = 103;
+            this.OutputLed6.TabStop = false;
+            // 
+            // OutputLed7
+            // 
+            this.OutputLed7.Location = new System.Drawing.Point(463, 709);
+            this.OutputLed7.Name = "OutputLed7";
+            this.OutputLed7.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed7.TabIndex = 104;
+            this.OutputLed7.TabStop = false;
+            // 
+            // OutputLed8
+            // 
+            this.OutputLed8.Location = new System.Drawing.Point(491, 709);
+            this.OutputLed8.Name = "OutputLed8";
+            this.OutputLed8.Size = new System.Drawing.Size(22, 22);
+            this.OutputLed8.TabIndex = 105;
+            this.OutputLed8.TabStop = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(189, 716);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(100, 16);
+            this.label5.TabIndex = 106;
+            this.label5.Text = "Trạng thái rơ le:";
             // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.OutputLed8);
+            this.Controls.Add(this.OutputLed7);
+            this.Controls.Add(this.OutputLed6);
+            this.Controls.Add(this.OutputLed5);
+            this.Controls.Add(this.OutputLed4);
+            this.Controls.Add(this.OutputLed3);
+            this.Controls.Add(this.OutputLed2);
+            this.Controls.Add(this.OutputLed1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox4);
@@ -2278,15 +2518,17 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ledZ)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ledX)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ledY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ledX)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.groupBox11.ResumeLayout(false);
@@ -2294,9 +2536,16 @@
             this.groupBox13.ResumeLayout(false);
             this.tableLayoutPanel7.ResumeLayout(false);
             this.tableLayoutPanel7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.circleSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.xySpeed)).EndInit();
             this.groupBox12.ResumeLayout(false);
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.deepOffset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zSafe)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zDrip)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zReturn)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
@@ -2342,6 +2591,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.cannyThresh)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OutputLed8)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2367,12 +2624,9 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label feedrateDRO;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Timer timerDROupdate;
         private System.Windows.Forms.Button GotoHome;
         public System.Windows.Forms.Label StatusLabel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label valveNum;
         private System.Windows.Forms.Label zDRO;
         private System.Windows.Forms.Label yDRO;
@@ -2389,7 +2643,6 @@
         private System.Windows.Forms.SaveFileDialog saveTemplate;
         public System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.Button stopDetection;
-        private System.Windows.Forms.Button ValveSwitching;
         private System.Windows.Forms.CheckBox enableLine;
         private System.Windows.Forms.Button convertto8bit;
         private System.Windows.Forms.Label label8;
@@ -2426,13 +2679,6 @@
         private System.Windows.Forms.ListBox CameraData;
         private System.Windows.Forms.CheckBox enableCamUndist;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TextBox circleSpeed;
-        private System.Windows.Forms.TextBox zSpeed;
-        private System.Windows.Forms.TextBox xySpeed;
-        private System.Windows.Forms.TextBox zDrip;
-        private System.Windows.Forms.TextBox zReturn;
-        private System.Windows.Forms.TextBox zSafe;
-        private System.Windows.Forms.TextBox deepOffset;
         private System.Windows.Forms.DataGridViewTextBoxColumn Gxx;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
@@ -2501,7 +2747,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton PaintingPointIcon;
         private System.Windows.Forms.ToolStripComboBox itemsSet;
-        private System.Windows.Forms.ToolStripComboBox tmp_item_name;
         private System.Windows.Forms.ToolStripComboBox item_color;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
@@ -2512,6 +2757,28 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
         private System.Windows.Forms.ToolStripLabel toolStripLabel3;
         private System.Windows.Forms.CheckBox EnableSaveCompsData;
+        private System.Windows.Forms.NumericUpDown zSafe;
+        private System.Windows.Forms.NumericUpDown zReturn;
+        private System.Windows.Forms.NumericUpDown zDrip;
+        private System.Windows.Forms.NumericUpDown deepOffset;
+        private System.Windows.Forms.NumericUpDown xySpeed;
+        private System.Windows.Forms.NumericUpDown zSpeed;
+        private System.Windows.Forms.NumericUpDown circleSpeed;
+        private System.Windows.Forms.RadioButton RadioContDrop;
+        private System.Windows.Forms.RadioButton RadioOneDrop;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.PictureBox OutputLed1;
+        private System.Windows.Forms.PictureBox OutputLed2;
+        private System.Windows.Forms.PictureBox OutputLed3;
+        private System.Windows.Forms.PictureBox OutputLed4;
+        private System.Windows.Forms.PictureBox OutputLed5;
+        private System.Windows.Forms.PictureBox OutputLed6;
+        private System.Windows.Forms.PictureBox OutputLed7;
+        private System.Windows.Forms.PictureBox OutputLed8;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.ToolStripComboBox tmp_item_name;
     }
 }
 

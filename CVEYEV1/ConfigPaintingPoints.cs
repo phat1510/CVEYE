@@ -33,8 +33,9 @@ namespace CVEYEV1
         private byte ChessSize;
         private double raw_tmp_size = 430;
 
-        private double scale = 0;
         private double real_accuracy = 0;
+        private double fastChange = 0;
+        private double slowChange = 0;
 
         // XML
         private string DataPath;
@@ -71,7 +72,7 @@ namespace CVEYEV1
             drawing = TmpImageBox.CreateGraphics();
 
             // 
-            real_accuracy = CVEye._accuracy;
+            real_accuracy = CVEye._accuracy;            
         }
 
         /// <summary>
@@ -190,7 +191,17 @@ namespace CVEYEV1
         }
 
         /// <summary>
-        /// Load painting points data, view on datagrid and template picture box
+        /// 
+        /// </summary>
+        private void PreViewTemplate()
+        {
+            TmpImageBox.Image = TmpImg.Bitmap;
+            TmpImageBox.Refresh();
+        }
+
+        /// <summary>
+        /// Load painting points data, 
+        /// view on datagrid and template picture box
         /// </summary>
         private void LoadXml()
         {
@@ -200,15 +211,17 @@ namespace CVEYEV1
                 SetSelection(SetName.Text);
 
                 // View template
-                TmpImageBox.Image = TmpImg.Bitmap;
-                TmpImageBox.Refresh();
+                PreViewTemplate();
 
                 // Load data of set
                 DispensingData = XDocument.Load(DataPath);
 
-                // 
+                // Load template ROI size
                 ChessSize = byte.Parse(DispensingData.Element("Field").Element("SetData").Attribute("RoiSize").Value);
-                scale = ChessSize / raw_tmp_size;
+
+                // 
+                fastChange = (1 / real_accuracy) * raw_tmp_size / ChessSize; // 1mm
+                slowChange = (real_accuracy / real_accuracy) * raw_tmp_size / ChessSize; // 0.152mm
 
                 // Call current item
                 GetItem = DispensingData.Element("Field")
@@ -237,17 +250,20 @@ namespace CVEYEV1
                     // Preview point tracking
                     if (t == 1)
                     {
-                        draw_point[t] = new PointF((float)(float.Parse(element.Attribute("X").Value) / scale), (float)(float.Parse(element.Attribute("Y").Value) / scale));
+                        draw_point[t] = new PointF((float)(float.Parse(element.Attribute("X").Value)),
+                            (float)(float.Parse(element.Attribute("Y").Value)));
                         drawing.DrawLine(new Pen(Color.GreenYellow, 1.5f), draw_point[t - 1], draw_point[t]);
                         draw_point[t - 1] = draw_point[t];
                     }
                     else
                     {
-                        draw_point[t] = new PointF((float)(float.Parse(element.Attribute("X").Value) / scale), (float)(float.Parse(element.Attribute("Y").Value) / scale));
+                        draw_point[t] = new PointF((float)(float.Parse(element.Attribute("X").Value)),
+                            (float)(float.Parse(element.Attribute("Y").Value)));
                         t++;
                     }
 
-                    drawing.DrawString(k.ToString(), new Font("Arial", 10.5f), new SolidBrush(Color.White), new Point((int)draw_point[0].X, (int)draw_point[0].Y));
+                    drawing.DrawString(k.ToString(), new Font("Arial", 10.5f), new SolidBrush(Color.White),
+                        new Point((int)draw_point[0].X, (int)draw_point[0].Y));
                     k++;
                 }
             }
@@ -267,13 +283,15 @@ namespace CVEYEV1
                 // Preview point tracking
                 if (pointinx == 1)
                 {
-                    draw_point[pointinx] = new PointF((float)(float.Parse(Data_Grid.Rows[idx].Cells[1].Value.ToString()) / scale), (float)(float.Parse(Data_Grid.Rows[idx].Cells[2].Value.ToString()) / scale));
+                    draw_point[pointinx] = new PointF((float)(float.Parse(Data_Grid.Rows[idx].Cells[1].Value.ToString())), 
+                        (float)(float.Parse(Data_Grid.Rows[idx].Cells[2].Value.ToString())));
                     drawing.DrawLine(new Pen(Color.GreenYellow, 1.5f), draw_point[pointinx - 1], draw_point[pointinx]);
                     draw_point[pointinx - 1] = draw_point[pointinx];
                 }
                 else
                 {
-                    draw_point[pointinx] = new PointF(float.Parse(Data_Grid.Rows[0].Cells[1].Value.ToString()) / (float)scale, float.Parse(Data_Grid.Rows[0].Cells[2].Value.ToString()) / (float)scale);
+                    draw_point[pointinx] = new PointF(float.Parse(Data_Grid.Rows[0].Cells[1].Value.ToString()),
+                        float.Parse(Data_Grid.Rows[0].Cells[2].Value.ToString()));
                     pointinx++;
                 }
 
@@ -308,8 +326,7 @@ namespace CVEYEV1
         /// <param name="e"></param>
         private void ViewPixelInfo(MouseEventArgs e)
         {
-            TmpImageBox.Image = TmpImg.Bitmap;
-            TmpImageBox.Refresh();
+            PreViewTemplate();
 
             LineSegment2DF vertical = new LineSegment2DF();
             LineSegment2DF horizontal = new LineSegment2DF();
@@ -317,6 +334,8 @@ namespace CVEYEV1
             // Cursor in picture box position
             x_axis = e.Location.X + 1;
             y_axis = e.Location.Y + 1;
+
+            //
             CalculateLocalPosition();
 
             //
@@ -338,13 +357,108 @@ namespace CVEYEV1
         public void CalculateLocalPosition()
         {
             // Calculate real painting point local coordinate
-            x_real_pos = Math.Round(x_axis * scale, 1);
-            y_real_pos = Math.Round(y_axis * scale, 1);
+            x_real_pos = x_axis;
+            y_real_pos = y_axis;
 
             // Show value
             x_pos_lb.Text = x_real_pos.ToString();
             y_pos_lb.Text = y_real_pos.ToString();
         }
+
+        private void UpdateDatabase()
+        {
+            // Reload
+            DispensingData = XDocument.Load(DataPath);
+
+            // Remove current item
+            GetItem = DispensingData.Element("Field")
+            .Elements("Item")
+            .Where(x => x.Element("Name").Value == item_name.Text)
+            .Single();
+            GetItem.Element("Points").RemoveAll();
+
+            if (status.Text != "Cleared")
+                point_num = Data_Grid.RowCount - 1;
+
+            for (int k = 0; k < point_num; k++)
+            {
+                float x = float.Parse(Data_Grid.Rows[k].Cells[1].Value.ToString());
+                x = (float)Math.Round(x, 1);
+                float y = float.Parse(Data_Grid.Rows[k].Cells[2].Value.ToString());
+                y = (float)Math.Round(y, 1);
+
+                double __scale = 1;
+
+                GetItem.Element("Points").Add(new XElement("Point",
+                    new XAttribute("X", Math.Round(x * __scale, 1)),
+                    new XAttribute("Y", Math.Round(y * __scale, 1)),
+                    new XAttribute("Z", "-"),
+                    new XAttribute("T", Data_Grid.Rows[k].Cells[4].Value),
+                    new XAttribute("C", "-")));
+                //
+            }
+
+            // Save data to XML
+            DispensingData.Save(DataPath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ViewCurrentPoint()
+        {
+            try
+            {
+                if (Data_Grid.RowCount > 1)
+                {
+                    status.Text = "Điểm số " + ((int)Data_Grid.CurrentRow.Cells[0].Value).ToString() + " đã được chọn.";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                status.Text = ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Select painting points data file path of a set
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetSelection(string value)
+        {
+            switch (value)
+            {
+                case "Cờ 31":
+                    // Update XML file path
+                    DataPath = Chess_31_DataPath;
+
+                    // Reload template image file
+                    LoadTmpChess31(item_name.Text);
+
+                    // Update status
+                    status.Text = "Đã tải dữ liệu cờ 31";
+                    break;
+                case "Cờ 29":
+                    // Update XML file path
+                    DataPath = Chess_29_DataPath;
+
+                    // Reload template file
+                    LoadTmpChess29(item_name.Text);
+
+                    // Update status
+                    status.Text = "Đã tải dữ liệu cờ 29";
+                    break;
+            }
+        }
+
+        //----------------------------------
+        //----------------------------------
+        //----------------------------------
+        //********** Form events ***********
+        //----------------------------------
+        //----------------------------------
+        //----------------------------------
 
         private void ClearTracking_Click(object sender, EventArgs e)
         {
@@ -358,8 +472,7 @@ namespace CVEYEV1
                     painting_points = new Point[25];
 
                     // Refresh picture box
-                    TmpImageBox.Image = TmpImg.Bitmap;
-                    TmpImageBox.Refresh();
+                    PreViewTemplate();
 
                     // Reset number of points
                     point_num = 0;
@@ -393,144 +506,13 @@ namespace CVEYEV1
                 MessageBox.Show("Exception thrown");
 
                 // Refresh picture box
-                TmpImageBox.Image = TmpImg.Bitmap;
-                TmpImageBox.Refresh();
+                PreViewTemplate();
                 point_num = 0;
 
                 // Clear datagridview
                 Data_Grid.Rows.Clear();
             }
         }
-
-        private void UpdateDatabase()
-        {
-            // Reload
-            DispensingData = XDocument.Load(DataPath);
-
-            // Remove current item
-            GetItem = DispensingData.Element("Field")
-            .Elements("Item")
-            .Where(x => x.Element("Name").Value == item_name.Text)
-            .Single();
-            GetItem.Element("Points").RemoveAll();
-
-            if (status.Text != "Cleared")
-                point_num = Data_Grid.RowCount - 1;
-
-            for (int k = 0; k < point_num; k++)
-            {
-                float x = float.Parse(Data_Grid.Rows[k].Cells[1].Value.ToString());
-                x = (float)Math.Round(x, 1);
-                float y = float.Parse(Data_Grid.Rows[k].Cells[2].Value.ToString());
-                y = (float)Math.Round(y, 1);
-
-                double __scale = 1;
-
-                GetItem.Element("Points").Add(new XElement("Point",
-                    new XAttribute("X", Math.Round(x / __scale, 1)),
-                    new XAttribute("Y", Math.Round(y / __scale, 1)),
-                    new XAttribute("Z", "-"),
-                    new XAttribute("T", Data_Grid.Rows[k].Cells[4].Value),
-                    new XAttribute("C", "-")));
-            }
-
-            // Save data to XML
-            DispensingData.Save(DataPath);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ViewCurrentPoint()
-        {
-            try
-            {
-                if (Data_Grid.RowCount > 1)
-                {
-                    // View template image in background
-                    TmpImageBox.Image = TmpImg.Bitmap;
-                    TmpImageBox.Refresh();
-
-                    // Initial condition
-                    PointF[] draw_point = new PointF[2];
-                    int pointinx = 0;
-
-                    for (int idx = 0; idx < Data_Grid.RowCount - 1; idx++)
-                    {
-                        // Preview point tracking
-                        if (pointinx == 1)
-                        {
-                            draw_point[pointinx] = new PointF((float)(float.Parse(Data_Grid.Rows[idx].Cells[1].Value.ToString()) / scale), (float)(float.Parse(Data_Grid.Rows[idx].Cells[2].Value.ToString()) / scale));
-                            drawing.DrawLine(new Pen(Color.GreenYellow, 1.5f), draw_point[pointinx - 1], draw_point[pointinx]);
-                            draw_point[pointinx - 1] = draw_point[pointinx];
-                        }
-                        else
-                        {
-                            draw_point[pointinx] = new PointF(float.Parse(Data_Grid.Rows[0].Cells[1].Value.ToString()) / (float)scale, float.Parse(Data_Grid.Rows[0].Cells[2].Value.ToString()) / (float)scale);
-                            pointinx++;
-                        }
-
-                        byte _rect_size = 4;
-                        Rectangle _rect = new Rectangle(new Point((int)draw_point[0].X - _rect_size, (int)draw_point[0].Y - _rect_size), new Size(2 * _rect_size, 2 * _rect_size));
-
-                        if (Data_Grid.CurrentRow.Cells[0].Value.ToString() == (idx + 1).ToString())
-                            drawing.DrawEllipse(new Pen(Color.GreenYellow, 3f), _rect);
-                        else
-                        {
-                            byte _rect_size_small = 2;
-                            Rectangle _rect_small = new Rectangle(new Point((int)draw_point[0].X - _rect_size_small, (int)draw_point[0].Y - _rect_size_small), new Size(2 * _rect_size_small, 2 * _rect_size_small));
-                            drawing.DrawEllipse(new Pen(Color.GreenYellow, 1.5f), _rect_small);
-                            drawing.DrawString((idx + 1).ToString(), new Font("Arial", 10.5f), new SolidBrush(Color.White), new Point((int)draw_point[0].X, (int)draw_point[0].Y));
-                        }
-                    }
-                }
-
-                status.Text = "Point " + (Data_Grid.CurrentCell.RowIndex + 1).ToString() + " is selected";
-            }
-            catch (Exception ex)
-            {
-                status.Text = ex.Message;
-            }
-        }
-
-        /// <summary>
-        /// Select painting points data file path of a set
-        /// </summary>
-        /// <param name="value"></param>
-        private void SetSelection(string value)
-        {
-            switch (value)
-            {
-                case "Cờ 31":
-                    // Reload template image file
-                    LoadTmpChess31(item_name.Text);
-
-                    // Update XML file path
-                    DataPath = Chess_31_DataPath;
-
-                    // Update status
-                    status.Text = "Đã tải dữ liệu cờ 31";
-                    break;
-                case "Cờ 29":
-                    // Update XML file path
-                    DataPath = Chess_29_DataPath;
-
-                    // Reload template file
-                    LoadTmpChess29(item_name.Text);
-
-                    // Update status
-                    status.Text = "Đã tải dữ liệu cờ 29";
-                    break;                    
-            }
-        }
-
-        //----------------------------------
-        //----------------------------------
-        //----------------------------------
-        //********** Form events ***********
-        //----------------------------------
-        //----------------------------------
-        //----------------------------------
 
         private void Name_Changed(object sender, EventArgs e)
         {
@@ -551,10 +533,10 @@ namespace CVEYEV1
                 // Update new painting points
                 UpdateDatabase();
 
-                //
+                // Reload XML data
                 LoadXml();
 
-                //
+                // Reset variables
                 clear = false;
                 point_num = 0;
                 status.Text = "Đã lưu";
@@ -586,8 +568,7 @@ namespace CVEYEV1
             try
             {
                 // View template image in background
-                TmpImageBox.Image = TmpImg.Bitmap;
-                TmpImageBox.Refresh();
+                PreViewTemplate();
 
                 Data_Grid.Rows.Insert(Data_Grid.CurrentCell.RowIndex,
                     Data_Grid.CurrentRow.Cells[0].Value,
@@ -615,8 +596,7 @@ namespace CVEYEV1
             try
             {
                 // View template image in background
-                TmpImageBox.Image = TmpImg.Bitmap;
-                TmpImageBox.Refresh();
+                PreViewTemplate();
 
                 Data_Grid.Rows.Remove(Data_Grid.CurrentRow);
 
@@ -654,78 +634,102 @@ namespace CVEYEV1
 
         private void yPlus_Click(object sender, EventArgs e)
         {
-            float value;
-            value = float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString());
+            try
+            {
+                float value;
+                value = float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString());
 
-            if (fastMoving.CheckState == CheckState.Checked)
-                value += 1;
-            else
-                value += 0.2f;
+                if (fastMoving.CheckState == CheckState.Checked)
+                    value += (float)fastChange;
+                else
+                    value += (float)slowChange;
 
-            value = (float)Math.Round(value, 1);
-            Data_Grid.CurrentRow.Cells[2].Value = value.ToString();
+                value = (float)Math.Round(value, 1);
+                Data_Grid.CurrentRow.Cells[2].Value = value.ToString();
 
-            TmpImageBox.Image = TmpImg.Bitmap;
-            TmpImageBox.Refresh();
+                PreViewTemplate();
 
-            DrawPointsFromGrid();
+                DrawPointsFromGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void yMinus_Click(object sender, EventArgs e)
         {
-            float value;
-            value = float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString());
+            try
+            {
+                float value;
+                value = float.Parse(Data_Grid.CurrentRow.Cells[2].Value.ToString());
 
-            if (fastMoving.CheckState == CheckState.Checked)
-                value -= 1;
-            else
-                value -= 0.2f;
+                if (fastMoving.CheckState == CheckState.Checked)
+                    value -= (float)fastChange;
+                else
+                    value -= (float)slowChange;
 
-            value = (float)Math.Round(value, 1);
-            Data_Grid.CurrentRow.Cells[2].Value = value.ToString();
+                value = (float)Math.Round(value, 1);
+                Data_Grid.CurrentRow.Cells[2].Value = value.ToString();
 
-            TmpImageBox.Image = TmpImg.Bitmap;
-            TmpImageBox.Refresh();
+                PreViewTemplate();
 
-            DrawPointsFromGrid();
+                DrawPointsFromGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void xPlus_Click(object sender, EventArgs e)
         {
-            float value;
-            value = float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString());
+            try
+            {
+                float value;
+                value = float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString());
 
-            if (fastMoving.CheckState == CheckState.Checked)
-                value += 1;
-            else
-                value += 0.2f;
+                if (fastMoving.CheckState == CheckState.Checked)
+                    value += (float)fastChange;
+                else
+                    value += (float)slowChange;
 
-            value = (float)Math.Round(value, 1);
-            Data_Grid.CurrentRow.Cells[1].Value = value.ToString();
+                value = (float)Math.Round(value, 1);
+                Data_Grid.CurrentRow.Cells[1].Value = value.ToString();
 
-            TmpImageBox.Image = TmpImg.Bitmap;
-            TmpImageBox.Refresh();
+                PreViewTemplate();
 
-            DrawPointsFromGrid();
+                DrawPointsFromGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void xMinus_Click(object sender, EventArgs e)
         {
-            float value;
-            value = float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString());
+            try
+            {
+                float value;
+                value = float.Parse(Data_Grid.CurrentRow.Cells[1].Value.ToString());
 
-            if (fastMoving.CheckState == CheckState.Checked)
-                value -= 1;
-            else
-                value -= 0.2f;
+                if (fastMoving.CheckState == CheckState.Checked)
+                    value -= (float)fastChange;
+                else
+                    value -= (float)slowChange;
 
-            value = (float)Math.Round(value, 1);
-            Data_Grid.CurrentRow.Cells[1].Value = value.ToString();
+                value = (float)Math.Round(value, 1);
+                Data_Grid.CurrentRow.Cells[1].Value = value.ToString();
 
-            TmpImageBox.Image = TmpImg.Bitmap;
-            TmpImageBox.Refresh();
+                PreViewTemplate();
 
-            DrawPointsFromGrid();
+                DrawPointsFromGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void pattern_field_MouseLeave(object sender, EventArgs e)
