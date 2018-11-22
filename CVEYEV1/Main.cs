@@ -111,6 +111,11 @@ namespace CVEYEV1
         private int _minRadius;
         private int _maxRadius;
 
+        float leftEdge;
+        float rightEdge;
+        float topEdge;
+        float botEdge;
+
         private VectorOfPointF corner_set = new VectorOfPointF();
         #endregion
 
@@ -772,6 +777,11 @@ namespace CVEYEV1
                     break;
             }
 
+            leftEdge    = float.Parse(SetPersData.Attribute("edge1").Value);
+            rightEdge   = float.Parse(SetPersData.Attribute("edge3").Value);
+            topEdge     = float.Parse(SetPersData.Attribute("edge2").Value);
+            botEdge     = float.Parse(SetPersData.Attribute("edge4").Value);
+
             cnl1.Value = decimal.Parse(SetPersData.Attribute("edge1").Value);
             cnl2.Value = decimal.Parse(SetPersData.Attribute("edge2").Value);
             cnl3.Value = decimal.Parse(SetPersData.Attribute("edge3").Value);
@@ -1089,11 +1099,6 @@ namespace CVEYEV1
                 // Coordinates of quadrangle vertices
                 PointF[] src = new PointF[4];
                 PointF[] dst = new PointF[4];
-
-                float leftEdge = float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge1").Value);
-                float rightEdge = float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge3").Value);
-                float topEdge = float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge2").Value);
-                float botEdge = float.Parse(ImageProcessingWindow.Element("PSTTransform").Attribute("edge4").Value);
 
                 using (Image<Bgr, byte> imgHalfLeft = img_capture_undist.Clone())
                 {
@@ -1441,6 +1446,11 @@ namespace CVEYEV1
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -1450,7 +1460,11 @@ namespace CVEYEV1
             mainLoop((CircleF[])genericlist[0], (Image<Bgr, byte>)genericlist[1], worker, e);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             try
@@ -1463,7 +1477,8 @@ namespace CVEYEV1
                 Draw_Matching(img_items, get_circle, get_angle);
 
                 // Show object radius
-                processLog.Items.Add(get_circle.Radius);
+                if (ShowObjectSize.Checked)
+                    processLog.Items.Add(get_circle.Radius);
 
                 // Update progess bar
                 Progress.Value = e.ProgressPercentage;
@@ -1621,7 +1636,13 @@ namespace CVEYEV1
 
             // Save detected items result
             CvInvoke.Imwrite("result/dots.jpg", img_items);
-            //CvInvoke.Imwrite("result/dots.jpg", img_threshold);
+
+            if (SaveTheshImage.Checked)
+                CvInvoke.Imwrite("result/dots.jpg", img_threshold);
+
+            // Save image to image lib
+            if (SaveCapturedImage.Checked)
+                CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
 
             // View result
             pattern_field.Image = img_items.Bitmap;
@@ -2770,10 +2791,7 @@ namespace CVEYEV1
                             Application.Idle -= new EventHandler(Frame_Calibration);
 
                             // Save image to disk
-                            CvInvoke.Imwrite("result/pattern_field.jpg", img_capture_undist);
-
-                            // Save image to image lib
-                            CvInvoke.Imwrite("image_lib/capture" + DateTime.Now.ToFileTime() + ".jpg", img_capture_undist);
+                            //CvInvoke.Imwrite("result/pattern_field.jpg", img_capture_undist);
 
                             // Display
                             using (Image<Bgr, byte> img_draw = img_capture_undist.Clone())

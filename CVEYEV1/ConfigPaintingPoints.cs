@@ -238,6 +238,7 @@ namespace CVEYEV1
                 // Clear grid data
                 Data_Grid.Rows.Clear();
 
+                // Show painting points data
                 foreach (XElement element in point_list)
                 {
                     Data_Grid.Rows.Add(k,
@@ -261,6 +262,8 @@ namespace CVEYEV1
                             (float)(float.Parse(element.Attribute("Y").Value)));
                         t++;
                     }
+
+
 
                     drawing.DrawString(k.ToString(), new Font("Arial", 10.5f), new SolidBrush(Color.White),
                         new Point((int)draw_point[0].X, (int)draw_point[0].Y));
@@ -348,7 +351,6 @@ namespace CVEYEV1
 
             drawing.DrawLine(new Pen(Color.Blue, 1.5f), vertical.P1, vertical.P2);
             drawing.DrawLine(new Pen(Color.Blue, 1.5f), horizontal.P1, horizontal.P2);
-
         }
 
         /// <summary>
@@ -386,6 +388,10 @@ namespace CVEYEV1
                 x = (float)Math.Round(x, 1);
                 float y = float.Parse(Data_Grid.Rows[k].Cells[2].Value.ToString());
                 y = (float)Math.Round(y, 1);
+
+                //double angle = Math.Round((360 + 10) * Math.PI / 180, 3);
+                //x = (x - 215) * (float)Math.Cos(angle) - (y - 215) * (float)Math.Sin(angle) + 215;
+                //y = (x - 215) * (float)Math.Sin(angle) + (y - 215) * (float)Math.Cos(angle) + 215;
 
                 double __scale = 1;
 

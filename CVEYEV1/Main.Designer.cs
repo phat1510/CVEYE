@@ -204,6 +204,11 @@
             this.OutputLed7 = new System.Windows.Forms.PictureBox();
             this.OutputLed8 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.SaveCapturedImage = new System.Windows.Forms.CheckBox();
+            this.SaveTheshImage = new System.Windows.Forms.CheckBox();
+            this.ShowObjectSize = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.templateField)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -273,11 +278,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed8)).BeginInit();
+            this.groupBox16.SuspendLayout();
+            this.groupBox18.SuspendLayout();
             this.SuspendLayout();
             // 
             // captureImg
             // 
-            this.captureImg.BackColor = System.Drawing.Color.LightSeaGreen;
+            this.captureImg.BackColor = System.Drawing.Color.Teal;
             this.captureImg.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.captureImg.ForeColor = System.Drawing.Color.White;
             this.captureImg.Location = new System.Drawing.Point(6, 113);
@@ -367,7 +374,7 @@
             this.Reset.ForeColor = System.Drawing.Color.White;
             this.Reset.Location = new System.Drawing.Point(290, 605);
             this.Reset.Name = "Reset";
-            this.Reset.Size = new System.Drawing.Size(125, 50);
+            this.Reset.Size = new System.Drawing.Size(140, 50);
             this.Reset.TabIndex = 68;
             this.Reset.UseVisualStyleBackColor = false;
             // 
@@ -444,7 +451,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(220, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(195, 593);
+            this.groupBox2.Size = new System.Drawing.Size(210, 593);
             this.groupBox2.TabIndex = 72;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Điều khiển bàn máy";
@@ -570,7 +577,7 @@
             // 
             this.groupBox15.Location = new System.Drawing.Point(7, 418);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(183, 2);
+            this.groupBox15.Size = new System.Drawing.Size(198, 2);
             this.groupBox15.TabIndex = 98;
             this.groupBox15.TabStop = false;
             // 
@@ -580,18 +587,18 @@
             this.ledZ.Location = new System.Drawing.Point(156, 287);
             this.ledZ.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.ledZ.Name = "ledZ";
-            this.ledZ.Size = new System.Drawing.Size(30, 30);
+            this.ledZ.Size = new System.Drawing.Size(48, 30);
             this.ledZ.TabIndex = 87;
             this.ledZ.TabStop = false;
             // 
             // GotoHome
             // 
-            this.GotoHome.BackColor = System.Drawing.Color.SandyBrown;
+            this.GotoHome.BackColor = System.Drawing.Color.Orange;
             this.GotoHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GotoHome.Location = new System.Drawing.Point(6, 79);
             this.GotoHome.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.GotoHome.Name = "GotoHome";
-            this.GotoHome.Size = new System.Drawing.Size(183, 50);
+            this.GotoHome.Size = new System.Drawing.Size(198, 50);
             this.GotoHome.TabIndex = 84;
             this.GotoHome.Text = "Vị trí làm việc";
             this.GotoHome.UseVisualStyleBackColor = false;
@@ -610,7 +617,7 @@
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(180, 30);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(198, 30);
             this.tableLayoutPanel3.TabIndex = 78;
             // 
             // feedrateDRO
@@ -618,7 +625,7 @@
             this.feedrateDRO.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.feedrateDRO.AutoSize = true;
             this.feedrateDRO.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.feedrateDRO.Location = new System.Drawing.Point(156, 3);
+            this.feedrateDRO.Location = new System.Drawing.Point(174, 3);
             this.feedrateDRO.Name = "feedrateDRO";
             this.feedrateDRO.Size = new System.Drawing.Size(20, 24);
             this.feedrateDRO.TabIndex = 77;
@@ -631,7 +638,7 @@
             this.ledY.Location = new System.Drawing.Point(156, 257);
             this.ledY.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.ledY.Name = "ledY";
-            this.ledY.Size = new System.Drawing.Size(30, 30);
+            this.ledY.Size = new System.Drawing.Size(48, 30);
             this.ledY.TabIndex = 86;
             this.ledY.TabStop = false;
             // 
@@ -653,7 +660,7 @@
             this.processLog.ItemHeight = 16;
             this.processLog.Location = new System.Drawing.Point(6, 431);
             this.processLog.Name = "processLog";
-            this.processLog.Size = new System.Drawing.Size(184, 148);
+            this.processLog.Size = new System.Drawing.Size(198, 148);
             this.processLog.TabIndex = 82;
             // 
             // ledX
@@ -663,7 +670,7 @@
             this.ledX.Location = new System.Drawing.Point(156, 225);
             this.ledX.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.ledX.Name = "ledX";
-            this.ledX.Size = new System.Drawing.Size(30, 30);
+            this.ledX.Size = new System.Drawing.Size(48, 30);
             this.ledX.TabIndex = 79;
             this.ledX.TabStop = false;
             // 
@@ -680,12 +687,12 @@
             // 
             // ReplacePosition
             // 
-            this.ReplacePosition.BackColor = System.Drawing.Color.CadetBlue;
+            this.ReplacePosition.BackColor = System.Drawing.Color.LimeGreen;
             this.ReplacePosition.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ReplacePosition.Location = new System.Drawing.Point(6, 137);
             this.ReplacePosition.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.ReplacePosition.Name = "ReplacePosition";
-            this.ReplacePosition.Size = new System.Drawing.Size(183, 50);
+            this.ReplacePosition.Size = new System.Drawing.Size(198, 50);
             this.ReplacePosition.TabIndex = 71;
             this.ReplacePosition.Text = "Vị trí bảo dưỡng";
             this.ReplacePosition.UseVisualStyleBackColor = false;
@@ -697,7 +704,7 @@
             this.RefAllHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RefAllHome.Location = new System.Drawing.Point(6, 21);
             this.RefAllHome.Name = "RefAllHome";
-            this.RefAllHome.Size = new System.Drawing.Size(183, 50);
+            this.RefAllHome.Size = new System.Drawing.Size(198, 50);
             this.RefAllHome.TabIndex = 70;
             this.RefAllHome.Text = "Thiết lập gốc máy";
             this.RefAllHome.UseVisualStyleBackColor = false;
@@ -754,9 +761,9 @@
             // convertto8bit
             // 
             this.convertto8bit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.convertto8bit.Location = new System.Drawing.Point(190, 593);
+            this.convertto8bit.Location = new System.Drawing.Point(168, 49);
             this.convertto8bit.Name = "convertto8bit";
-            this.convertto8bit.Size = new System.Drawing.Size(108, 30);
+            this.convertto8bit.Size = new System.Drawing.Size(128, 30);
             this.convertto8bit.TabIndex = 82;
             this.convertto8bit.Text = "To 8 Bit";
             this.convertto8bit.UseVisualStyleBackColor = true;
@@ -794,7 +801,7 @@
             this.tabControl1.Location = new System.Drawing.Point(907, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(431, 690);
+            this.tabControl1.Size = new System.Drawing.Size(450, 690);
             this.tabControl1.TabIndex = 96;
             // 
             // tabPage1
@@ -811,7 +818,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(423, 661);
+            this.tabPage1.Size = new System.Drawing.Size(442, 661);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Vận Hành";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -865,7 +872,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(423, 661);
+            this.tabPage2.Size = new System.Drawing.Size(442, 661);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Chế Độ Sơn";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1263,9 +1270,9 @@
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(423, 661);
+            this.tabPage3.Size = new System.Drawing.Size(442, 661);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Hiệu Chỉnh Camera";
+            this.tabPage3.Text = "Camera Calibration";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // groupBox6
@@ -1611,20 +1618,17 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.RawROISize);
-            this.tabPage4.Controls.Add(this.TmpMaxRa);
-            this.tabPage4.Controls.Add(this.TmpMinRa);
+            this.tabPage4.Controls.Add(this.groupBox18);
+            this.tabPage4.Controls.Add(this.groupBox16);
             this.tabPage4.Controls.Add(this.ImgProcSave);
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Controls.Add(this.groupBox14);
             this.tabPage4.Controls.Add(this.groupBox8);
             this.tabPage4.Controls.Add(this.groupBox7);
-            this.tabPage4.Controls.Add(this.buildTemplate);
-            this.tabPage4.Controls.Add(this.convertto8bit);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(423, 661);
+            this.tabPage4.Size = new System.Drawing.Size(442, 661);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Image Processing";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1632,7 +1636,7 @@
             // RawROISize
             // 
             this.RawROISize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RawROISize.Location = new System.Drawing.Point(187, 555);
+            this.RawROISize.Location = new System.Drawing.Point(184, 21);
             this.RawROISize.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1650,7 +1654,7 @@
             // TmpMaxRa
             // 
             this.TmpMaxRa.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TmpMaxRa.Location = new System.Drawing.Point(101, 555);
+            this.TmpMaxRa.Location = new System.Drawing.Point(98, 21);
             this.TmpMaxRa.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1668,7 +1672,7 @@
             // TmpMinRa
             // 
             this.TmpMinRa.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TmpMinRa.Location = new System.Drawing.Point(15, 555);
+            this.TmpMinRa.Location = new System.Drawing.Point(7, 21);
             this.TmpMinRa.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -1685,9 +1689,9 @@
             // 
             // ImgProcSave
             // 
-            this.ImgProcSave.Location = new System.Drawing.Point(337, 628);
+            this.ImgProcSave.Location = new System.Drawing.Point(6, 291);
             this.ImgProcSave.Name = "ImgProcSave";
-            this.ImgProcSave.Size = new System.Drawing.Size(80, 30);
+            this.ImgProcSave.Size = new System.Drawing.Size(194, 30);
             this.ImgProcSave.TabIndex = 96;
             this.ImgProcSave.Text = "Save";
             this.ImgProcSave.UseVisualStyleBackColor = true;
@@ -1697,9 +1701,9 @@
             // 
             this.groupBox10.Controls.Add(this.tableLayoutPanel9);
             this.groupBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox10.Location = new System.Drawing.Point(6, 291);
+            this.groupBox10.Location = new System.Drawing.Point(206, 164);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(411, 152);
+            this.groupBox10.Size = new System.Drawing.Size(211, 152);
             this.groupBox10.TabIndex = 95;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "PST Transform";
@@ -1707,8 +1711,8 @@
             // tableLayoutPanel9
             // 
             this.tableLayoutPanel9.ColumnCount = 2;
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.5614F));
-            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.4386F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 53.68853F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 46.31147F));
             this.tableLayoutPanel9.Controls.Add(this.label34, 0, 0);
             this.tableLayoutPanel9.Controls.Add(this.cnl1, 1, 0);
             this.tableLayoutPanel9.Controls.Add(this.cnl4, 1, 3);
@@ -1725,7 +1729,7 @@
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel9.Size = new System.Drawing.Size(399, 120);
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(197, 120);
             this.tableLayoutPanel9.TabIndex = 66;
             // 
             // label34
@@ -1748,14 +1752,14 @@
             0,
             0,
             65536});
-            this.cnl1.Location = new System.Drawing.Point(100, 3);
+            this.cnl1.Location = new System.Drawing.Point(108, 3);
             this.cnl1.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.cnl1.Name = "cnl1";
-            this.cnl1.Size = new System.Drawing.Size(282, 22);
+            this.cnl1.Size = new System.Drawing.Size(80, 22);
             this.cnl1.TabIndex = 42;
             this.cnl1.Value = new decimal(new int[] {
             65,
@@ -1772,14 +1776,14 @@
             0,
             0,
             65536});
-            this.cnl4.Location = new System.Drawing.Point(100, 93);
+            this.cnl4.Location = new System.Drawing.Point(108, 93);
             this.cnl4.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.cnl4.Name = "cnl4";
-            this.cnl4.Size = new System.Drawing.Size(285, 22);
+            this.cnl4.Size = new System.Drawing.Size(80, 22);
             this.cnl4.TabIndex = 65;
             this.cnl4.Value = new decimal(new int[] {
             76,
@@ -1796,14 +1800,14 @@
             0,
             0,
             65536});
-            this.cnl2.Location = new System.Drawing.Point(100, 33);
+            this.cnl2.Location = new System.Drawing.Point(108, 33);
             this.cnl2.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.cnl2.Name = "cnl2";
-            this.cnl2.Size = new System.Drawing.Size(279, 22);
+            this.cnl2.Size = new System.Drawing.Size(80, 22);
             this.cnl2.TabIndex = 44;
             this.cnl2.Value = new decimal(new int[] {
             40,
@@ -1853,14 +1857,14 @@
             0,
             0,
             65536});
-            this.cnl3.Location = new System.Drawing.Point(100, 63);
+            this.cnl3.Location = new System.Drawing.Point(108, 63);
             this.cnl3.Minimum = new decimal(new int[] {
             100,
             0,
             0,
             -2147483648});
             this.cnl3.Name = "cnl3";
-            this.cnl3.Size = new System.Drawing.Size(273, 22);
+            this.cnl3.Size = new System.Drawing.Size(80, 22);
             this.cnl3.TabIndex = 66;
             this.cnl3.Value = new decimal(new int[] {
             73,
@@ -1875,7 +1879,7 @@
             this.groupBox14.Controls.Add(this.label39);
             this.groupBox14.Controls.Add(this.gaussian_sig);
             this.groupBox14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox14.Location = new System.Drawing.Point(6, 449);
+            this.groupBox14.Location = new System.Drawing.Point(6, 327);
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Size = new System.Drawing.Size(411, 100);
             this.groupBox14.TabIndex = 94;
@@ -2168,7 +2172,7 @@
             this.groupBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox7.Location = new System.Drawing.Point(6, 164);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(411, 121);
+            this.groupBox7.Size = new System.Drawing.Size(194, 121);
             this.groupBox7.TabIndex = 91;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Matching Correction";
@@ -2176,8 +2180,8 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.82957F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.17043F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 56.16438F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 43.83562F));
             this.tableLayoutPanel2.Controls.Add(this.ErrConstraint, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label27, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.label28, 0, 0);
@@ -2190,20 +2194,20 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(399, 90);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(182, 90);
             this.tableLayoutPanel2.TabIndex = 66;
             // 
             // ErrConstraint
             // 
             this.ErrConstraint.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ErrConstraint.Location = new System.Drawing.Point(129, 63);
+            this.ErrConstraint.Location = new System.Drawing.Point(105, 63);
             this.ErrConstraint.Maximum = new decimal(new int[] {
             15,
             0,
             0,
             0});
             this.ErrConstraint.Name = "ErrConstraint";
-            this.ErrConstraint.Size = new System.Drawing.Size(254, 22);
+            this.ErrConstraint.Size = new System.Drawing.Size(74, 22);
             this.ErrConstraint.TabIndex = 65;
             this.ErrConstraint.Value = new decimal(new int[] {
             15,
@@ -2218,9 +2222,9 @@
             this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.Location = new System.Drawing.Point(3, 67);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(102, 16);
+            this.label27.Size = new System.Drawing.Size(81, 16);
             this.label27.TabIndex = 65;
-            this.label27.Text = "Error Constraint:";
+            this.label27.Text = "Error Constr:";
             // 
             // label28
             // 
@@ -2229,21 +2233,21 @@
             this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label28.Location = new System.Drawing.Point(3, 7);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(107, 16);
+            this.label28.Size = new System.Drawing.Size(88, 16);
             this.label28.TabIndex = 41;
-            this.label28.Text = "Canny threshold:";
+            this.label28.Text = "Canny thresh:";
             // 
             // correctionRange
             // 
             this.correctionRange.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.correctionRange.Location = new System.Drawing.Point(129, 33);
+            this.correctionRange.Location = new System.Drawing.Point(105, 33);
             this.correctionRange.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
             this.correctionRange.Name = "correctionRange";
-            this.correctionRange.Size = new System.Drawing.Size(263, 22);
+            this.correctionRange.Size = new System.Drawing.Size(74, 22);
             this.correctionRange.TabIndex = 44;
             this.correctionRange.Value = new decimal(new int[] {
             3,
@@ -2254,14 +2258,14 @@
             // cannyThresh
             // 
             this.cannyThresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cannyThresh.Location = new System.Drawing.Point(129, 3);
+            this.cannyThresh.Location = new System.Drawing.Point(105, 3);
             this.cannyThresh.Maximum = new decimal(new int[] {
             500,
             0,
             0,
             0});
             this.cannyThresh.Name = "cannyThresh";
-            this.cannyThresh.Size = new System.Drawing.Size(257, 22);
+            this.cannyThresh.Size = new System.Drawing.Size(74, 22);
             this.cannyThresh.TabIndex = 42;
             this.cannyThresh.Value = new decimal(new int[] {
             475,
@@ -2276,14 +2280,14 @@
             this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label29.Location = new System.Drawing.Point(3, 37);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(116, 16);
+            this.label29.Size = new System.Drawing.Size(83, 16);
             this.label29.TabIndex = 43;
-            this.label29.Text = "Correction Range:";
+            this.label29.Text = "Corrt Range:";
             // 
             // buildTemplate
             // 
             this.buildTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buildTemplate.Location = new System.Drawing.Point(18, 593);
+            this.buildTemplate.Location = new System.Drawing.Point(7, 49);
             this.buildTemplate.Name = "buildTemplate";
             this.buildTemplate.Size = new System.Drawing.Size(155, 30);
             this.buildTemplate.TabIndex = 90;
@@ -2483,6 +2487,67 @@
             this.label5.TabIndex = 106;
             this.label5.Text = "Trạng thái rơ le:";
             // 
+            // groupBox16
+            // 
+            this.groupBox16.Controls.Add(this.TmpMinRa);
+            this.groupBox16.Controls.Add(this.RawROISize);
+            this.groupBox16.Controls.Add(this.TmpMaxRa);
+            this.groupBox16.Controls.Add(this.buildTemplate);
+            this.groupBox16.Controls.Add(this.convertto8bit);
+            this.groupBox16.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox16.Location = new System.Drawing.Point(6, 433);
+            this.groupBox16.Name = "groupBox16";
+            this.groupBox16.Size = new System.Drawing.Size(411, 100);
+            this.groupBox16.TabIndex = 95;
+            this.groupBox16.TabStop = false;
+            this.groupBox16.Text = "Template Building";
+            // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.ShowObjectSize);
+            this.groupBox18.Controls.Add(this.SaveTheshImage);
+            this.groupBox18.Controls.Add(this.SaveCapturedImage);
+            this.groupBox18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox18.Location = new System.Drawing.Point(6, 539);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Size = new System.Drawing.Size(411, 85);
+            this.groupBox18.TabIndex = 100;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = "Option";
+            // 
+            // SaveCapturedImage
+            // 
+            this.SaveCapturedImage.AutoSize = true;
+            this.SaveCapturedImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveCapturedImage.Location = new System.Drawing.Point(7, 21);
+            this.SaveCapturedImage.Name = "SaveCapturedImage";
+            this.SaveCapturedImage.Size = new System.Drawing.Size(158, 20);
+            this.SaveCapturedImage.TabIndex = 62;
+            this.SaveCapturedImage.Text = "Save Captured Image";
+            this.SaveCapturedImage.UseVisualStyleBackColor = true;
+            // 
+            // SaveTheshImage
+            // 
+            this.SaveTheshImage.AutoSize = true;
+            this.SaveTheshImage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveTheshImage.Location = new System.Drawing.Point(168, 21);
+            this.SaveTheshImage.Name = "SaveTheshImage";
+            this.SaveTheshImage.Size = new System.Drawing.Size(164, 20);
+            this.SaveTheshImage.TabIndex = 63;
+            this.SaveTheshImage.Text = "Save Threshold Image";
+            this.SaveTheshImage.UseVisualStyleBackColor = true;
+            // 
+            // ShowObjectSize
+            // 
+            this.ShowObjectSize.AutoSize = true;
+            this.ShowObjectSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ShowObjectSize.Location = new System.Drawing.Point(7, 47);
+            this.ShowObjectSize.Name = "ShowObjectSize";
+            this.ShowObjectSize.Size = new System.Drawing.Size(131, 20);
+            this.ShowObjectSize.TabIndex = 64;
+            this.ShowObjectSize.Text = "Show Object Size";
+            this.ShowObjectSize.UseVisualStyleBackColor = true;
+            // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2599,6 +2664,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed8)).EndInit();
+            this.groupBox16.ResumeLayout(false);
+            this.groupBox18.ResumeLayout(false);
+            this.groupBox18.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2779,6 +2847,11 @@
         private System.Windows.Forms.PictureBox OutputLed8;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.ToolStripComboBox tmp_item_name;
+        private System.Windows.Forms.GroupBox groupBox16;
+        private System.Windows.Forms.GroupBox groupBox18;
+        public System.Windows.Forms.CheckBox SaveTheshImage;
+        public System.Windows.Forms.CheckBox SaveCapturedImage;
+        public System.Windows.Forms.CheckBox ShowObjectSize;
     }
 }
 
