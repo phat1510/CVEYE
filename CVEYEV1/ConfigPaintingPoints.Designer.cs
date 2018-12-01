@@ -30,6 +30,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigPaintingPoints));
             this.TmpImageBox = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.item_color = new System.Windows.Forms.ComboBox();
@@ -50,7 +51,6 @@
             this.SetName = new System.Windows.Forms.ComboBox();
             this.jettingMode = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.fastMoving = new System.Windows.Forms.CheckBox();
             this.xPlus = new System.Windows.Forms.Button();
             this.yPlus = new System.Windows.Forms.Button();
@@ -68,13 +68,14 @@
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
             this.AddRow = new System.Windows.Forms.Button();
             this.DeleteRow = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.TmpImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Data_Grid)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TmpImageBox
@@ -334,32 +335,18 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel1);
-            this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 467);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(430, 151);
+            this.groupBox1.Size = new System.Drawing.Size(256, 151);
             this.groupBox1.TabIndex = 81;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông số mẫu";
             // 
-            // panel1
-            // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.fastMoving);
-            this.panel1.Controls.Add(this.xPlus);
-            this.panel1.Controls.Add(this.yPlus);
-            this.panel1.Controls.Add(this.yMinus);
-            this.panel1.Controls.Add(this.xMinus);
-            this.panel1.Location = new System.Drawing.Point(261, 21);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(163, 120);
-            this.panel1.TabIndex = 104;
-            // 
             // fastMoving
             // 
             this.fastMoving.AutoSize = true;
-            this.fastMoving.Location = new System.Drawing.Point(3, 94);
+            this.fastMoving.Location = new System.Drawing.Point(6, 123);
             this.fastMoving.Name = "fastMoving";
             this.fastMoving.Size = new System.Drawing.Size(119, 20);
             this.fastMoving.TabIndex = 106;
@@ -369,44 +356,46 @@
             // xPlus
             // 
             this.xPlus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xPlus.Location = new System.Drawing.Point(108, 27);
+            this.xPlus.Image = ((System.Drawing.Image)(resources.GetObject("xPlus.Image")));
+            this.xPlus.Location = new System.Drawing.Point(116, 61);
             this.xPlus.Name = "xPlus";
-            this.xPlus.Size = new System.Drawing.Size(50, 37);
+            this.xPlus.Size = new System.Drawing.Size(50, 40);
             this.xPlus.TabIndex = 105;
-            this.xPlus.Text = "X+";
             this.xPlus.UseVisualStyleBackColor = true;
             this.xPlus.Click += new System.EventHandler(this.xPlus_Click);
             // 
             // yPlus
             // 
+            this.yPlus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.yPlus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yPlus.Location = new System.Drawing.Point(56, 51);
+            this.yPlus.Image = ((System.Drawing.Image)(resources.GetObject("yPlus.Image")));
+            this.yPlus.Location = new System.Drawing.Point(60, 61);
             this.yPlus.Name = "yPlus";
-            this.yPlus.Size = new System.Drawing.Size(50, 37);
+            this.yPlus.Size = new System.Drawing.Size(50, 40);
             this.yPlus.TabIndex = 102;
-            this.yPlus.Text = "Y+";
             this.yPlus.UseVisualStyleBackColor = true;
             this.yPlus.Click += new System.EventHandler(this.yPlus_Click);
             // 
             // yMinus
             // 
+            this.yMinus.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("yMinus.BackgroundImage")));
+            this.yMinus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.yMinus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.yMinus.Location = new System.Drawing.Point(56, 4);
+            this.yMinus.Location = new System.Drawing.Point(60, 15);
             this.yMinus.Name = "yMinus";
-            this.yMinus.Size = new System.Drawing.Size(50, 37);
+            this.yMinus.Size = new System.Drawing.Size(50, 40);
             this.yMinus.TabIndex = 103;
-            this.yMinus.Text = "Y-";
             this.yMinus.UseVisualStyleBackColor = true;
             this.yMinus.Click += new System.EventHandler(this.yMinus_Click);
             // 
             // xMinus
             // 
             this.xMinus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.xMinus.Location = new System.Drawing.Point(3, 27);
+            this.xMinus.Image = ((System.Drawing.Image)(resources.GetObject("xMinus.Image")));
+            this.xMinus.Location = new System.Drawing.Point(6, 61);
             this.xMinus.Name = "xMinus";
-            this.xMinus.Size = new System.Drawing.Size(50, 37);
+            this.xMinus.Size = new System.Drawing.Size(50, 40);
             this.xMinus.TabIndex = 104;
-            this.xMinus.Text = "X-";
             this.xMinus.UseVisualStyleBackColor = true;
             this.xMinus.Click += new System.EventHandler(this.xMinus_Click);
             // 
@@ -527,12 +516,27 @@
             this.DeleteRow.UseVisualStyleBackColor = true;
             this.DeleteRow.Click += new System.EventHandler(this.DeleteRow_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.fastMoving);
+            this.groupBox2.Controls.Add(this.yMinus);
+            this.groupBox2.Controls.Add(this.xPlus);
+            this.groupBox2.Controls.Add(this.xMinus);
+            this.groupBox2.Controls.Add(this.yPlus);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(274, 467);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(171, 149);
+            this.groupBox2.TabIndex = 107;
+            this.groupBox2.TabStop = false;
+            // 
             // ConfigPaintingPoints
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(864, 682);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.DeleteRow);
             this.Controls.Add(this.AddRow);
             this.Controls.Add(this.statusStrip1);
@@ -553,7 +557,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ConfigPaintingPoints";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Config Painting Point";
             this.Load += new System.EventHandler(this.ConfigPaintingPoints_Load);
             this.Shown += new System.EventHandler(this.ConfigPaintingPoints_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.TmpImageBox)).EndInit();
@@ -562,10 +565,10 @@
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.jettingMode)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -599,7 +602,6 @@
         private System.Windows.Forms.Button xPlus;
         private System.Windows.Forms.Button xMinus;
         private System.Windows.Forms.Button yMinus;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button AddRow;
         private System.Windows.Forms.Button DeleteRow;
         private System.Windows.Forms.CheckBox fastMoving;
@@ -610,5 +612,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colT;
         private System.Windows.Forms.DataGridViewTextBoxColumn patternColor;
         private System.Windows.Forms.NumericUpDown jettingMode;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
