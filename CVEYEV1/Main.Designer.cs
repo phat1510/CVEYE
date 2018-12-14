@@ -30,15 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CVEye));
-            this.captureImg = new System.Windows.Forms.Button();
             this.turnCamera = new System.Windows.Forms.Button();
             this.pattern_field = new System.Windows.Forms.PictureBox();
-            this.startDetection = new System.Windows.Forms.Button();
             this.templateField = new System.Windows.Forms.PictureBox();
             this.run = new System.Windows.Forms.Button();
             this.Reset = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lockCylinder = new System.Windows.Forms.Button();
+            this.CaptureAndScan = new System.Windows.Forms.Button();
             this.Progress = new System.Windows.Forms.ProgressBar();
             this.StatusLabel = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -111,6 +110,7 @@
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.UpdateCameraID = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
@@ -125,23 +125,23 @@
             this.enableCamUndist = new System.Windows.Forms.CheckBox();
             this.CompensateCamData = new System.Windows.Forms.Button();
             this.CalibrateCamData = new System.Windows.Forms.Button();
-            this.SaveCamData = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.CameraData = new System.Windows.Forms.ListBox();
+            this.SaveCamData = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.squareSize = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.calib_squareSize = new System.Windows.Forms.TextBox();
-            this.calib_noOfSample = new System.Windows.Forms.TextBox();
-            this.calib_cornerHeight = new System.Windows.Forms.TextBox();
-            this.calib_cornerWidth = new System.Windows.Forms.TextBox();
-            this.calib_yOffset = new System.Windows.Forms.TextBox();
             this.calib_xOffset = new System.Windows.Forms.TextBox();
+            this.calib_yOffset = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.calib_cornerWidth = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.camID = new System.Windows.Forms.TextBox();
+            this.calib_cornerHeight = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.calib_noOfSample = new System.Windows.Forms.TextBox();
+            this.squareSize = new System.Windows.Forms.Label();
+            this.calib_squareSize = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
@@ -213,6 +213,7 @@
             this.OutputLed8 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.testOCR = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pattern_field)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.templateField)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -286,25 +287,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.OutputLed8)).BeginInit();
             this.SuspendLayout();
             // 
-            // captureImg
-            // 
-            this.captureImg.BackColor = System.Drawing.Color.Teal;
-            this.captureImg.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.captureImg.ForeColor = System.Drawing.Color.White;
-            this.captureImg.Location = new System.Drawing.Point(6, 137);
-            this.captureImg.Name = "captureImg";
-            this.captureImg.Size = new System.Drawing.Size(188, 50);
-            this.captureImg.TabIndex = 8;
-            this.captureImg.Text = "Chụp ảnh";
-            this.captureImg.UseVisualStyleBackColor = false;
-            this.captureImg.Click += new System.EventHandler(this.Capture_Click);
-            // 
             // turnCamera
             // 
             this.turnCamera.BackColor = System.Drawing.Color.Teal;
             this.turnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.turnCamera.ForeColor = System.Drawing.Color.White;
-            this.turnCamera.Location = new System.Drawing.Point(6, 79);
+            this.turnCamera.Location = new System.Drawing.Point(6, 77);
             this.turnCamera.Name = "turnCamera";
             this.turnCamera.Size = new System.Drawing.Size(188, 50);
             this.turnCamera.TabIndex = 1;
@@ -323,24 +311,11 @@
             this.pattern_field.TabIndex = 56;
             this.pattern_field.TabStop = false;
             // 
-            // startDetection
-            // 
-            this.startDetection.BackColor = System.Drawing.Color.Teal;
-            this.startDetection.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startDetection.ForeColor = System.Drawing.Color.White;
-            this.startDetection.Location = new System.Drawing.Point(6, 193);
-            this.startDetection.Name = "startDetection";
-            this.startDetection.Size = new System.Drawing.Size(188, 50);
-            this.startDetection.TabIndex = 58;
-            this.startDetection.Text = "Quét ảnh";
-            this.startDetection.UseVisualStyleBackColor = false;
-            this.startDetection.Click += new System.EventHandler(this.DetectClick);
-            // 
             // templateField
             // 
             this.templateField.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.templateField.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.templateField.Location = new System.Drawing.Point(6, 263);
+            this.templateField.Location = new System.Drawing.Point(6, 231);
             this.templateField.Name = "templateField";
             this.templateField.Size = new System.Drawing.Size(200, 200);
             this.templateField.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -352,7 +327,7 @@
             this.run.BackColor = System.Drawing.Color.Lime;
             this.run.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.run.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.run.Location = new System.Drawing.Point(6, 605);
+            this.run.Location = new System.Drawing.Point(6, 623);
             this.run.Name = "run";
             this.run.Size = new System.Drawing.Size(278, 50);
             this.run.TabIndex = 67;
@@ -366,7 +341,7 @@
             this.Reset.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.Reset.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Reset.ForeColor = System.Drawing.Color.White;
-            this.Reset.Location = new System.Drawing.Point(290, 605);
+            this.Reset.Location = new System.Drawing.Point(290, 623);
             this.Reset.Name = "Reset";
             this.Reset.Size = new System.Drawing.Size(140, 50);
             this.Reset.TabIndex = 68;
@@ -374,14 +349,13 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.captureImg);
-            this.groupBox3.Controls.Add(this.startDetection);
             this.groupBox3.Controls.Add(this.lockCylinder);
+            this.groupBox3.Controls.Add(this.CaptureAndScan);
             this.groupBox3.Controls.Add(this.turnCamera);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(6, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 251);
+            this.groupBox3.Size = new System.Drawing.Size(200, 219);
             this.groupBox3.TabIndex = 71;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Điều khiển khung ảnh";
@@ -399,11 +373,24 @@
             this.lockCylinder.UseVisualStyleBackColor = false;
             this.lockCylinder.Click += new System.EventHandler(this.lockCylinder_Click);
             // 
+            // CaptureAndScan
+            // 
+            this.CaptureAndScan.BackColor = System.Drawing.Color.Teal;
+            this.CaptureAndScan.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CaptureAndScan.ForeColor = System.Drawing.Color.White;
+            this.CaptureAndScan.Location = new System.Drawing.Point(6, 133);
+            this.CaptureAndScan.Name = "CaptureAndScan";
+            this.CaptureAndScan.Size = new System.Drawing.Size(188, 76);
+            this.CaptureAndScan.TabIndex = 82;
+            this.CaptureAndScan.Text = "Quét ảnh";
+            this.CaptureAndScan.UseVisualStyleBackColor = false;
+            this.CaptureAndScan.Click += new System.EventHandler(this.CaptureAndScan_Click);
+            // 
             // Progress
             // 
-            this.Progress.Location = new System.Drawing.Point(592, 709);
+            this.Progress.Location = new System.Drawing.Point(642, 714);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(300, 22);
+            this.Progress.Size = new System.Drawing.Size(250, 22);
             this.Progress.Step = 1;
             this.Progress.TabIndex = 72;
             this.Progress.Visible = false;
@@ -412,18 +399,18 @@
             // 
             this.StatusLabel.AutoSize = true;
             this.StatusLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StatusLabel.ForeColor = System.Drawing.Color.Black;
-            this.StatusLabel.Location = new System.Drawing.Point(8, 711);
+            this.StatusLabel.Location = new System.Drawing.Point(8, 714);
             this.StatusLabel.Margin = new System.Windows.Forms.Padding(3);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(45, 24);
+            this.StatusLabel.Size = new System.Drawing.Size(36, 18);
             this.StatusLabel.TabIndex = 74;
             this.StatusLabel.Text = "       ";
             // 
             // groupBox4
             // 
-            this.groupBox4.Location = new System.Drawing.Point(12, 700);
+            this.groupBox4.Location = new System.Drawing.Point(12, 705);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(880, 2);
             this.groupBox4.TabIndex = 76;
@@ -446,7 +433,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(220, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(210, 593);
+            this.groupBox2.Size = new System.Drawing.Size(210, 611);
             this.groupBox2.TabIndex = 72;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Điều khiển bàn máy";
@@ -656,7 +643,7 @@
             this.processLog.ItemHeight = 16;
             this.processLog.Location = new System.Drawing.Point(6, 431);
             this.processLog.Name = "processLog";
-            this.processLog.Size = new System.Drawing.Size(198, 148);
+            this.processLog.Size = new System.Drawing.Size(198, 164);
             this.processLog.TabIndex = 82;
             // 
             // ledX
@@ -738,7 +725,6 @@
             // 
             // timerDROupdate
             // 
-            this.timerDROupdate.Interval = 200;
             this.timerDROupdate.Tick += new System.EventHandler(this.TimerDROupdate_Tick);
             // 
             // backgroundWorker
@@ -772,7 +758,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(3, 35);
+            this.label8.Location = new System.Drawing.Point(3, 5);
             this.label8.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(116, 16);
@@ -783,7 +769,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(3, 65);
+            this.label9.Location = new System.Drawing.Point(3, 35);
             this.label9.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(117, 16);
@@ -800,7 +786,7 @@
             this.tabControl1.Location = new System.Drawing.Point(907, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(450, 690);
+            this.tabControl1.Size = new System.Drawing.Size(450, 705);
             this.tabControl1.TabIndex = 96;
             // 
             // tabPage1
@@ -815,7 +801,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(442, 661);
+            this.tabPage1.Size = new System.Drawing.Size(442, 676);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Vận Hành";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -826,9 +812,9 @@
             this.groupBox17.Controls.Add(this.RadioOneDrop);
             this.groupBox17.Controls.Add(this.RadioContDrop);
             this.groupBox17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox17.Location = new System.Drawing.Point(6, 469);
+            this.groupBox17.Location = new System.Drawing.Point(6, 437);
             this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(200, 130);
+            this.groupBox17.Size = new System.Drawing.Size(200, 180);
             this.groupBox17.TabIndex = 98;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = "Điều khiển đầu phun";
@@ -869,7 +855,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(442, 661);
+            this.tabPage2.Size = new System.Drawing.Size(442, 676);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Chế Độ Sơn";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -889,7 +875,7 @@
             // 
             // SavePCData
             // 
-            this.SavePCData.Location = new System.Drawing.Point(119, 625);
+            this.SavePCData.Location = new System.Drawing.Point(119, 640);
             this.SavePCData.Name = "SavePCData";
             this.SavePCData.Size = new System.Drawing.Size(317, 30);
             this.SavePCData.TabIndex = 93;
@@ -899,7 +885,7 @@
             // 
             // ResetPCData
             // 
-            this.ResetPCData.Location = new System.Drawing.Point(5, 625);
+            this.ResetPCData.Location = new System.Drawing.Point(5, 640);
             this.ResetPCData.Name = "ResetPCData";
             this.ResetPCData.Size = new System.Drawing.Size(108, 30);
             this.ResetPCData.TabIndex = 92;
@@ -926,9 +912,9 @@
             // 
             this.offsetPlusX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.offsetPlusX.Image = ((System.Drawing.Image)(resources.GetObject("offsetPlusX.Image")));
-            this.offsetPlusX.Location = new System.Drawing.Point(351, 95);
+            this.offsetPlusX.Location = new System.Drawing.Point(387, 116);
             this.offsetPlusX.Name = "offsetPlusX";
-            this.offsetPlusX.Size = new System.Drawing.Size(40, 65);
+            this.offsetPlusX.Size = new System.Drawing.Size(40, 90);
             this.offsetPlusX.TabIndex = 107;
             this.offsetPlusX.UseVisualStyleBackColor = true;
             this.offsetPlusX.Click += new System.EventHandler(this.offsetPlusX_Click);
@@ -943,7 +929,7 @@
             this.zOffset});
             this.OffsetCoor.Location = new System.Drawing.Point(6, 25);
             this.OffsetCoor.Name = "OffsetCoor";
-            this.OffsetCoor.Size = new System.Drawing.Size(329, 135);
+            this.OffsetCoor.Size = new System.Drawing.Size(375, 135);
             this.OffsetCoor.TabIndex = 0;
             // 
             // note
@@ -956,27 +942,27 @@
             // 
             this.dataGridViewTextBoxColumn1.HeaderText = "X";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Width = 70;
+            this.dataGridViewTextBoxColumn1.Width = 90;
             // 
             // dataGridViewTextBoxColumn2
             // 
             this.dataGridViewTextBoxColumn2.HeaderText = "Y";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.Width = 70;
+            this.dataGridViewTextBoxColumn2.Width = 90;
             // 
             // zOffset
             // 
             this.zOffset.HeaderText = "Z";
             this.zOffset.Name = "zOffset";
-            this.zOffset.Width = 70;
+            this.zOffset.Width = 90;
             // 
             // offsetPlusY
             // 
             this.offsetPlusY.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.offsetPlusY.Image = ((System.Drawing.Image)(resources.GetObject("offsetPlusY.Image")));
-            this.offsetPlusY.Location = new System.Drawing.Point(175, 166);
+            this.offsetPlusY.Location = new System.Drawing.Point(196, 166);
             this.offsetPlusY.Name = "offsetPlusY";
-            this.offsetPlusY.Size = new System.Drawing.Size(160, 40);
+            this.offsetPlusY.Size = new System.Drawing.Size(185, 40);
             this.offsetPlusY.TabIndex = 96;
             this.offsetPlusY.UseVisualStyleBackColor = true;
             this.offsetPlusY.Click += new System.EventHandler(this.offsetPlusY_Click);
@@ -985,9 +971,9 @@
             // 
             this.offsetMinusX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.offsetMinusX.Image = ((System.Drawing.Image)(resources.GetObject("offsetMinusX.Image")));
-            this.offsetMinusX.Location = new System.Drawing.Point(351, 25);
+            this.offsetMinusX.Location = new System.Drawing.Point(387, 20);
             this.offsetMinusX.Name = "offsetMinusX";
-            this.offsetMinusX.Size = new System.Drawing.Size(40, 65);
+            this.offsetMinusX.Size = new System.Drawing.Size(40, 90);
             this.offsetMinusX.TabIndex = 97;
             this.offsetMinusX.UseVisualStyleBackColor = true;
             this.offsetMinusX.Click += new System.EventHandler(this.offsetMinusX_Click);
@@ -998,7 +984,7 @@
             this.offsetMinusY.Image = ((System.Drawing.Image)(resources.GetObject("offsetMinusY.Image")));
             this.offsetMinusY.Location = new System.Drawing.Point(6, 166);
             this.offsetMinusY.Name = "offsetMinusY";
-            this.offsetMinusY.Size = new System.Drawing.Size(160, 40);
+            this.offsetMinusY.Size = new System.Drawing.Size(185, 40);
             this.offsetMinusY.TabIndex = 95;
             this.offsetMinusY.UseVisualStyleBackColor = true;
             this.offsetMinusY.Click += new System.EventHandler(this.offsetMinusY_Click);
@@ -1312,16 +1298,30 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.UpdateCameraID);
             this.tabPage3.Controls.Add(this.groupBox6);
             this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox9);
+            this.tabPage3.Controls.Add(this.SaveCamData);
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(442, 661);
+            this.tabPage3.Size = new System.Drawing.Size(442, 676);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Camera Calibration";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // UpdateCameraID
+            // 
+            this.UpdateCameraID.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.UpdateCameraID.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UpdateCameraID.Location = new System.Drawing.Point(244, 334);
+            this.UpdateCameraID.Name = "UpdateCameraID";
+            this.UpdateCameraID.Size = new System.Drawing.Size(175, 28);
+            this.UpdateCameraID.TabIndex = 105;
+            this.UpdateCameraID.Text = "Connect Camera";
+            this.UpdateCameraID.UseVisualStyleBackColor = false;
+            this.UpdateCameraID.Click += new System.EventHandler(this.UpdateCameraID_Click);
             // 
             // groupBox6
             // 
@@ -1333,7 +1333,7 @@
             this.groupBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox6.Location = new System.Drawing.Point(6, 506);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(410, 151);
+            this.groupBox6.Size = new System.Drawing.Size(410, 165);
             this.groupBox6.TabIndex = 97;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Camera Original Setting";
@@ -1427,9 +1427,8 @@
             this.groupBox5.Controls.Add(this.enableCamUndist);
             this.groupBox5.Controls.Add(this.CompensateCamData);
             this.groupBox5.Controls.Add(this.CalibrateCamData);
-            this.groupBox5.Controls.Add(this.SaveCamData);
             this.groupBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(6, 8);
+            this.groupBox5.Location = new System.Drawing.Point(9, 3);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(410, 82);
             this.groupBox5.TabIndex = 97;
@@ -1464,7 +1463,7 @@
             this.CompensateCamData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CompensateCamData.Location = new System.Drawing.Point(7, 21);
             this.CompensateCamData.Name = "CompensateCamData";
-            this.CompensateCamData.Size = new System.Drawing.Size(128, 28);
+            this.CompensateCamData.Size = new System.Drawing.Size(193, 28);
             this.CompensateCamData.TabIndex = 94;
             this.CompensateCamData.Text = "Compensate";
             this.CompensateCamData.UseVisualStyleBackColor = false;
@@ -1474,32 +1473,20 @@
             // 
             this.CalibrateCamData.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.CalibrateCamData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CalibrateCamData.Location = new System.Drawing.Point(141, 21);
+            this.CalibrateCamData.Location = new System.Drawing.Point(206, 21);
             this.CalibrateCamData.Name = "CalibrateCamData";
-            this.CalibrateCamData.Size = new System.Drawing.Size(128, 28);
+            this.CalibrateCamData.Size = new System.Drawing.Size(195, 28);
             this.CalibrateCamData.TabIndex = 95;
             this.CalibrateCamData.Text = "Calibrate";
             this.CalibrateCamData.UseVisualStyleBackColor = false;
             this.CalibrateCamData.Click += new System.EventHandler(this.CamCalibrate_Click);
             // 
-            // SaveCamData
-            // 
-            this.SaveCamData.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.SaveCamData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveCamData.Location = new System.Drawing.Point(275, 21);
-            this.SaveCamData.Name = "SaveCamData";
-            this.SaveCamData.Size = new System.Drawing.Size(128, 28);
-            this.SaveCamData.TabIndex = 96;
-            this.SaveCamData.Text = "Save";
-            this.SaveCamData.UseVisualStyleBackColor = false;
-            this.SaveCamData.Click += new System.EventHandler(this.SaveCamData_Click);
-            // 
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.CameraData);
-            this.groupBox9.Location = new System.Drawing.Point(6, 340);
+            this.groupBox9.Location = new System.Drawing.Point(6, 412);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(410, 160);
+            this.groupBox9.Size = new System.Drawing.Size(410, 88);
             this.groupBox9.TabIndex = 97;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Camera Data";
@@ -1514,13 +1501,25 @@
             this.CameraData.Size = new System.Drawing.Size(398, 132);
             this.CameraData.TabIndex = 83;
             // 
+            // SaveCamData
+            // 
+            this.SaveCamData.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.SaveCamData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveCamData.Location = new System.Drawing.Point(9, 334);
+            this.SaveCamData.Name = "SaveCamData";
+            this.SaveCamData.Size = new System.Drawing.Size(226, 28);
+            this.SaveCamData.TabIndex = 96;
+            this.SaveCamData.Text = "Save";
+            this.SaveCamData.UseVisualStyleBackColor = false;
+            this.SaveCamData.Click += new System.EventHandler(this.SaveCamData_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel5);
-            this.groupBox1.Location = new System.Drawing.Point(6, 98);
+            this.groupBox1.Location = new System.Drawing.Point(9, 93);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(5, 5, 3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(410, 236);
+            this.groupBox1.Size = new System.Drawing.Size(410, 235);
             this.groupBox1.TabIndex = 96;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Calibration Parameter";
@@ -1530,20 +1529,20 @@
             this.tableLayoutPanel5.ColumnCount = 2;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.26448F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.73552F));
-            this.tableLayoutPanel5.Controls.Add(this.squareSize, 0, 6);
-            this.tableLayoutPanel5.Controls.Add(this.label13, 0, 5);
-            this.tableLayoutPanel5.Controls.Add(this.label10, 0, 4);
-            this.tableLayoutPanel5.Controls.Add(this.label11, 0, 3);
-            this.tableLayoutPanel5.Controls.Add(this.label9, 0, 2);
-            this.tableLayoutPanel5.Controls.Add(this.label8, 0, 1);
-            this.tableLayoutPanel5.Controls.Add(this.label17, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.calib_squareSize, 1, 6);
-            this.tableLayoutPanel5.Controls.Add(this.calib_noOfSample, 1, 5);
-            this.tableLayoutPanel5.Controls.Add(this.calib_cornerHeight, 1, 4);
-            this.tableLayoutPanel5.Controls.Add(this.calib_cornerWidth, 1, 3);
-            this.tableLayoutPanel5.Controls.Add(this.calib_yOffset, 1, 2);
-            this.tableLayoutPanel5.Controls.Add(this.calib_xOffset, 1, 1);
-            this.tableLayoutPanel5.Controls.Add(this.camID, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.label8, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.calib_xOffset, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.label9, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.calib_yOffset, 1, 1);
+            this.tableLayoutPanel5.Controls.Add(this.label11, 0, 2);
+            this.tableLayoutPanel5.Controls.Add(this.calib_cornerWidth, 1, 2);
+            this.tableLayoutPanel5.Controls.Add(this.label17, 0, 6);
+            this.tableLayoutPanel5.Controls.Add(this.label10, 0, 3);
+            this.tableLayoutPanel5.Controls.Add(this.camID, 1, 6);
+            this.tableLayoutPanel5.Controls.Add(this.calib_cornerHeight, 1, 3);
+            this.tableLayoutPanel5.Controls.Add(this.label13, 0, 4);
+            this.tableLayoutPanel5.Controls.Add(this.calib_noOfSample, 1, 4);
+            this.tableLayoutPanel5.Controls.Add(this.squareSize, 0, 5);
+            this.tableLayoutPanel5.Controls.Add(this.calib_squareSize, 1, 5);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(6, 21);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 10;
@@ -1560,109 +1559,109 @@
             this.tableLayoutPanel5.Size = new System.Drawing.Size(397, 352);
             this.tableLayoutPanel5.TabIndex = 97;
             // 
-            // squareSize
+            // calib_xOffset
             // 
-            this.squareSize.AutoSize = true;
-            this.squareSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.squareSize.Location = new System.Drawing.Point(3, 185);
-            this.squareSize.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.squareSize.Name = "squareSize";
-            this.squareSize.Size = new System.Drawing.Size(115, 16);
-            this.squareSize.TabIndex = 97;
-            this.squareSize.Text = "Square size (mm):";
+            this.calib_xOffset.Location = new System.Drawing.Point(142, 3);
+            this.calib_xOffset.Name = "calib_xOffset";
+            this.calib_xOffset.Size = new System.Drawing.Size(251, 22);
+            this.calib_xOffset.TabIndex = 97;
             // 
-            // label13
+            // calib_yOffset
             // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(3, 155);
-            this.label13.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(121, 16);
-            this.label13.TabIndex = 96;
-            this.label13.Text = "Number of sample:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(3, 125);
-            this.label10.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(111, 16);
-            this.label10.TabIndex = 95;
-            this.label10.Text = "Corner set height:";
+            this.calib_yOffset.Location = new System.Drawing.Point(142, 33);
+            this.calib_yOffset.Name = "calib_yOffset";
+            this.calib_yOffset.Size = new System.Drawing.Size(251, 22);
+            this.calib_yOffset.TabIndex = 102;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(3, 95);
+            this.label11.Location = new System.Drawing.Point(3, 65);
             this.label11.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(105, 16);
             this.label11.TabIndex = 89;
             this.label11.Text = "Corner set width:";
             // 
+            // calib_cornerWidth
+            // 
+            this.calib_cornerWidth.Location = new System.Drawing.Point(142, 63);
+            this.calib_cornerWidth.Name = "calib_cornerWidth";
+            this.calib_cornerWidth.Size = new System.Drawing.Size(251, 22);
+            this.calib_cornerWidth.TabIndex = 101;
+            // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(3, 5);
+            this.label17.Location = new System.Drawing.Point(3, 185);
             this.label17.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(75, 16);
             this.label17.TabIndex = 103;
             this.label17.Text = "Camera ID:";
             // 
-            // calib_squareSize
+            // label10
             // 
-            this.calib_squareSize.Location = new System.Drawing.Point(142, 183);
-            this.calib_squareSize.Name = "calib_squareSize";
-            this.calib_squareSize.Size = new System.Drawing.Size(251, 22);
-            this.calib_squareSize.TabIndex = 98;
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(3, 95);
+            this.label10.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(111, 16);
+            this.label10.TabIndex = 95;
+            this.label10.Text = "Corner set height:";
             // 
-            // calib_noOfSample
+            // camID
             // 
-            this.calib_noOfSample.Location = new System.Drawing.Point(142, 153);
-            this.calib_noOfSample.Name = "calib_noOfSample";
-            this.calib_noOfSample.Size = new System.Drawing.Size(251, 22);
-            this.calib_noOfSample.TabIndex = 99;
+            this.camID.Location = new System.Drawing.Point(142, 183);
+            this.camID.Name = "camID";
+            this.camID.Size = new System.Drawing.Size(252, 22);
+            this.camID.TabIndex = 104;
             // 
             // calib_cornerHeight
             // 
-            this.calib_cornerHeight.Location = new System.Drawing.Point(142, 123);
+            this.calib_cornerHeight.Location = new System.Drawing.Point(142, 93);
             this.calib_cornerHeight.Name = "calib_cornerHeight";
             this.calib_cornerHeight.Size = new System.Drawing.Size(251, 22);
             this.calib_cornerHeight.TabIndex = 100;
             // 
-            // calib_cornerWidth
+            // label13
             // 
-            this.calib_cornerWidth.Location = new System.Drawing.Point(142, 93);
-            this.calib_cornerWidth.Name = "calib_cornerWidth";
-            this.calib_cornerWidth.Size = new System.Drawing.Size(251, 22);
-            this.calib_cornerWidth.TabIndex = 101;
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(3, 125);
+            this.label13.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(121, 16);
+            this.label13.TabIndex = 96;
+            this.label13.Text = "Number of sample:";
             // 
-            // calib_yOffset
+            // calib_noOfSample
             // 
-            this.calib_yOffset.Location = new System.Drawing.Point(142, 63);
-            this.calib_yOffset.Name = "calib_yOffset";
-            this.calib_yOffset.Size = new System.Drawing.Size(251, 22);
-            this.calib_yOffset.TabIndex = 102;
+            this.calib_noOfSample.Location = new System.Drawing.Point(142, 123);
+            this.calib_noOfSample.Name = "calib_noOfSample";
+            this.calib_noOfSample.Size = new System.Drawing.Size(251, 22);
+            this.calib_noOfSample.TabIndex = 99;
             // 
-            // calib_xOffset
+            // squareSize
             // 
-            this.calib_xOffset.Location = new System.Drawing.Point(142, 33);
-            this.calib_xOffset.Name = "calib_xOffset";
-            this.calib_xOffset.Size = new System.Drawing.Size(251, 22);
-            this.calib_xOffset.TabIndex = 97;
+            this.squareSize.AutoSize = true;
+            this.squareSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.squareSize.Location = new System.Drawing.Point(3, 155);
+            this.squareSize.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.squareSize.Name = "squareSize";
+            this.squareSize.Size = new System.Drawing.Size(115, 16);
+            this.squareSize.TabIndex = 97;
+            this.squareSize.Text = "Square size (mm):";
             // 
-            // camID
+            // calib_squareSize
             // 
-            this.camID.Location = new System.Drawing.Point(142, 3);
-            this.camID.Name = "camID";
-            this.camID.Size = new System.Drawing.Size(251, 22);
-            this.camID.TabIndex = 104;
+            this.calib_squareSize.Location = new System.Drawing.Point(142, 153);
+            this.calib_squareSize.Name = "calib_squareSize";
+            this.calib_squareSize.Size = new System.Drawing.Size(251, 22);
+            this.calib_squareSize.TabIndex = 98;
             // 
             // tabPage4
             // 
@@ -1677,14 +1676,14 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(442, 661);
+            this.tabPage4.Size = new System.Drawing.Size(442, 676);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Image Processing";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(6, 610);
+            this.button1.Location = new System.Drawing.Point(6, 625);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(194, 45);
             this.button1.TabIndex = 101;
@@ -1698,7 +1697,7 @@
             this.groupBox18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox18.Location = new System.Drawing.Point(6, 507);
             this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(411, 97);
+            this.groupBox18.Size = new System.Drawing.Size(411, 112);
             this.groupBox18.TabIndex = 100;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Option";
@@ -1811,7 +1810,7 @@
             // 
             // ImgProcSave
             // 
-            this.ImgProcSave.Location = new System.Drawing.Point(206, 610);
+            this.ImgProcSave.Location = new System.Drawing.Point(206, 625);
             this.ImgProcSave.Name = "ImgProcSave";
             this.ImgProcSave.Size = new System.Drawing.Size(211, 45);
             this.ImgProcSave.TabIndex = 96;
@@ -2526,7 +2525,7 @@
             // 
             // OutputLed1
             // 
-            this.OutputLed1.Location = new System.Drawing.Point(347, 709);
+            this.OutputLed1.Location = new System.Drawing.Point(411, 714);
             this.OutputLed1.Name = "OutputLed1";
             this.OutputLed1.Size = new System.Drawing.Size(22, 22);
             this.OutputLed1.TabIndex = 98;
@@ -2534,7 +2533,7 @@
             // 
             // OutputLed2
             // 
-            this.OutputLed2.Location = new System.Drawing.Point(375, 709);
+            this.OutputLed2.Location = new System.Drawing.Point(439, 714);
             this.OutputLed2.Name = "OutputLed2";
             this.OutputLed2.Size = new System.Drawing.Size(22, 22);
             this.OutputLed2.TabIndex = 99;
@@ -2542,7 +2541,7 @@
             // 
             // OutputLed3
             // 
-            this.OutputLed3.Location = new System.Drawing.Point(403, 709);
+            this.OutputLed3.Location = new System.Drawing.Point(467, 714);
             this.OutputLed3.Name = "OutputLed3";
             this.OutputLed3.Size = new System.Drawing.Size(22, 22);
             this.OutputLed3.TabIndex = 100;
@@ -2550,7 +2549,7 @@
             // 
             // OutputLed4
             // 
-            this.OutputLed4.Location = new System.Drawing.Point(431, 709);
+            this.OutputLed4.Location = new System.Drawing.Point(495, 714);
             this.OutputLed4.Name = "OutputLed4";
             this.OutputLed4.Size = new System.Drawing.Size(22, 22);
             this.OutputLed4.TabIndex = 101;
@@ -2558,7 +2557,7 @@
             // 
             // OutputLed5
             // 
-            this.OutputLed5.Location = new System.Drawing.Point(459, 709);
+            this.OutputLed5.Location = new System.Drawing.Point(523, 714);
             this.OutputLed5.Name = "OutputLed5";
             this.OutputLed5.Size = new System.Drawing.Size(22, 22);
             this.OutputLed5.TabIndex = 102;
@@ -2566,7 +2565,7 @@
             // 
             // OutputLed6
             // 
-            this.OutputLed6.Location = new System.Drawing.Point(487, 709);
+            this.OutputLed6.Location = new System.Drawing.Point(551, 714);
             this.OutputLed6.Name = "OutputLed6";
             this.OutputLed6.Size = new System.Drawing.Size(22, 22);
             this.OutputLed6.TabIndex = 103;
@@ -2574,7 +2573,7 @@
             // 
             // OutputLed7
             // 
-            this.OutputLed7.Location = new System.Drawing.Point(515, 709);
+            this.OutputLed7.Location = new System.Drawing.Point(579, 714);
             this.OutputLed7.Name = "OutputLed7";
             this.OutputLed7.Size = new System.Drawing.Size(22, 22);
             this.OutputLed7.TabIndex = 104;
@@ -2582,7 +2581,7 @@
             // 
             // OutputLed8
             // 
-            this.OutputLed8.Location = new System.Drawing.Point(543, 709);
+            this.OutputLed8.Location = new System.Drawing.Point(607, 714);
             this.OutputLed8.Name = "OutputLed8";
             this.OutputLed8.Size = new System.Drawing.Size(22, 22);
             this.OutputLed8.TabIndex = 105;
@@ -2591,29 +2590,43 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(223, 714);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(287, 714);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(118, 20);
+            this.label5.Size = new System.Drawing.Size(110, 18);
             this.label5.TabIndex = 106;
             this.label5.Text = "Trạng thái rơ le:";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(626, 40);
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(704, 40);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(266, 163);
+            this.button2.Size = new System.Drawing.Size(188, 61);
             this.button2.TabIndex = 107;
-            this.button2.Text = "test";
+            this.button2.Text = "TEST";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // testOCR
+            // 
+            this.testOCR.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.testOCR.Location = new System.Drawing.Point(704, 107);
+            this.testOCR.Name = "testOCR";
+            this.testOCR.Size = new System.Drawing.Size(188, 61);
+            this.testOCR.TabIndex = 108;
+            this.testOCR.Text = "TEST OCR";
+            this.testOCR.UseVisualStyleBackColor = true;
+            this.testOCR.Visible = false;
+            this.testOCR.Click += new System.EventHandler(this.testOCR_Click);
             // 
             // CVEye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 730);
+            this.Controls.Add(this.testOCR);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.OutputLed8);
@@ -2735,9 +2748,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button captureImg;
         private System.Windows.Forms.Button turnCamera;
-        private System.Windows.Forms.Button startDetection;
         private System.Windows.Forms.PictureBox templateField;
         private System.Windows.Forms.Button run;
         private System.Windows.Forms.Button Reset;
@@ -2912,12 +2923,15 @@
         private System.Windows.Forms.Button offsetPlusX;
         private System.Windows.Forms.Button offsetMinusX;
         private System.Windows.Forms.Button offsetPlusY;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button CaptureAndScan;
+        private System.Windows.Forms.Button UpdateCameraID;
+        private System.Windows.Forms.Button testOCR;
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn zOffset;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
     }
 }
 

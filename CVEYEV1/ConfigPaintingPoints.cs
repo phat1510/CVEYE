@@ -636,6 +636,11 @@ namespace CVEYEV1
 
         private void ConfigPaintingPoints_Load(object sender, EventArgs e)
         {
+            XElement MainWindow = CVEye.SysData.Element("System").Element("MainWindow");
+            string currentSet = MainWindow.Element("Template").Attribute("LastSet").Value.ToString();
+            string currentItem = MainWindow.Element("Template").Attribute("LastItem").Value.ToString();
+            SetName.Text = currentSet;
+            item_name.Text = currentItem;
         }
 
         private void yPlus_Click(object sender, EventArgs e)

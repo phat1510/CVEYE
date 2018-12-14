@@ -22,12 +22,19 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Emgu.CV.OCR;
 using Mach4;
 
 namespace CVEYEV1
 {
     public partial class CVEye : Form
     {
+        #region OCR
+
+        Tesseract _numberOCR;
+
+        #endregion OCR
+
         #region Mach3
 
         // Macro name and function:
@@ -43,9 +50,15 @@ namespace CVEYEV1
         byte LastItem = 0;
         bool CombineFlag = true;
 
-        #endregion
+        // E-stop toggling
+        private bool hightolow = false;
+        private bool preactive = false;
+        private bool active = false;
+        int temp = 0;
 
-        #region User32.dll
+        #endregion Mach3
+
+        #region DLL
 
         [DllImport("USER32.DLL")]
 
@@ -55,11 +68,12 @@ namespace CVEYEV1
 
         public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
 
-        #endregion
+        #endregion DLL
 
         #region Camera Calibration
 
-        public static bool cameraOn = false;
+        private bool cameraOn = false;
+        private bool initCamera = false;
         public static bool start_calib = false;
         private bool find_chessboard;
         private VideoCapture _capture;
@@ -87,7 +101,7 @@ namespace CVEYEV1
         Mat cameraMat = new Mat(3, 3, DepthType.Cv64F, 1);
         Mat distCoeffsMat = new Mat(14, 1, DepthType.Cv64F, 1);
 
-        #endregion
+        #endregion Camera Calibration
 
         #region Image processing
 
@@ -136,30 +150,29 @@ namespace CVEYEV1
         private string DataPath;
         private string Chess_31_DataPath = "_chess31database.xml";
         private string Chess_29_DataPath = "_chess29database.xml";
-        //... for further data paths
 
         // System file path
-        private static string systemPath = "_system.xml";
+        public static string systemPath = "_system.xml";
 
         #endregion
 
         #region Miscellaneous
 
         // Object parameters
-        float InnerCircleChessRadius;// = 12.0f;
+        float InnerCircleChessRadius;
         float OuterCircleChessRadius;
         float ObjectHeight;
         float SheetThickness;
-        //float DrippingHeight;
 
         // 
         private double xdelta;
         private double ydelta;
         private double _xoffset;
         private double _yoffset;
+        double cameraTempOriX = 0;
+        double cameraTempOriY = 0;
 
-        private bool switchCamera = false;
-        private bool initCamera = false;
+        //
         private bool lowSpeed = true;
         private bool xZero = false;
         private bool yZero = false;
@@ -172,22 +185,17 @@ namespace CVEYEV1
         private bool first_item = true;
         private bool machStart = false;
         private bool cameraOriginOffset = false;
-        double cameraTempOriX = 0;
-        double cameraTempOriY = 0;
 
-        // E-stop toggling
-        private bool hightolow = false;
-        private bool preactive = false;
-        private bool active = false;
-        int temp = 0;
-
-        // Template localization
+        // Object data
         List<double> angleListSort = new List<double>();
         List<double> _angleList;
         List<PointF> _centerList;
+
+        //
         double get_angle = 0;
         CircleF get_circle = new CircleF();
 
+        //
         Stopwatch detectionWatch;
 
         #endregion
@@ -340,21 +348,20 @@ namespace CVEYEV1
                         preactive = active; // false = low, true = high
 
                         //
-                        if (scriptObject.IsActive(25) != 0) // press E-stop
+                        if (scriptObject.IsActive(25) != 0) // E-stop is pressed
                         {
                             //
                             active = true;
                             resetBlinking = true;
-                            lockCylinder.Text = "Khóa khay";
-
-                            //
                             CombineFlag = true;
-
-                            //
                             EnableButton(true);
 
                             //
                             processLog.Items.Clear();
+
+                            //
+                            lockCylinder.Text = "Khóa khay";
+                            StatusLabel.Text = "Dừng Khẩn Cấp";
                         }
                         else // release E-stop
                         {
@@ -454,7 +461,8 @@ namespace CVEYEV1
             double zSafe;
             zSafe = Math.Round(double.Parse(value), 1);
 
-            if ((zSafe == 30.0) && (!scriptObject.IsOutputActive((short)(GetValveNum(item_color.Text) + 6))))
+            // Condition: if z goto 30 and clamping piston is off
+            if ((zSafe == 30.0) && (!scriptObject.IsOutputActive(17)))
             {
                 //status_label.Text = "Painting Completed"; 
                 StatusLabel.Text = "Hoàn Tất Phun Sơn";
@@ -471,17 +479,17 @@ namespace CVEYEV1
         }
 
         /// <summary>
-        /// x, y ~20000mm/min or 2000rpm
-        /// z ~12000mm/min or 2400rpm
+        /// x, y ~18000mm/min or 1800rpm
+        /// z ~10800mm/min or 2160rpm
         /// </summary>
         public void HighSpeedMode()
         {
             // Build Set speed macro
             using (macroData = new StreamWriter(Path.Combine(macroDirectory, @"M91.m1s")))
             {
-                macroData.WriteLine("SetParam(\"VelocitiesX\", 340)");
-                macroData.WriteLine("SetParam(\"VelocitiesY\", 340)");
-                macroData.WriteLine("SetParam(\"VelocitiesZ\", 200)");
+                macroData.WriteLine("SetParam(\"VelocitiesX\", 250)");
+                macroData.WriteLine("SetParam(\"VelocitiesY\", 250)");
+                macroData.WriteLine("SetParam(\"VelocitiesZ\", 180)");
 
                 macroData.Close();
             }
@@ -540,48 +548,50 @@ namespace CVEYEV1
         {
             try
             {
+                // Update status
                 StatusLabel.Text = "Đang Kết Nối Camera...";
                 StatusLabel.Refresh();
 
-                if (_capture == null)
-                {
-                    try
-                    {
-                        XElement CameraCalibrationWindow = SysData.Element("System").Element("CameraCalibrationWindow");
-                        int camIndex = int.Parse(CameraCalibrationWindow.Element("CameraID").Attribute("ID").Value);
-                        _capture = new VideoCapture(camIndex);
-                        _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height);
-                        _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width);
+                // Load Camera ID
+                XElement CameraCalibrationWindow = SysData.Element("System").Element("CameraCalibrationWindow");
+                int camIndex = int.Parse(CameraCalibrationWindow.Element("CameraID").Attribute("ID").Value);
 
-                        initCamera = true;
-                    }
-                    catch (NullReferenceException excpt)
-                    {
-                        //Show errors if there is any
-                        MessageBox.Show(excpt.Message);
-                    }
+                // Reset data
+                if (cameraOn)
+                {
+                    // Stop capturing image
+                    _capture.Stop();
+                    cameraOn = false;
+                    Application.Idle -= new EventHandler(Frame_Calibration);
+
+                    // Release memory
+                    _capture.Dispose();
                 }
 
-                if (_capture != null)
+                // Connect to camera
+                _capture = new VideoCapture(camIndex);
+                _capture.SetCaptureProperty(CapProp.FrameHeight, screen_height);
+                _capture.SetCaptureProperty(CapProp.FrameWidth, screen_width);
+                initCamera = true;
+
+
+                if (_capture.IsOpened)
                 {
-                    if (_capture.IsOpened)
-                    {
-                        //status_label.Text = "Camera On";
-                        StatusLabel.Text = "Đã kết nối camera";
-                        StatusLabel.Refresh();
+                    StatusLabel.Text = "Đã kết nối camera";
+                    StatusLabel.Refresh();
 
-                        // Add handler for getting camera frame
-                        Application.Idle += new EventHandler(Frame_Calibration);
-                        _capture.Start();
+                    // Add handler for getting camera frame
+                    Application.Idle += new EventHandler(Frame_Calibration);
+                    _capture.Start();
 
-                        cameraOn = true;
-                        switchCamera = true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Không Tìm Thấy Camera", "CVEye");
-                    }
+                    // Update camera status
+                    cameraOn = true;
                 }
+                else
+                {
+                    MessageBox.Show("Không Tìm Thấy Camera", "CVEye");
+                }
+
             }
             catch (Exception ex)
             {
@@ -691,13 +701,13 @@ namespace CVEYEV1
             valveNum.Text = (GetValveNum(item_color.Text) - 3).ToString();
 
             // Load Painting Conditions
-            xySpeed.Text        = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
-            zSpeed.Text         = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
-            zSafe.Text          = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
-            zReturn.Text        = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
-            zDrip.Text          = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
-            deepOffset.Text     = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
-            circleSpeed.Text    = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
+            xySpeed.Text = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
+            zSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
+            zSafe.Text = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
+            zReturn.Text = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
+            zDrip.Text = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
+            deepOffset.Text = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
+            circleSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
 
             // Load Offset values
             XElement Offset = MainWindow.Element("Offset");
@@ -745,7 +755,7 @@ namespace CVEYEV1
 
             SaveCapturedImage.CheckState = (_Option.Element("CapturedImageSaving").Attribute("state").Value == "1") ? CheckState.Checked : CheckState.Unchecked;
             ShowObjectSize.CheckState = (_Option.Element("ObjectSizeShowing").Attribute("state").Value == "1") ? CheckState.Checked : CheckState.Unchecked;
-            
+
             // View template image
             templateField.Image = tmpBgr.Bitmap;
             templateField.Refresh();
@@ -789,10 +799,10 @@ namespace CVEYEV1
                     break;
             }
 
-            leftEdge    = float.Parse(SetPersData.Attribute("edge1").Value);
-            rightEdge   = float.Parse(SetPersData.Attribute("edge3").Value);
-            topEdge     = float.Parse(SetPersData.Attribute("edge2").Value);
-            botEdge     = float.Parse(SetPersData.Attribute("edge4").Value);
+            leftEdge = float.Parse(SetPersData.Attribute("edge1").Value);
+            rightEdge = float.Parse(SetPersData.Attribute("edge3").Value);
+            topEdge = float.Parse(SetPersData.Attribute("edge2").Value);
+            botEdge = float.Parse(SetPersData.Attribute("edge4").Value);
 
             cnl1.Value = decimal.Parse(SetPersData.Attribute("edge1").Value);
             cnl2.Value = decimal.Parse(SetPersData.Attribute("edge2").Value);
@@ -859,155 +869,163 @@ namespace CVEYEV1
         {
             try
             {
-                // Capture current frame
-                Mat frame_raw = new Mat();
-                _capture.Retrieve(frame_raw);
-
-                // Convert to gray mat
-                Mat frame_gray = new Mat();
-                CvInvoke.CvtColor(frame_raw, frame_gray, ColorConversion.Bgr2Gray);
-
-                // Processing
-                using (Image<Bgr, byte> img_capture = frame_raw.ToImage<Bgr, byte>())
+                if (cameraOn)
                 {
-                    // Calibration process
-                    if (currentMode == Mode.SavingFrames)
+                    // Capture current frame
+                    Mat frame_raw = new Mat();
+                    _capture.Retrieve(frame_raw);
+
+                    // Convert to gray mat
+                    Mat frame_gray = new Mat();
+                    CvInvoke.CvtColor(frame_raw, frame_gray, ColorConversion.Bgr2Gray);
+
+                    // Processing
+                    using (Image<Bgr, byte> img_capture = frame_raw.ToImage<Bgr, byte>())
                     {
-                        //status_label.Text = "Saving Frames";
-                        //status_label.Refresh();
+                        //Stopwatch _gettime = new Stopwatch();
+                        //_gettime.Start();
 
-                        Size pt_size = new Size(pt_width, pt_height);
-                        find_chessboard = CvInvoke.FindChessboardCorners(frame_gray, pt_size, corners);
-
-                        if (find_chessboard)
+                        // Calibration process
+                        if (currentMode == Mode.SavingFrames)
                         {
-                            CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
+                            //status_label.Text = "Saving Frames";
+                            //status_label.Refresh();
 
-                            if (start_calib)
+                            Size pt_size = new Size(pt_width, pt_height);
+                            find_chessboard = CvInvoke.FindChessboardCorners(frame_gray, pt_size, corners);
+
+                            if (find_chessboard)
                             {
-                                frame_array_buffer[frame_buffer_savepoint] = frame_gray;
-                                frame_buffer_savepoint++;
+                                CvInvoke.CornerSubPix(frame_gray, corners, new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
 
-                                //Check the state of buffer
-                                if (frame_buffer_savepoint == frame_array_buffer.Length)
+                                if (start_calib)
                                 {
-                                    start_calib = false;
-                                    currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
+                                    frame_array_buffer[frame_buffer_savepoint] = frame_gray;
+                                    frame_buffer_savepoint++;
+
+                                    //Check the state of buffer
+                                    if (frame_buffer_savepoint == frame_array_buffer.Length)
+                                    {
+                                        start_calib = false;
+                                        currentMode = Mode.Caluculating_Intrinsics; //Jump to next step
+                                    }
+
+                                    StatusLabel.Text = "Frame: " + frame_buffer_savepoint.ToString() + "/" + frame_array_buffer.Length.ToString();
+                                    StatusLabel.Refresh();
                                 }
 
-                                StatusLabel.Text = "Frame: " + frame_buffer_savepoint.ToString() + "/" + frame_array_buffer.Length.ToString();
+                                // Draw the found corners
+                                img_capture.Draw(new CircleF(corners[0], 10), new Bgr(Color.Yellow), 4);
+                                for (int i = 1; i < corners.Size; i++)
+                                {
+                                    img_capture.Draw(new LineSegment2DF(corners[i - 1], corners[i]), new Bgr(Color.Blue), 3);
+                                    img_capture.Draw(new CircleF(corners[i], 10), new Bgr(Color.Yellow), 4);
+                                }
+
+                                // Wait for chessboard moving
+                                Thread.Sleep(100);
+                            }
+                            else
+                            {
+                                corners = new VectorOfPointF();
+
+                                MessageBox.Show("Cannot detect corners." +
+                                    Environment.NewLine + "Please disable undistortion and recheck corners set.", "CVEye");
+
+                                // Return to calibrated mode
+                                currentMode = Mode.Calibrated;
+                            }
+
+                            // View raw image
+                            pattern_field.Image = img_capture.Bitmap;
+                            pattern_field.Refresh();
+                        }
+
+                        if (currentMode == Mode.Caluculating_Intrinsics)
+                        {
+                            // Update status
+                            StatusLabel.Text = "Caluculating Intrinsics...";
+                            StatusLabel.Refresh();
+
+                            //
+                            Size pt_size = new Size(pt_width, pt_height);
+
+                            for (int k = 0; k < frame_array_buffer.Length; k++)
+                            {
+                                // Detect corners of each stored frame
+                                corners_point_vector[k] = new VectorOfPointF();
+                                CvInvoke.FindChessboardCorners(frame_array_buffer[k], pt_size, corners_point_vector[k]);
+
+                                // For accuracy 
+                                CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
+
+                                // Fill objects list with the real world mesurments for the intrinsic calculations
+                                List<MCvPoint3D32f> object_list = new List<MCvPoint3D32f>();
+                                for (int i = 0; i < pt_height; i++)
+                                {
+                                    for (int j = 0; j < pt_width; j++)
+                                    {
+                                        object_list.Add(new MCvPoint3D32f(j * square_size, i * square_size, 0.0F));
+                                    }
+                                }
+
+                                corners_object_list[k] = object_list.ToArray();
+                                corners_point_list[k] = corners_point_vector[k].ToArray();
+
+                                StatusLabel.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
                                 StatusLabel.Refresh();
                             }
 
-                            // Draw the found corners
-                            img_capture.Draw(new CircleF(corners[0], 10), new Bgr(Color.Yellow), 4);
-                            for (int i = 1; i < corners.Size; i++)
-                            {
-                                img_capture.Draw(new LineSegment2DF(corners[i - 1], corners[i]), new Bgr(Color.Blue), 3);
-                                img_capture.Draw(new CircleF(corners[i], 10), new Bgr(Color.Yellow), 4);
-                            }
+                            StatusLabel.Text = "Getting Camera Matrices";
+                            StatusLabel.Refresh();
 
-                            // Wait for chessboard moving
-                            Thread.Sleep(100);
-                        }
-                        else
-                        {
-                            corners = new VectorOfPointF();
-
-                            MessageBox.Show("Cannot detect corners." +
-                                Environment.NewLine + "Please disable undistortion and recheck corners set.", "CVEye");
-
-                            // Return to calibrated mode
+                            double error = CvInvoke.CalibrateCamera(
+                                corners_object_list,
+                                corners_point_list,
+                                frame_gray.Size,
+                                cameraMat,
+                                distCoeffsMat,
+                                CalibType.RationalModel,
+                                new MCvTermCriteria(30, 0.05),
+                                out rvecs,
+                                out tvecs);
                             currentMode = Mode.Calibrated;
-                        }
 
-                        // View raw image
-                        pattern_field.Image = img_capture.Bitmap;
-                        pattern_field.Refresh();
-                    }
+                            // Save Camera Calibration Matrices
+                            StatusLabel.Text = "Saving Data";
+                            StatusLabel.Refresh();
+                            Thread.Sleep(1000);
 
-                    if (currentMode == Mode.Caluculating_Intrinsics)
-                    {
-                        // Update status
-                        StatusLabel.Text = "Caluculating Intrinsics...";
-                        StatusLabel.Refresh();
+                            FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
+                            fs.Write(cameraMat, "Camera_Matrix");
+                            fs.Write(distCoeffsMat, "Distortion_Coefficients");
 
-                        //
-                        Size pt_size = new Size(pt_width, pt_height);
-
-                        for (int k = 0; k < frame_array_buffer.Length; k++)
-                        {
-                            // Detect corners of each stored frame
-                            corners_point_vector[k] = new VectorOfPointF();
-                            CvInvoke.FindChessboardCorners(frame_array_buffer[k], pt_size, corners_point_vector[k]);
-
-                            // For accuracy 
-                            CvInvoke.CornerSubPix(frame_gray, corners_point_vector[k], new Size(11, 11), new Size(-1, -1), new MCvTermCriteria(30, 0.05));
-
-                            // Fill objects list with the real world mesurments for the intrinsic calculations
-                            List<MCvPoint3D32f> object_list = new List<MCvPoint3D32f>();
-                            for (int i = 0; i < pt_height; i++)
-                            {
-                                for (int j = 0; j < pt_width; j++)
-                                {
-                                    object_list.Add(new MCvPoint3D32f(j * square_size, i * square_size, 0.0F));
-                                }
-                            }
-
-                            corners_object_list[k] = object_list.ToArray();
-                            corners_point_list[k] = corners_point_vector[k].ToArray();
-
-                            StatusLabel.Text = "Corner Set: " + (k + 1).ToString() + "/" + frame_array_buffer.Length.ToString();
+                            StatusLabel.Text = "Calibration Completed";
                             StatusLabel.Refresh();
                         }
 
-                        StatusLabel.Text = "Getting Camera Matrices";
-                        StatusLabel.Refresh();
-
-                        double error = CvInvoke.CalibrateCamera(
-                            corners_object_list,
-                            corners_point_list,
-                            frame_gray.Size,
-                            cameraMat,
-                            distCoeffsMat,
-                            CalibType.RationalModel,
-                            new MCvTermCriteria(30, 0.05),
-                            out rvecs,
-                            out tvecs);
-                        currentMode = Mode.Calibrated;
-
-                        // Save Camera Calibration Matrices
-                        StatusLabel.Text = "Saving Data";
-                        StatusLabel.Refresh();
-                        Thread.Sleep(1000);
-
-                        FileStorage fs = new FileStorage("_camera.xml", FileStorage.Mode.Write);
-                        fs.Write(cameraMat, "Camera_Matrix");
-                        fs.Write(distCoeffsMat, "Distortion_Coefficients");
-
-                        StatusLabel.Text = "Calibration Completed";
-                        StatusLabel.Refresh();
-                    }
-
-                    if (currentMode == Mode.Calibrated)
-                    {
-                        // Apply Calibration
-                        Mat undist_frame = new Mat();
-                        if (enableCamUndist.CheckState == CheckState.Checked)
+                        if (currentMode == Mode.Calibrated)
                         {
-                            CvInvoke.Undistort(frame_raw, undist_frame, cameraMat, distCoeffsMat);
-                            img_capture_undist = undist_frame.ToImage<Bgr, byte>();
-                        }
-                        else
-                            img_capture_undist = frame_raw.ToImage<Bgr, byte>();
+                            // Apply Calibration
+                            Mat undist_frame = new Mat();
+                            if (enableCamUndist.CheckState == CheckState.Checked)
+                            {
+                                CvInvoke.Undistort(frame_raw, undist_frame, cameraMat, distCoeffsMat);
+                                img_capture_undist = undist_frame.ToImage<Bgr, byte>();
+                            }
+                            else
+                                img_capture_undist = frame_raw.ToImage<Bgr, byte>();
 
-                        // Draw image center lines
-                        using (Image<Bgr, byte> img_draw = img_capture_undist.Clone())
-                        {
-                            Draw_Grid(img_draw);
-                            pattern_field.Image = img_draw.Bitmap;
-                            pattern_field.Refresh();
+                            // Draw image center lines
+                            using (Image<Bgr, byte> img_draw = img_capture_undist.Clone())
+                            {
+                                Draw_Grid(img_draw);
+                                pattern_field.Image = img_draw.Bitmap;
+                                pattern_field.Refresh();
+                            }
                         }
+
+                        //StatusLabel.Text = _gettime.ElapsedMilliseconds.ToString();
                     }
                 }
             }
@@ -1282,7 +1300,7 @@ namespace CVEYEV1
             _maxRadius = int.Parse(SetHoughData.Attribute("max_ra").Value);
         }
 
-        public void DetectClone()
+        public void DetectObject()
         {
             //
             detectionWatch = Stopwatch.StartNew();
@@ -1332,9 +1350,8 @@ namespace CVEYEV1
                 else
                 {
                     //
-                    startDetection.Enabled = true;
+                    CaptureAndScan.Enabled = true;
                     turnCamera.Enabled = true;
-                    captureImg.Enabled = true;
                     ValveOneClick.Enabled = true;
 
                     //
@@ -1519,9 +1536,8 @@ namespace CVEYEV1
                 backgroundWorker.CancelAsync();
 
                 //
-                startDetection.Enabled = true;
+                CaptureAndScan.Enabled = true;
                 turnCamera.Enabled = true;
-                captureImg.Enabled = true;
                 ValveOneClick.Enabled = true;
 
                 //
@@ -1542,7 +1558,7 @@ namespace CVEYEV1
 
             // List painting points to list
             List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();
-            
+
             // Item sorting
             _centerList = SortByDistance(_centerList, _angleList);
 
@@ -1621,7 +1637,7 @@ namespace CVEYEV1
 
                         // Return to z macro combination point
                         macroData.WriteLine("Code \"G00 Z" + 13.4 + "\"");
-                        Wait(50, macroData);
+                        Wait(1, macroData);
 
                         MacroLineNumber = (ushort)(MacroLineNumber + 3);
 
@@ -1656,7 +1672,7 @@ namespace CVEYEV1
                 {
                     // Return to z safe
                     macroData.WriteLine("Code \"G00 Z" + PaintingCondition.Attribute("zSafe").Value + "\"");
-                    Wait(50, macroData);
+                    Wait(1, macroData);
 
                     // Disable dispensing valve channel
                     macroData.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
@@ -1715,9 +1731,8 @@ namespace CVEYEV1
             detected = true;
 
             // 
-            startDetection.Enabled = true;
+            CaptureAndScan.Enabled = true;
             turnCamera.Enabled = true;
-            captureImg.Enabled = true;
             ValveOneClick.Enabled = true;
 
             //
@@ -1739,8 +1754,6 @@ namespace CVEYEV1
 
             if ((zSafe == 13.4) && (!scriptObject.IsOutputActive(12)))
             {
-                //processLog.Items.Add("Building combined macro...");
-
                 // Reset combination flag
                 CombineFlag = true;
 
@@ -1748,7 +1761,7 @@ namespace CVEYEV1
                 XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
 
                 // List painting points to list
-                List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();                
+                List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();
 
                 // Init new mach3 macro file
                 if (macroData != null)
@@ -1807,7 +1820,7 @@ namespace CVEYEV1
 
                     // Return to z safe
                     macroData.WriteLine("Code \"G00 Z" + PaintingCondition.Attribute("zSafe").Value + "\"");
-                    Wait(50, macroData);
+                    Wait(1, macroData);
 
                     // Disable dispensing valve channel
                     macroData.WriteLine("DeactivateSignal(OUTPUT" + GetValveNum(item_color.Text) + ")");
@@ -1834,8 +1847,7 @@ namespace CVEYEV1
                     #endregion
                 }
 
-                Thread.Sleep(100);
-
+                // Send macro to MACH3
                 GetMach3Instance();
 
                 if (scriptObject != null)
@@ -1844,7 +1856,7 @@ namespace CVEYEV1
                     scriptObject.Code("M999");
                 }
 
-                //processLog.Items.Add("Macro is combined successfully.");
+                processLog.Items.Add("Macro is combined successfully.");
 
                 // Reset macro combination position
                 LastItem = 0;
@@ -2387,8 +2399,8 @@ namespace CVEYEV1
             List<XElement> point_list = getItem.Element("Points").Elements("Point").ToList();
 
             // Get painting condition
-            float ZReturnValue      = SheetThickness + ObjectHeight + float.Parse(Parameters.Attribute("zReturn").Value);
-            float ZOffset           = float.Parse(Parameters.Attribute("offset").Value);
+            float ZReturnValue = SheetThickness + ObjectHeight + float.Parse(Parameters.Attribute("zReturn").Value);
+            float ZOffset = float.Parse(Parameters.Attribute("offset").Value);
             int CirclePaintingSpeed = int.Parse(Parameters.Attribute("circleSpeed").Value);
             int NormalPaintingSpeed = int.Parse(Parameters.Attribute("xySpeed").Value);
             float delayScale = float.Parse(Parameters.Attribute("delayScale").Value);
@@ -2424,9 +2436,9 @@ namespace CVEYEV1
 
                         // Move to the first point of inner circle
                         //macro.WriteLine("' Circle starting point");
-                        macro.WriteLine("Code \"G01 X" + startpoint_X + " Y" + startpoint_Y + " F7000" + "\"");
+                        macro.WriteLine("Code \"G00 X" + startpoint_X + " Y" + startpoint_Y + "\"");
                         MacroLineNumber++;
-                        Wait(distanceDelay + 1500, macro);
+                        Wait(800, macro);
 
                         // Turn on 15mm piston
                         //macro.WriteLine("' Turning on level piston");
@@ -2443,7 +2455,7 @@ namespace CVEYEV1
                         // Circular interpolation
                         //macro.WriteLine("' Circular interpolation");
                         CircleDivider(new PointF(cenX, cenY), InnerCircleChessRadius, 4, CirclePaintingSpeed, macro);
-                        Wait(50, macro);
+                        Wait(1, macro);
 
                         // Select painting mode 01
                         JettingModeSelectingMacro(pointMode, macro);
@@ -2457,7 +2469,7 @@ namespace CVEYEV1
                         //macro.WriteLine("' Moving to painting point of pattern");
                         macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + NormalPaintingSpeed + "\"");
                         MacroLineNumber++;
-                        Wait(50, macro);
+                        Wait(1, macro);
                     }
                     else
                     {
@@ -2477,7 +2489,7 @@ namespace CVEYEV1
                         // Circular interpolation
                         //macro.WriteLine("' Circular interpolation");
                         CircleDivider(new PointF(cenX, cenY), InnerCircleChessRadius, 4, CirclePaintingSpeed, macro);
-                        Wait(50, macro);
+                        Wait(1, macro);
 
                         // Select painting mode 01
                         JettingModeSelectingMacro(pointMode, macro);
@@ -2491,7 +2503,7 @@ namespace CVEYEV1
                         //macro.WriteLine("' Moving to painting point of pattern");
                         macro.WriteLine("Code \"G01 X" + X + " Y" + Y + " F" + NormalPaintingSpeed + "\"");
                         MacroLineNumber++;
-                        Wait(50, macro);
+                        Wait(1, macro);
                     }
                 }
                 else
@@ -2563,12 +2575,36 @@ namespace CVEYEV1
             MacroLineNumber++;
 
             // Waiting for moving completed
-            Wait(50, macro);
+            Wait(1, macro);
 
             // Drip paint
             macro.WriteLine("ActivateSignal(OUTPUT7" + ")");
             macro.WriteLine("Sleep(100)");
             macro.WriteLine("DeactivateSignal(OUTPUT7" + ")");
+            MacroLineNumber = (ushort)(MacroLineNumber + 3);
+        }
+
+        private void CirclePaintDrip(float offset, TextWriter macro)
+        {
+            XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
+
+            float z_value = SheetThickness + ObjectHeight + float.Parse(PaintingCondition.Attribute("zDrip").Value) + offset;
+
+            // Fast moving to Z injecting
+            macro.WriteLine("Code \"G00 Z" + z_value + "\"");
+
+            // Update macro line no.
+            MacroLineNumber++;
+
+            // Wait for moving completed
+            macro.WriteLine("Sleep(10)");
+            MacroLineNumber = (ushort)(MacroLineNumber + 1);
+
+            // Drip paint
+            macro.WriteLine("ActivateSignal(OUTPUT7" + ")");
+            macro.WriteLine("Sleep(100)");
+            macro.WriteLine("DeactivateSignal(OUTPUT7" + ")");
+
             MacroLineNumber = (ushort)(MacroLineNumber + 3);
         }
 
@@ -2738,8 +2774,8 @@ namespace CVEYEV1
             ReplacePosition.Enabled = status;
             TurnPiston.Enabled = status;
         }
-        
-            #region Click events
+
+        #region Click events
 
         private void BrowseAFile()
         {
@@ -2754,15 +2790,88 @@ namespace CVEYEV1
             }
         }
 
-        private void DetectClick(object sender, EventArgs e)
+        private void UpdateCameraID_Click(object sender, EventArgs e)
+        {
+            SysData.Element("System").Element("CameraCalibrationWindow").Element("CameraID").Attribute("ID").Value = camID.Text;
+
+            // Save and reload
+            SysData.Save("_system.xml");
+            SysData = XDocument.Load(systemPath);
+
+            // Reinit camera 
+            Init_Camera();
+        }
+
+        private void Video_Click(object sender, EventArgs e)
+        {
+            if (initCamera)
+            {
+                // Restart camera
+                if (_capture.IsOpened)
+                {
+                    if (!cameraOn) // to prevent more than one click when camera is on
+                    {
+                        // Add handler for getting camera frame
+                        Application.Idle += new EventHandler(Frame_Calibration);
+                        _capture.Start();
+
+                        // Reset progress bar
+                        Progress.Value = 0;
+
+                        // Update working status
+                        StatusLabel.Text = "Camera Bật";
+                        StatusLabel.Refresh();
+
+                        cameraOn = true;
+                    }
+                    else MessageBox.Show("Camera Đang Mở", "CVEye");
+                }
+                else
+                {
+                    MessageBox.Show("Không Tìm Thấy Camera", "CVEye");
+                }
+            }
+            else
+                Init_Camera();
+        }
+
+        private void CaptureAndScan_Click(object sender, EventArgs e)
         {
             try
             {
-                Progress.Visible = true;
+                timerDROupdate.Enabled = false;
 
-                // View captured image
-                pattern_field.Image = img_capture_undist.Bitmap;
-                pattern_field.Refresh();
+                // ------------------Task 1-------------------
+                GetMach3Instance();
+
+                if (scriptObject != null)
+                {
+                    scriptObject.ActivateSignal(17);
+                    lockCylinder.Text = "Mở khóa khay";
+                }
+
+                // ------------------Task 2-------------------
+                if (_capture != null)
+                {
+                    if (_capture.IsOpened)
+                    {
+                        // Stop capturing image
+                        _capture.Stop();
+
+                        Application.Idle -= new EventHandler(Frame_Calibration);
+
+                        // Update working status
+                        StatusLabel.Text = "Chụp Ảnh";
+                        StatusLabel.Refresh();
+
+                        // 
+                        cameraOn = false;
+                    }
+                }
+
+                // ------------------Task 3-------------------
+                // Display progress bar
+                Progress.Visible = true;
 
                 // Clear listbox
                 processLog.Items.Clear();
@@ -2771,11 +2880,9 @@ namespace CVEYEV1
                 timerDROupdate.Enabled = false;
 
                 //
-                startDetection.Enabled = false;
+                CaptureAndScan.Enabled = false;
                 turnCamera.Enabled = false;
-                captureImg.Enabled = false;
                 ValveOneClick.Enabled = false;
-
 
                 // Reset first item flag
                 first_item = true;
@@ -2798,113 +2905,12 @@ namespace CVEYEV1
                 StatusLabel.Refresh();
 
                 // Start detecting
-                DetectClone();
+                DetectObject();
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void stopDetection_Click(object sender, EventArgs e)
-        {
-            Progress.Visible = false;
-
-            //
-            backgroundWorker.CancelAsync();
-
-            //
-            startDetection.Enabled = true;
-            turnCamera.Enabled = true;
-            captureImg.Enabled = true;
-
-            //
-            timerDROupdate.Enabled = true;
-        }
-
-        private void Video_Click(object sender, EventArgs e)
-        {
-            if (initCamera)
-            {
-                // Restart camera
-                if (_capture.IsOpened)
-                {
-                    if (!switchCamera) // to prevent more than one click when camera is on
-                    {                        
-                        // Add handler for getting camera frame
-                        Application.Idle += new EventHandler(Frame_Calibration);
-                        _capture.Start();
-
-                        // Reset progress bar
-                        Progress.Value = 0;
-
-                        // Update working status
-                        //status_label.Text = "Camera On";
-                        StatusLabel.Text = "Camera Bật";
-                        StatusLabel.Refresh();
-
-                        switchCamera = true;
-                    }
-                    else MessageBox.Show("Camera Đang Mở", "CVEye");
-
-                }
-                else
-                {
-                    MessageBox.Show("Không Tìm Thấy Camera", "CVEye");
-                }
-
-            }
-            else Init_Camera();
-        }
-
-        private void Capture_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (lockCylinder.Text != "Khóa khay")
-                {
-                    if (_capture != null)
-                    {
-                        if (_capture.IsOpened)
-                        {
-                            // Stop capturing image
-                            _capture.Stop();
-
-                            Application.Idle -= new EventHandler(Frame_Calibration);
-
-                            // Save image to disk
-                            //CvInvoke.Imwrite("result/pattern_field.jpg", img_capture_undist);
-
-                            // Display
-                            using (Image<Bgr, byte> img_draw = img_capture_undist.Clone())
-                            {
-                                Draw_Grid(img_draw);
-                                pattern_field.Image = img_draw.Bitmap;
-                                pattern_field.Refresh();
-                            }
-
-                            // Update working status
-                            StatusLabel.Text = "Đã Chụp Ảnh";
-                            StatusLabel.Refresh();
-
-                            // 
-                            switchCamera = false;
-                        }
-                        else MessageBox.Show("Chưa Mở Camera", "CVEye");
-                    }
-                    else
-                    {
-                        //status_label.Text = "No Camera Data";
-                        StatusLabel.Text = "Không Có Ảnh";
-                        StatusLabel.Refresh();
-                    }
-                }
-                else
-                    MessageBox.Show("Bạn chưa khóa khay.", "CVEye");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Chưa bật camera.", "CVEye");
+                turnCamera.Enabled = true;
             }
         }
 
@@ -2958,10 +2964,11 @@ namespace CVEYEV1
                             machinecoord = false;
                         }
 
-                        scriptObject.Code("M93");
-
                         // High speed mode
+                        HighSpeedMode();
                         lowSpeed = false;
+
+                        scriptObject.Code("M93");
                     }
                 }
                 else MessageBox.Show("Vui lòng thiết lập gốc máy.", "CVEye");
@@ -3046,7 +3053,7 @@ namespace CVEYEV1
 
             if (scriptObject != null)
             {
-                if (lockCylinder.Text == "Khóa khay")
+                if (!scriptObject.IsOutputActive(17))
                 {
                     scriptObject.ActivateSignal(17);
                     lockCylinder.Text = "Mở khóa khay";
@@ -3157,7 +3164,7 @@ namespace CVEYEV1
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void paintingPointToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3192,6 +3199,12 @@ namespace CVEYEV1
                 // Read Pers transform data
                 ReadPersData(itemsSet.Text);
 
+                // Update Last item attribute
+                XElement MainWindow = SysData.Element("System").Element("MainWindow");
+                MainWindow.Element("Template").Attribute("LastSet").Value = itemsSet.Text;
+                SysData.Save(systemPath);
+                SysData = XDocument.Load(systemPath);
+
                 // View template image
                 templateField.Image = tmpBgr.Bitmap;
                 templateField.Refresh();
@@ -3216,9 +3229,17 @@ namespace CVEYEV1
                     .Where(x => x.Element("Name").Value == tmp_item_name.Text)
                     .Single();
 
+                // Update Last item attribute
+                XElement MainWindow = SysData.Element("System").Element("MainWindow");
+                MainWindow.Element("Template").Attribute("LastItem").Value = tmp_item_name.Text;
+                SysData.Save(systemPath);
+                SysData = XDocument.Load(systemPath);
+
                 // View template image
                 templateField.Image = tmpBgr.Bitmap;
                 templateField.Refresh();
+
+
             }
             catch (Exception ex)
             {
@@ -3546,18 +3567,18 @@ namespace CVEYEV1
 
             // Painting Condition node
             XElement PaintingCondition = SysData.Element("System").Element("MainWindow").Element("PaintingCondition");
-            PaintingCondition.Attribute("xySpeed").Value        = xySpeed.Text;
-            PaintingCondition.Attribute("zSpeed").Value         = zSpeed.Text;
-            PaintingCondition.Attribute("zSafe").Value          = zSafe.Text;
-            PaintingCondition.Attribute("zReturn").Value        = zReturn.Text;
-            PaintingCondition.Attribute("zDrip").Value          = zDrip.Text;
-            PaintingCondition.Attribute("offset").Value         = deepOffset.Text;
-            PaintingCondition.Attribute("circleSpeed").Value    = circleSpeed.Text;
+            PaintingCondition.Attribute("xySpeed").Value = xySpeed.Text;
+            PaintingCondition.Attribute("zSpeed").Value = zSpeed.Text;
+            PaintingCondition.Attribute("zSafe").Value = zSafe.Text;
+            PaintingCondition.Attribute("zReturn").Value = zReturn.Text;
+            PaintingCondition.Attribute("zDrip").Value = zDrip.Text;
+            PaintingCondition.Attribute("offset").Value = deepOffset.Text;
+            PaintingCondition.Attribute("circleSpeed").Value = circleSpeed.Text;
 
             // Offset node
             XElement _Offset = SysData.Element("System").Element("MainWindow").Element("Offset");
             for (int i = 0; i < 2; i++)
-            { 
+            {
                 string Gxx = "G" + (54 + i).ToString();
                 _Offset.Element(Gxx).Attribute("x").Value = OffsetCoor.Rows[i].Cells[1].Value.ToString();
                 _Offset.Element(Gxx).Attribute("y").Value = OffsetCoor.Rows[i].Cells[2].Value.ToString();
@@ -3578,13 +3599,13 @@ namespace CVEYEV1
             XElement MainWindow = SysData.Element("System").Element("MainWindow");
 
             // Load Painting Conditions
-            xySpeed.Text        = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
-            zSpeed.Text         = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
-            zSafe.Text          = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
-            zReturn.Text        = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
-            zDrip.Text          = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
-            deepOffset.Text     = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
-            circleSpeed.Text    = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
+            xySpeed.Text = MainWindow.Element("PaintingCondition").Attribute("xySpeed").Value;
+            zSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("zSpeed").Value;
+            zSafe.Text = MainWindow.Element("PaintingCondition").Attribute("zSafe").Value;
+            zReturn.Text = MainWindow.Element("PaintingCondition").Attribute("zReturn").Value;
+            zDrip.Text = MainWindow.Element("PaintingCondition").Attribute("zDrip").Value;
+            deepOffset.Text = MainWindow.Element("PaintingCondition").Attribute("offset").Value;
+            circleSpeed.Text = MainWindow.Element("PaintingCondition").Attribute("circleSpeed").Value;
 
             // Load Offset values
             XElement Offset = MainWindow.Element("Offset");
@@ -3615,7 +3636,10 @@ namespace CVEYEV1
 
             // Save data
             SysData.Save("_system.xml");
+            SysData = XDocument.Load(systemPath);
 
+            //
+            StatusLabel.Text = "Saved and Reloaded.";
         }
 
         private void ImgProcSave_Click(object sender, EventArgs e)
@@ -3660,12 +3684,12 @@ namespace CVEYEV1
                     break;
             }
 
-            SetHoughData.Attribute("dp").Value              = houge_dp.Value.ToString();
-            SetHoughData.Attribute("minDist").Value         = houge_minDist.Value.ToString();
-            SetHoughData.Attribute("houge_param1").Value    = houge_param1.Value.ToString();
-            SetHoughData.Attribute("houge_param2").Value    = houge_param2.Value.ToString();
-            SetHoughData.Attribute("min_ra").Value          = min_ra.Value.ToString();
-            SetHoughData.Attribute("max_ra").Value          = max_ra.Value.ToString();
+            SetHoughData.Attribute("dp").Value = houge_dp.Value.ToString();
+            SetHoughData.Attribute("minDist").Value = houge_minDist.Value.ToString();
+            SetHoughData.Attribute("houge_param1").Value = houge_param1.Value.ToString();
+            SetHoughData.Attribute("houge_param2").Value = houge_param2.Value.ToString();
+            SetHoughData.Attribute("min_ra").Value = min_ra.Value.ToString();
+            SetHoughData.Attribute("max_ra").Value = max_ra.Value.ToString();
         }
 
         private void SavePersParameters(string value)
@@ -3809,12 +3833,10 @@ namespace CVEYEV1
         {
             try
             {
-                float value;
-                value = float.Parse(OffsetCoor.CurrentRow.Cells[1].Value.ToString());
+                float value = float.Parse(OffsetCoor.CurrentRow.Cells[1].Value.ToString());
                 value -= 0.1f;
-                value = (float)Math.Round(value, 1);
                 OffsetCoor.CurrentRow.Cells[1].Value = value.ToString();
-                StatusLabel.Text = "";
+                OffsetCoor.Refresh();
             }
             catch (Exception ex)
             {
@@ -3826,12 +3848,10 @@ namespace CVEYEV1
         {
             try
             {
-                float value;
-                value = float.Parse(OffsetCoor.CurrentRow.Cells[1].Value.ToString());
+                float value = float.Parse(OffsetCoor.CurrentRow.Cells[1].Value.ToString());
                 value += 0.1f;
-                value = (float)Math.Round(value, 1);
                 OffsetCoor.CurrentRow.Cells[1].Value = value.ToString();
-                StatusLabel.Text = "";
+                OffsetCoor.Refresh();
             }
             catch (Exception ex)
             {
@@ -3846,9 +3866,8 @@ namespace CVEYEV1
                 float value;
                 value = float.Parse(OffsetCoor.CurrentRow.Cells[2].Value.ToString());
                 value -= 0.1f;
-                value = (float)Math.Round(value, 1);
                 OffsetCoor.CurrentRow.Cells[2].Value = value.ToString();
-                StatusLabel.Text = "";
+                OffsetCoor.Refresh();
             }
             catch (Exception ex)
             {
@@ -3863,9 +3882,8 @@ namespace CVEYEV1
                 float value;
                 value = float.Parse(OffsetCoor.CurrentRow.Cells[2].Value.ToString());
                 value += 0.1f;
-                value = (float)Math.Round(value, 1);
                 OffsetCoor.CurrentRow.Cells[2].Value = value.ToString();
-                StatusLabel.Text = "";
+                OffsetCoor.Refresh();
             }
             catch (Exception ex)
             {
@@ -3902,6 +3920,38 @@ namespace CVEYEV1
         private void button2_Click(object sender, EventArgs e)
         {
             ProductionRecording();
+        }
+
+        private void testOCR_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Create OCR model
+                string TessDataPath = "D:/Dropbox/__XIANGQI PAINTING/EmguCV/CVEYEV1/CVEYEV1/bin/Debug";                
+                _numberOCR = new Tesseract(TessDataPath, "eng", OcrEngineMode.TesseractOnly);
+                StatusLabel.Text = "OCR model is created";
+
+                Tesseract.Character[] _result;
+
+                using (Mat gray_text_img = new Mat())
+                {
+                    CvInvoke.CvtColor(img_capture_undist, gray_text_img, ColorConversion.Bgr2Gray);
+                    _numberOCR.SetImage(gray_text_img);
+                    _numberOCR.Recognize();
+                    _result = _numberOCR.GetCharacters();
+
+                    processLog.Items.Clear();
+                    foreach (Tesseract.Character _char in _result)
+                    {
+                        processLog.Items.Add(_char.Text);
+                    }
+                }
+            }
+            catch(Exception _ex)
+            {
+                MessageBox.Show(_ex.Message);
+            }
+
         }
 
         // Reload template
